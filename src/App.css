@@ -28,6 +28,13 @@ a:hover {
   cursor: pointer;
   animation: wave 700ms linear infinite;
 }
+.map:hover {
+  cursor: pointer;
+  display: inline-block;
+  transform: scale(1.4);
+  margin-right: 0.3rem;
+  transition: 0.4s all;
+}
 @keyframes wave {
   0% {
     transform: rotate(0deg);
