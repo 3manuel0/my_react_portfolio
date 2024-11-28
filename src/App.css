@@ -52,6 +52,10 @@ a:hover {
     transform: rotate(0deg);
   }
 }
+.icon {
+  width: 50px;
+  aspect-ratio: 1;
+}
 @keyframes logo-spin {
   0% {
     transform: rotate(360deg);

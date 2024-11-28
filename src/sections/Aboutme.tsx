@@ -15,6 +15,18 @@ function Aboutme() {
           <p className="leading-6 text-center text-xs">
             <span className="text-3xl map">🇲🇦</span> Morocco, Rabat
           </p>
+          <div className="grid grid-cols-4 mt-8">
+            <img
+              className="icon"
+              src="https://raw.githubusercontent.com/3manuel0/3manuel0/assets/WebAssembly_Logo.svg"
+              alt=""
+            />
+            <img
+              className="icon"
+              src="https://raw.githubusercontent.com/3manuel0/3manuel0/assets/javascript-1.svg"
+              alt=""
+            />
+          </div>
         </div>
         <div className="w-1/4 ">
           <img src={myImage} alt="3manuel" />
