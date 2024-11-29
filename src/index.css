@@ -3,11 +3,15 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: arcade;
+  font-family: arcade-bold;
   src: url("./assets/fonts/Acme-9-Regular-Bold.ttf");
 }
+@font-face {
+  font-family: arcade-regular;
+  src: url("./assets/fonts/Acme-9-Regular.ttf");
+}
 :root {
-  font-family: arcade, sans-serif;
+  font-family: arcade-bold, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -20,7 +24,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+p {
+  font-family: arcade-regular, sans-serif;
+}
 a {
   font-weight: 500;
   color: #646cff;
