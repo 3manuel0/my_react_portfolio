@@ -20,6 +20,9 @@ a:hover {
 .about-me {
   background-color: #121212;
 }
+.projects {
+  background-color: #121212;
+}
 .wave {
   display: inline-block;
   /* transform: rotate(30deg); */

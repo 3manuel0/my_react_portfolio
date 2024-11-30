@@ -3,6 +3,7 @@
 // import viteLogo from "/vite.svg";
 import Navbar from "./sections/Navbar";
 import Aboutme from "./sections/Aboutme";
+import Projects from "./sections/Projects";
 import "./App.css";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
     <>
       <Navbar />
       <Aboutme />
+      <Projects />
     </>
   );
 }

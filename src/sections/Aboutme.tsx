@@ -7,12 +7,13 @@ function Aboutme() {
     "WebAssembly.svg",
     "Python.svg",
     "Javascript.svg",
-    "bash.svg",
+    "React.svg",
+    "Bash.svg",
     "Mysql.svg",
     "Git.svg",
     "Nodejs.svg",
     "Postgresql.svg",
-    "mongodb-icon-1.svg",
+    "Mongodb.svg",
   ];
   return (
     <section className="about-me p-8">
