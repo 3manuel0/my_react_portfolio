@@ -38,6 +38,10 @@ a:hover {
 .projects {
   background-color: #121212;
 }
+.prj-dev {
+  max-width: 1240px;
+  margin: 0 auto;
+}
 .wave {
   display: inline-block;
   /* transform: rotate(30deg); */

@@ -39,68 +39,70 @@ function Projects() {
 
   return (
     <section className="projects p-8 mt-6">
-      <h1 className="text-center">Projects</h1>
-      <div className="flex justify-around mt-6 gap-2">
-        <h2
-          className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer"
-          onClick={() => setPersonal(true)}
-          style={
-            personal
-              ? { backgroundColor: "#292828" }
-              : { backgroundColor: "inherit" }
-          }
-        >
-          Personal Projects
-        </h2>
-        <h2
-          className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer"
-          onClick={() => setPersonal(false)}
-          style={
-            !personal
-              ? { backgroundColor: "#292828" }
-              : { backgroundColor: "inherit" }
-          }
-        >
-          Work Projects
-        </h2>
-      </div>
-      <div className="grid grid-cols-2 gap-2 mt-2">
-        {personal
-          ? Object.keys(personalProjects).map((key) => {
-              const project = personalProjects[+key];
-              return (
-                <div className="p-8 border-2 border-white">
-                  <img
-                    style={{ aspectRatio: " 16 / 9 " }}
-                    src={project.url}
-                    alt={project.name}
-                  />
-                  <h2 className="mt-1">{project.name}</h2>
-                  {/* h-28 */}
-                  <div className="desc mt-4 overflow-hidden overflow-y-scroll h-1/5">
-                    <p className=" leading-8">{project.description}</p>
-                  </div>
-                  <div className="mt-2 h-1/5">
-                    <h2>Languages & Tools:</h2>
-                    <div className="grid grid-cols-6">
-                      {project.languages
-                        ? project.languages.map((lang) => (
-                            <div className="flex mt-2 flex-col justify-center items-center">
-                              <img
-                                width={40}
-                                height={40}
-                                src={gitContenLikn + lang + ".svg"}
-                              />
-                              <p className="text-xs mt-2">{lang}</p>
-                            </div>
-                          ))
-                        : null}
+      <div className="prj-dev">
+        <h1 className="text-center">Projects</h1>
+        <div className="flex justify-around mt-6 gap-2">
+          <h2
+            className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer"
+            onClick={() => setPersonal(true)}
+            style={
+              personal
+                ? { backgroundColor: "#292828" }
+                : { backgroundColor: "inherit" }
+            }
+          >
+            Personal Projects
+          </h2>
+          <h2
+            className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer"
+            onClick={() => setPersonal(false)}
+            style={
+              !personal
+                ? { backgroundColor: "#292828" }
+                : { backgroundColor: "inherit" }
+            }
+          >
+            Work Projects
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {personal
+            ? Object.keys(personalProjects).map((key) => {
+                const project = personalProjects[+key];
+                return (
+                  <div className="p-8 border-2 border-white flex flex-col justify-between">
+                    <img
+                      style={{ aspectRatio: " 16 / 9 " }}
+                      src={project.url}
+                      alt={project.name}
+                    />
+                    <h2 className="mt-1">{project.name}</h2>
+                    {/* h-28 */}
+                    <div className="desc mt-4 overflow-hidden overflow-y-scroll">
+                      <p className=" leading-8">{project.description}</p>
+                    </div>
+                    <div className="mt-2">
+                      <h2>Languages & Tools:</h2>
+                      <div className="grid grid-cols-6">
+                        {project.languages
+                          ? project.languages.map((lang) => (
+                              <div className="flex mt-2 flex-col justify-center items-center">
+                                <img
+                                  width={40}
+                                  height={40}
+                                  src={gitContenLikn + lang + ".svg"}
+                                />
+                                <p className="text-xs mt-2">{lang}</p>
+                              </div>
+                            ))
+                          : null}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })
-          : null}
+                );
+              })
+            : null}
+        </div>
       </div>
     </section>
   );
