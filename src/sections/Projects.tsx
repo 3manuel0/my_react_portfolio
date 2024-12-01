@@ -1,32 +1,39 @@
-import platformerImage from "../assets/personal-projects/Platformer.png";
+// import platformerImage from "../assets/personal-projects/Platformer.png";
 import platformerGif from "../assets/personal-projects/Platformer.gif";
 import fileToPng from "../assets/personal-projects/file_to_png.png";
 import { useState } from "react";
 function Projects() {
+  const gitContenLikn =
+    "https://raw.githubusercontent.com/3manuel0/3manuel0/assets/";
   const [personal, setPersonal] = useState(true);
   interface ProjectType {
     name: string;
     url: string;
     description: string;
+    languages?: string[] | null;
   }
   const personalProjects: { [id: number]: ProjectType } = {
     1: {
       name: "2d Platformer Game",
       url: platformerGif,
       description: "Made using the C language with help of raylib (library)",
+      languages: ["C", "Raylib"],
     },
     2: {
       name: "File to png website",
       url: fileToPng,
+      //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
       description:
         "A fun enjoyable project where I tried to play with bytes and understand binary data, basically you upload an a \
-        file (.txt, .svg, .C ...etc)\
-        and the file bytes become the image's pixels and you can donwload your png with your data and upload them again to extract data",
+        file (.txt, .svg, .C ...etc)",
+      languages: ["Javascript", "Html", "Css"],
     },
     3: {
-      name: "2d Platformer Game",
-      url: platformerGif,
-      description: "using C with help of raylib(library)",
+      name: "Chinese Flashcards Desktop app",
+      url: "",
+      description:
+        "a simple desktop app created using the rust language and slint",
+      languages: ["Rust", "Slint"],
     },
   };
 
@@ -69,8 +76,26 @@ function Projects() {
                     alt={project.name}
                   />
                   <h2 className="mt-1">{project.name}</h2>
-                  <div className="h-28 mt-4 overflow-hidden overflow-y-scroll">
+                  {/* h-28 */}
+                  <div className="desc mt-4 overflow-hidden overflow-y-scroll h-1/5">
                     <p className=" leading-8">{project.description}</p>
+                  </div>
+                  <div className="mt-2 h-1/5">
+                    <h2>Languages & Tools:</h2>
+                    <div className="grid grid-cols-6">
+                      {project.languages
+                        ? project.languages.map((lang) => (
+                            <div className="flex mt-2 flex-col justify-center items-center">
+                              <img
+                                width={40}
+                                height={40}
+                                src={gitContenLikn + lang + ".svg"}
+                              />
+                              <p className="text-xs mt-2">{lang}</p>
+                            </div>
+                          ))
+                        : null}
+                    </div>
                   </div>
                 </div>
               );
