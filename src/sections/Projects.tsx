@@ -1,5 +1,4 @@
-// import platformerImage from "../assets/personal-projects/Platformer.png";
-import platformerGif from "../assets/personal-projects/Platformer.gif";
+import platformerImage from "../assets/personal-projects/Platformer.png";
 import fileToPng from "../assets/personal-projects/file_to_png.png";
 import { useState } from "react";
 function Projects() {
@@ -11,11 +10,12 @@ function Projects() {
     url: string;
     description: string;
     languages?: string[] | null;
+    githubSrcCode?: string | null;
   }
   const personalProjects: { [id: number]: ProjectType } = {
     1: {
       name: "2d Platformer Game",
-      url: platformerGif,
+      url: platformerImage,
       description: "Made using the C language with help of raylib (library)",
       languages: ["C", "Raylib"],
     },
@@ -71,6 +71,14 @@ function Projects() {
                 const project = personalProjects[+key];
                 return (
                   <div className="p-8 border-2 border-white flex flex-col justify-between">
+                    <div className="flex col-auto">
+                      <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                        source Code
+                      </h2>
+                      <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                        View Demo
+                      </h2>
+                    </div>
                     <img
                       style={{ aspectRatio: " 16 / 9 " }}
                       src={project.url}

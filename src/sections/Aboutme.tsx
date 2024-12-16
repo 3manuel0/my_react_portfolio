@@ -14,6 +14,7 @@ function Aboutme() {
     "Nodejs.svg",
     "Postgresql.svg",
     "Mongodb.svg",
+    "Vitejs.svg",
   ];
   return (
     <section className="about-me p-8">
@@ -28,7 +29,12 @@ function Aboutme() {
             Full Stack Web Developer/Software Programmer
           </h2>
           <h2 className="leading-6 text-center text-xs">
-            <span className="text-3xl map">🇲🇦</span> Morocco, Rabat
+            <img
+              className="icon map inline"
+              src={gitContenLikn + "morocco.svg"}
+              alt=""
+            />{" "}
+            Morocco, Rabat
           </h2>
           <div className="grid grid-cols-4 mt-8 gap-y-4 place-items-center">
             {logos.map((logo) => (

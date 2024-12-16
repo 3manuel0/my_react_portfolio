@@ -75,7 +75,7 @@ a:hover {
   }
 }
 .icon {
-  width: 55px;
+  width: 50px;
   aspect-ratio: 1;
 }
 @keyframes logo-spin {
@@ -92,11 +92,5 @@ a:hover {
   90%,
   100% {
     transform: rotate(0deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
   }
 }
