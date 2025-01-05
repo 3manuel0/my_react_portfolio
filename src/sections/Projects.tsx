@@ -1,5 +1,6 @@
 import platformerImage from "../assets/personal-projects/Platformer.png";
 import fileToPng from "../assets/personal-projects/file_to_png.png";
+import chineseFlashCards from "../assets/personal-projects/chinese_flash_cards.png";
 import { useState } from "react";
 function Projects() {
   const gitContenLikn =
@@ -17,7 +18,7 @@ function Projects() {
       name: "2d Platformer Game",
       url: platformerImage,
       description: "Made using the C language with help of raylib (library)",
-      languages: ["C", "Raylib"],
+      languages: ["C", "Raylib", "WebAssembly", "Javascript"],
     },
     2: {
       name: "File to png website",
@@ -30,7 +31,7 @@ function Projects() {
     },
     3: {
       name: "Chinese Flashcards Desktop app",
-      url: "",
+      url: chineseFlashCards,
       description:
         "a simple desktop app created using the rust language and slint",
       languages: ["Rust", "Slint"],
@@ -91,10 +92,10 @@ function Projects() {
                     </div>
                     <div className="mt-2">
                       <h2>Languages & Tools:</h2>
-                      <div className="grid grid-cols-6">
+                      <div className="grid grid-cols-4">
                         {project.languages
                           ? project.languages.map((lang) => (
-                              <div className="flex mt-2 flex-col justify-center items-center">
+                              <div className="flex mt-2 flex-col justify-center items-center w-full">
                                 <img
                                   width={40}
                                   height={40}
