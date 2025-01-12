@@ -12,6 +12,7 @@ function Projects() {
     description: string;
     languages?: string[] | null;
     githubSrcCode?: string | null;
+    demo?: string | null;
   }
   const personalProjects: { [id: number]: ProjectType } = {
     1: {
@@ -19,6 +20,8 @@ function Projects() {
       url: platformerImage,
       description: "Made using the C language with help of raylib (library)",
       languages: ["C", "Raylib", "WebAssembly", "Javascript"],
+      githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
+      demo: "https://3manuel0.github.io/2dPlatformerGame/",
     },
     2: {
       name: "File to png website",
@@ -28,6 +31,8 @@ function Projects() {
         "A fun enjoyable project where I tried to play with bytes and understand binary data, basically you upload an a \
         file (.txt, .svg, .C ...etc)",
       languages: ["Javascript", "Html", "Css"],
+      githubSrcCode: "https://github.com/3manuel0/file_or_text_to_png",
+      demo: "https://3manuel0.github.io/file_or_text_to_png/",
     },
     3: {
       name: "Chinese Flashcards Desktop app",
@@ -35,6 +40,7 @@ function Projects() {
       description:
         "a simple desktop app created using the rust language and slint",
       languages: ["Rust", "Slint"],
+      githubSrcCode: "https://github.com/3manuel0/chinese_flashcards",
     },
   };
 
@@ -71,14 +77,32 @@ function Projects() {
             ? Object.keys(personalProjects).map((key) => {
                 const project = personalProjects[+key];
                 return (
-                  <div className="p-8 border-2 border-white flex flex-col justify-between">
+                  <div className="p-5 border-2 border-white flex flex-col justify-between">
                     <div className="flex col-auto">
-                      <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
-                        source Code
-                      </h2>
-                      <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
-                        View Demo
-                      </h2>
+                      {project.githubSrcCode ? (
+                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                          <a
+                            href={
+                              project.githubSrcCode ? project.githubSrcCode : ""
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Source Code
+                          </a>
+                        </h2>
+                      ) : null}
+                      {project.demo ? (
+                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                          <a
+                            href={project.demo ? project.demo : ""}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View Demo
+                          </a>
+                        </h2>
+                      ) : null}
                     </div>
                     <img
                       style={{ aspectRatio: " 16 / 9 " }}
@@ -97,11 +121,18 @@ function Projects() {
                           ? project.languages.map((lang) => (
                               <div className="flex mt-2 flex-col justify-center items-center w-full">
                                 <img
-                                  width={40}
-                                  height={40}
+                                  width={50}
+                                  height={50}
+                                  // svg link of the language
                                   src={gitContenLikn + lang + ".svg"}
                                 />
-                                <p className="text-xs mt-2">{lang}</p>
+                                <p
+                                  className="mt-2"
+                                  style={{ fontSize: "0.65rem" }}
+                                >
+                                  {/* display languages names*/}
+                                  {lang === "WebAssembly" ? "Wasm" : lang}
+                                </p>
                               </div>
                             ))
                           : null}
