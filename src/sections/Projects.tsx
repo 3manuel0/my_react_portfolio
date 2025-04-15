@@ -45,7 +45,7 @@ function Projects() {
   };
 
   return (
-    <section className="projects p-8 mt-6">
+    <section className="projects p-8 mt-6" id="projects">
       <div className="prj-dev">
         <h1 className="text-center">Projects</h1>
         <div className="flex justify-around mt-6 gap-2">

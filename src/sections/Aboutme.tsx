@@ -15,12 +15,13 @@ function Aboutme() {
     "Postgresql.svg",
     "Mongodb.svg",
     "Vitejs.svg",
+    "Debian.svg",
   ];
   return (
-    <section className="about-me p-8">
+    <section id="about-me" className="about-me p-8">
       <h1 className="text-center">About Me</h1>
       <div className="flex mt-8 justify-center gap-8">
-        <div className="w-2/4 px-6">
+        <div className="w-3/4 px-6">
           <h2 className="mb-4 text-center">
             Hi, My Name is Said AKA 3manuel{" "}
             <span className="wave text-3xl">👋</span>
@@ -36,7 +37,7 @@ function Aboutme() {
             />{" "}
             Morocco, Rabat
           </h2>
-          <div className="grid grid-cols-4 mt-8 gap-y-4 place-items-center">
+          <div className="grid grid-cols-8 mt-8 gap-y-4 place-items-center">
             {logos.map((logo) => (
               <div className="flex justify-center flex-col items-center">
                 <img className="icon" src={gitContenLikn + logo} alt="" />
@@ -46,9 +47,6 @@ function Aboutme() {
               </div>
             ))}
           </div>
-        </div>
-        <div className="w-1/4 ">
-          <img src={myImage} alt="3manuel" />
         </div>
       </div>
     </section>
