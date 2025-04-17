@@ -1,4 +1,3 @@
-import myImage from "../assets/personal-image/my-pic.jpg";
 function Aboutme() {
   const gitContenLikn =
     "https://raw.githubusercontent.com/3manuel0/3manuel0/assets/";
