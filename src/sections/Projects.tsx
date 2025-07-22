@@ -1,4 +1,4 @@
-import platformerImage from "../assets/personal-projects/Platformer.png";
+import platformerImage from "../assets/personal-projects/output.gif";
 import fileToPng from "../assets/personal-projects/file_to_png.png";
 import chineseFlashCards from "../assets/personal-projects/chinese_flash_cards.png";
 import { useState } from "react";
@@ -18,8 +18,9 @@ function Projects() {
     1: {
       name: "2d Platformer Game",
       url: platformerImage,
-      description: "Made using the C language with help of raylib (library)",
-      languages: ["C", "Raylib", "WebAssembly", "Javascript"],
+      description:
+        "Game demo built in C with Raylib, compiled to WebAssembly for the web",
+      languages: ["C", "Raylib", "WebAssembly", "Javascript", "Debian"],
       githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
       demo: "https://3manuel0.github.io/2dPlatformerGame/",
     },
@@ -28,9 +29,8 @@ function Projects() {
       url: fileToPng,
       //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
       description:
-        "A fun enjoyable project where I tried to play with bytes and understand binary data, basically you upload an a \
-        file (.txt, .svg, .C ...etc)",
-      languages: ["Javascript", "Html", "Css"],
+        "Encodes file data into PNG pixels to explore binary representation",
+      languages: ["Javascript", "Html", "Css", "Debian"],
       githubSrcCode: "https://github.com/3manuel0/file_or_text_to_png",
       demo: "https://3manuel0.github.io/file_or_text_to_png/",
     },
@@ -38,7 +38,7 @@ function Projects() {
       name: "Chinese Flashcards Desktop app",
       url: chineseFlashCards,
       description:
-        "a simple desktop app created using the rust language and slint",
+        "Rust-based desktop app using Slint for Chinese flashcard learning",
       languages: ["Rust", "Slint"],
       githubSrcCode: "https://github.com/3manuel0/chinese_flashcards",
     },
@@ -47,7 +47,7 @@ function Projects() {
   return (
     <section className="projects p-8 mt-6" id="projects">
       <div className="prj-dev">
-        <h1 className="text-center">Projects</h1>
+        <h1 className="text-center text-3xl lg:text-4xl">Projects</h1>
         <div className="flex justify-around mt-6 gap-2">
           <h2
             className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer"
@@ -72,7 +72,7 @@ function Projects() {
             Work Projects
           </h2>
         </div>
-        <div className="grid grid-cols-2 gap-2 mt-2">
+        <div className="grid grid-cols-1 gap-2 mt-2 lg:grid-cols-2">
           {personal
             ? Object.keys(personalProjects).map((key) => {
                 const project = personalProjects[+key];
@@ -109,30 +109,28 @@ function Projects() {
                       src={project.url}
                       alt={project.name}
                     />
-                    <h2 className="mt-1">{project.name}</h2>
+                    <h2 className="mt-1 text-center text-green-400">
+                      {project.name}
+                    </h2>
                     {/* h-28 */}
                     <div className="desc mt-4 overflow-hidden overflow-y-scroll">
                       <p className=" leading-8">{project.description}</p>
                     </div>
+                    <h2 className="text-pink-400">Languages & Tools:</h2>
                     <div className="mt-2">
-                      <h2>Languages & Tools:</h2>
-                      <div className="grid grid-cols-4">
+                      <div className="flex items-center justify-between">
                         {project.languages
                           ? project.languages.map((lang) => (
-                              <div className="flex mt-2 flex-col justify-center items-center w-full">
+                              <div className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer">
                                 <img
                                   width={50}
                                   height={50}
                                   // svg link of the language
                                   src={gitContenLikn + lang + ".svg"}
                                 />
-                                <p
-                                  className="mt-2"
-                                  style={{ fontSize: "0.65rem" }}
-                                >
-                                  {/* display languages names*/}
-                                  {lang === "WebAssembly" ? "Wasm" : lang}
-                                </p>
+                                <div className="text-[0.5rem] md:text-xs mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                                  {lang}
+                                </div>
                               </div>
                             ))
                           : null}

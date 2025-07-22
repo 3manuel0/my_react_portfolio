@@ -10,6 +10,14 @@
   font-family: arcade-regular;
   src: url("./assets/fonts/Acme-9-Regular.ttf");
 }
+@font-face {
+  font-family: arcade-strong;
+  src: url("./assets/fonts/Acme-9-Regular-Bold-Xtnd.ttf");
+}
+@font-face {
+  font-family: arcade-dates;
+  src: url("./assets/fonts/Acme-9-Regular-Xtnd.ttf");
+}
 :root {
   font-family: arcade-bold, sans-serif;
   line-height: 1.5;
@@ -65,7 +73,14 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
+strong{
+  font-family: arcade-strong;
+  font-size: 0.8rem;
+}
+.date {
+  font-family: arcade-dates;
+  font-size: 0.75rem;
+}
 /* @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
