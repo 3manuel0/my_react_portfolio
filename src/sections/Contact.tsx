@@ -1,7 +1,6 @@
 function Contact() {
   const gitContenLikn =
     "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
-  const logos = ["Github"];
   interface ContactType {
     logo: string;
     url: string;
