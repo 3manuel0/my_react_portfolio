@@ -7,6 +7,7 @@ import gameboy from "../assets/personal-projects/gameboy.png";
 import chessPuzzle from "../assets/professional-projects/chess-puzzle.png";
 import flagtriviagame from "../assets/professional-projects/flagtriviagame.png";
 import TimeWarpMemory from "../assets/professional-projects/TimeWarpMemory.png";
+import BalanceChecker_for_Bank_Clients from "../assets/professional-projects/BalanceChecker_for_Bank_Clients.png";
 import { useState } from "react";
 
 function Projects() {
@@ -35,8 +36,7 @@ function Projects() {
       name: "My Portfolio Website",
       url: portfolio,
       //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
-      description:
-        "Encodes file data into PNG pixels to explore binary representation",
+      description: "My Personal Portfolio Website",
       languages: ["Typescript", "Vitejs", "React", "Tailwindcss"],
       githubSrcCode: "https://github.com/3manuel0/my_react_portfolio",
     },
@@ -76,34 +76,41 @@ function Projects() {
   };
   const professionalProjects: { [id: number]: ProjectType } = {
     1: {
-      name: "Chess Puzzle website",
+      name: "(Freelance) Chess Puzzle website",
       url: chessPuzzle,
       description:
-        "I developed a website for a freelance client that allows users to play and solve chess puzzles, with real-time validation of legal chess moves.",
+        "I developed a website for a client that allows users to play and solve chess puzzles, with real-time validation of legal chess moves.",
       languages: ["Javascript", "Html", "Css"],
     },
     2: {
-      name: "Flag Trivia Game ",
+      name: "(Freelance) Flag Trivia Game ",
       url: flagtriviagame,
       description:
-        "I created a flag trivia game for a freelance client, where users are challenged to identify country flags from around the world. The game features multiple-choice questions, score tracking, and instant feedback to enhance learning and engagement.",
+        "I created a flag trivia game for a client, where users are challenged to identify country flags from around the world. The game features multiple-choice questions, score tracking, and instant feedback to enhance learning and engagement.",
       languages: ["Python", "Pygame"],
     },
     3: {
-      name: "Time Warp Memory Game",
+      name: "(Internship) Balance Checker for Bank Clients",
+      url: BalanceChecker_for_Bank_Clients,
+      description:
+        "Developed a Flask web app to compare names from uploaded PDF/XLS files against a general bank list. Used pytesseract for OCR-based text extraction and implemented error handling to improve matching accuracy.",
+      languages: ["Python", "Flask", "Html", "Css", "Mysql"],
+    },
+    4: {
+      name: "(Freelance) Time Warp Memory Game",
       url: TimeWarpMemory,
       description:
-        "Helped a freelance client build a Number Guessing Level for the Time Warp Memory Game, handling game logic, UI, and smooth integration to enhance memory-focused gameplay.",
+        "Helped a client build a Number Guessing Level for the Time Warp Memory Game, handling game logic, UI, and smooth integration to enhance memory-focused gameplay.",
       languages: ["Python", "Pygame"],
     },
   };
   return (
     <section className="projects p-8 mt-6" id="projects">
       <div className="prj-dev">
-        <h1 className="text-center text-3xl lg:text-4xl">Projects</h1>
+        <h1 className="text-center text-2xl md:text-4xl">Projects</h1>
         <div className="flex justify-around mt-6 gap-2">
           <h2
-            className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer"
+            className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
             onClick={() => setPersonal(true)}
             style={
               personal
@@ -114,7 +121,7 @@ function Projects() {
             Personal Projects
           </h2>
           <h2
-            className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer"
+            className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
             onClick={() => setPersonal(false)}
             style={
               !personal
@@ -133,7 +140,7 @@ function Projects() {
                   <div className="p-5 border-2 border-white flex flex-col justify-between">
                     <div className="flex col-auto">
                       {project.githubSrcCode ? (
-                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
                             href={
                               project.githubSrcCode ? project.githubSrcCode : ""
@@ -146,7 +153,7 @@ function Projects() {
                         </h2>
                       ) : null}
                       {project.demo ? (
-                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
                             href={project.demo ? project.demo : ""}
                             target="_blank"
@@ -166,18 +173,21 @@ function Projects() {
                       {project.name}
                     </h2>
                     {/* h-28 */}
-                    <div className="desc mt-4 overflow-hidden overflow-y-scroll">
-                      <p className=" leading-8">{project.description}</p>
+                    <div className="desc mt-4 overflow-hidden">
+                      <p className="text-[0.6rem] leading-4 md:leading-8 md:text-base">
+                        {project.description}
+                      </p>
                     </div>
-                    <h2 className="text-pink-400">Languages & Tools:</h2>
+                    <h2 className="text-pink-400 text-xs sm:text-base mt-3 sm:mt-0">
+                      Languages & Tools:
+                    </h2>
                     <div className="mt-2">
                       <div className="flex items-center justify-between">
                         {project.languages
                           ? project.languages.map((lang) => (
                               <div className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer">
                                 <img
-                                  width={50}
-                                  height={50}
+                                  className="w-10 md:w-12"
                                   // svg link of the language
                                   src={gitContenLikn + lang + ".svg"}
                                 />
@@ -198,7 +208,7 @@ function Projects() {
                   <div className="p-5 border-2 border-white flex flex-col justify-between">
                     <div className="flex col-auto">
                       {project.githubSrcCode ? (
-                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
                             href={
                               project.githubSrcCode ? project.githubSrcCode : ""
@@ -211,7 +221,7 @@ function Projects() {
                         </h2>
                       ) : null}
                       {project.demo ? (
-                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
                             href={project.demo ? project.demo : ""}
                             target="_blank"
@@ -231,18 +241,21 @@ function Projects() {
                       {project.name}
                     </h2>
                     {/* h-28 */}
-                    <div className="desc mt-4 overflow-hidden overflow-y-scroll">
-                      <p className=" leading-8">{project.description}</p>
+                    <div className="desc mt-4 overflow-hidden">
+                      <p className="text-[0.6rem] leading-4 md:leading-8 md:text-base">
+                        {project.description}
+                      </p>
                     </div>
-                    <h2 className="text-pink-400">Languages & Tools:</h2>
+                    <h2 className="text-pink-400 text-xs sm:text-base mt-3 sm:mt-0">
+                      Languages & Tools:
+                    </h2>
                     <div className="mt-2">
                       <div className="flex items-center justify-between">
                         {project.languages
                           ? project.languages.map((lang) => (
                               <div className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer">
                                 <img
-                                  width={50}
-                                  height={50}
+                                  className="w-10 md:w-12"
                                   // svg link of the language
                                   src={gitContenLikn + lang + ".svg"}
                                 />

@@ -20,12 +20,13 @@ function Aboutme() {
     "Csharp.svg",
     "Linux.svg",
     "Kotlin.svg",
+    "Php.svg",
   ];
   return (
-    <section id="about-me" className="about-me p-8">
-      <h1 className="text-center text-3xl lg:text-4xl">About Me</h1>
-      <div className="flex mt-8 justify-center gap-8">
-        <div className="px-6 w-full lg:w-3/4">
+    <section id="about-me" className="about-me p-6 md:p-8">
+      <h1 className="text-center text-2xl md:text-3xl lg:text-4xl">About Me</h1>
+      <div className="flex mt-5 md:mt-8 justify-center gap-8">
+        <div className="w-full lg:w-3/4 md:px-6">
           <h2 className="mb-4 text-center text-blue-400">
             Hi, My Name is Said AKA 3manuel{" "}
             <span className="wave text-2xl lg:text-3xl">👋</span>
@@ -33,7 +34,7 @@ function Aboutme() {
           <h2 className="leading-6 text-center text-xs">
             Full Stack Web Developer/Software Programmer
           </h2>
-          <h2 className="leading-6 text-center text-xs">
+          <h2 className="mb-4 leading-6 text-center text-xs">
             <img
               className="icon map inline"
               src={gitContenLikn + "morocco.svg"}
@@ -41,9 +42,9 @@ function Aboutme() {
             />{" "}
             Morocco, Rabat
           </h2>
-          <p className="text-center md:text-left">
-            Just completed my{" "}
-            <strong className="font-bold text-yellow-300">
+          <p className="leading-6 text-xs text-center md:text-left md:text-base sm:text-left ">
+            I Just completed my{" "}
+            <strong className="font-bold text-yellow-300 text-xs md:text-base">
               Specialized Technician Diploma in Software Development (Miage,
               Rabat){" "}
             </strong>
