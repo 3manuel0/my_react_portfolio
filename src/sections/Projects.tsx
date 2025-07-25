@@ -1,10 +1,17 @@
 import platformerImage from "../assets/personal-projects/output.gif";
 import fileToPng from "../assets/personal-projects/file_to_png.png";
+import portfolio from "../assets/personal-projects/Prtfolio.png";
 import chineseFlashCards from "../assets/personal-projects/chinese_flash_cards.png";
+import musicPlayer from "../assets/personal-projects/Music_player.png";
+import gameboy from "../assets/personal-projects/gameboy.png";
+import chessPuzzle from "../assets/professional-projects/chess-puzzle.png";
+import flagtriviagame from "../assets/professional-projects/flagtriviagame.png";
+import TimeWarpMemory from "../assets/professional-projects/TimeWarpMemory.png";
 import { useState } from "react";
+
 function Projects() {
   const gitContenLikn =
-    "https://raw.githubusercontent.com/3manuel0/3manuel0/assets/";
+    "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
   const [personal, setPersonal] = useState(true);
   interface ProjectType {
     name: string;
@@ -20,21 +27,45 @@ function Projects() {
       url: platformerImage,
       description:
         "Game demo built in C with Raylib, compiled to WebAssembly for the web",
-      languages: ["C", "Raylib", "WebAssembly", "Javascript", "Debian"],
+      languages: ["C", "Raylib", "WebAssembly", "Javascript"],
       githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
       demo: "https://3manuel0.github.io/2dPlatformerGame/",
     },
     2: {
+      name: "My Portfolio Website",
+      url: portfolio,
+      //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
+      description:
+        "Encodes file data into PNG pixels to explore binary representation",
+      languages: ["Typescript", "Vitejs", "React", "Tailwindcss"],
+      githubSrcCode: "https://github.com/3manuel0/my_react_portfolio",
+    },
+    3: {
+      name: "Gameboy emulator in C (just starting) ",
+      url: gameboy,
+      description:
+        "Just a fun project for me to work with C and learn about GameBoy Emulation 🕹️.",
+      languages: ["Raylib", "C"],
+      githubSrcCode: "https://github.com/3manuel0/gb_emu",
+    },
+    4: {
+      name: "Muic Player",
+      url: musicPlayer,
+      description: "Music/audio player in kotlin",
+      languages: ["Kotlin", "Androidstudio"],
+      githubSrcCode: "https://github.com/3manuel0/3maPlayer",
+    },
+    5: {
       name: "File to png website",
       url: fileToPng,
       //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
       description:
         "Encodes file data into PNG pixels to explore binary representation",
-      languages: ["Javascript", "Html", "Css", "Debian"],
-      githubSrcCode: "https://github.com/3manuel0/file_or_text_to_png",
-      demo: "https://3manuel0.github.io/file_or_text_to_png/",
+      languages: ["Javascript", "Html", "Css"],
+      githubSrcCode: "https://github.com/3manuel0/FToP_web",
+      demo: "https://3manuel0.github.io/FToP_web/",
     },
-    3: {
+    6: {
       name: "Chinese Flashcards Desktop app",
       url: chineseFlashCards,
       description:
@@ -43,7 +74,29 @@ function Projects() {
       githubSrcCode: "https://github.com/3manuel0/chinese_flashcards",
     },
   };
-
+  const professionalProjects: { [id: number]: ProjectType } = {
+    1: {
+      name: "Chess Puzzle website",
+      url: chessPuzzle,
+      description:
+        "I developed a website for a freelance client that allows users to play and solve chess puzzles, with real-time validation of legal chess moves.",
+      languages: ["Javascript", "Html", "Css"],
+    },
+    2: {
+      name: "Flag Trivia Game ",
+      url: flagtriviagame,
+      description:
+        "I created a flag trivia game for a freelance client, where users are challenged to identify country flags from around the world. The game features multiple-choice questions, score tracking, and instant feedback to enhance learning and engagement.",
+      languages: ["Python", "Pygame"],
+    },
+    3: {
+      name: "Time Warp Memory Game",
+      url: TimeWarpMemory,
+      description:
+        "Helped a freelance client build a Number Guessing Level for the Time Warp Memory Game, handling game logic, UI, and smooth integration to enhance memory-focused gameplay.",
+      languages: ["Python", "Pygame"],
+    },
+  };
   return (
     <section className="projects p-8 mt-6" id="projects">
       <div className="prj-dev">
@@ -139,7 +192,71 @@ function Projects() {
                   </div>
                 );
               })
-            : null}
+            : Object.keys(professionalProjects).map((key) => {
+                const project = professionalProjects[+key];
+                return (
+                  <div className="p-5 border-2 border-white flex flex-col justify-between">
+                    <div className="flex col-auto">
+                      {project.githubSrcCode ? (
+                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                          <a
+                            href={
+                              project.githubSrcCode ? project.githubSrcCode : ""
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Source Code
+                          </a>
+                        </h2>
+                      ) : null}
+                      {project.demo ? (
+                        <h2 className="text-center border-2 border-cyan-400 w-full p-2 cursor-pointer">
+                          <a
+                            href={project.demo ? project.demo : ""}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View Demo
+                          </a>
+                        </h2>
+                      ) : null}
+                    </div>
+                    <img
+                      style={{ aspectRatio: " 16 / 9 " }}
+                      src={project.url}
+                      alt={project.name}
+                    />
+                    <h2 className="mt-1 text-center text-green-400">
+                      {project.name}
+                    </h2>
+                    {/* h-28 */}
+                    <div className="desc mt-4 overflow-hidden overflow-y-scroll">
+                      <p className=" leading-8">{project.description}</p>
+                    </div>
+                    <h2 className="text-pink-400">Languages & Tools:</h2>
+                    <div className="mt-2">
+                      <div className="flex items-center justify-between">
+                        {project.languages
+                          ? project.languages.map((lang) => (
+                              <div className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer">
+                                <img
+                                  width={50}
+                                  height={50}
+                                  // svg link of the language
+                                  src={gitContenLikn + lang + ".svg"}
+                                />
+                                <div className="text-[0.5rem] md:text-xs mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                                  {lang}
+                                </div>
+                              </div>
+                            ))
+                          : null}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
         </div>
       </div>
     </section>

@@ -1,20 +1,25 @@
 function Aboutme() {
   const gitContenLikn =
-    "https://raw.githubusercontent.com/3manuel0/3manuel0/assets/";
+    "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
   const logos = [
     "C.svg",
+    "C++.svg",
     "WebAssembly.svg",
     "Python.svg",
     "Javascript.svg",
+    "Typescript.svg",
     "React.svg",
+    "Tailwindcss.svg",
+    "Nodejs.svg",
     "Bash.svg",
     "Mysql.svg",
     "Git.svg",
-    "Nodejs.svg",
     "Postgresql.svg",
     "Mongodb.svg",
     "Vitejs.svg",
-    "Debian.svg",
+    "Csharp.svg",
+    "Linux.svg",
+    "Kotlin.svg",
   ];
   return (
     <section id="about-me" className="about-me p-8">
@@ -36,7 +41,7 @@ function Aboutme() {
             />{" "}
             Morocco, Rabat
           </h2>
-          <p>
+          <p className="text-center md:text-left">
             Just completed my{" "}
             <strong className="font-bold text-yellow-300">
               Specialized Technician Diploma in Software Development (Miage,
@@ -51,9 +56,12 @@ function Aboutme() {
             <span className="date text-green-600"> Python</span>, Web
             Development in{" "}
             <span className="date text-yellow-400"> javascript/typescript</span>
-            <span className="date text-gray-500"> (both for 2 years now)</span>,
-            and I just started{" "}
-            <span className="date text-gray-500">(july 18 2025)</span> my
+            <span className="date text-gray-500"> (both for 2 years now)</span>
+            ,I've also been using{" "}
+            <span className="date text-red-600">Linux</span> for the past{" "}
+            <span className="date text-gray-500">2 years</span> as my primary
+            system and development environment, and I just started{" "}
+            <span className="date text-gray-500">(july 22 2025)</span> my
             journey into machine learning in{" "}
             <span className="date text-blue-600">C++</span>.
           </p>
