@@ -1,7 +1,7 @@
 function Aboutme() {
   const gitContenLikn =
     "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
-  const logos = [
+  const logos: string[] = [
     "C.svg",
     "C++.svg",
     "WebAssembly.svg",
@@ -67,8 +67,11 @@ function Aboutme() {
             <span className="date text-blue-600">C++</span>.
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-4 mt-8 gap-y-4 place-items-center md:grid-cols-5 lg:grid-cols-7 relative">
-            {logos.map((logo) => (
-              <div className="flex justify-center flex-col items-center group cursor-pointer">
+            {logos.map((logo, index) => (
+              <div
+                key={index}
+                className="flex justify-center flex-col items-center group cursor-pointer"
+              >
                 <img
                   className="w-11 md:w-14"
                   src={gitContenLikn + logo}

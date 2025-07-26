@@ -8,6 +8,7 @@ import chessPuzzle from "../assets/professional-projects/chess-puzzle.png";
 import flagtriviagame from "../assets/professional-projects/flagtriviagame.png";
 import TimeWarpMemory from "../assets/professional-projects/TimeWarpMemory.png";
 import BalanceChecker_for_Bank_Clients from "../assets/professional-projects/BalanceChecker_for_Bank_Clients.png";
+import VPS from "../assets/professional-projects/VPS.png";
 import { useState } from "react";
 
 function Projects() {
@@ -22,8 +23,8 @@ function Projects() {
     githubSrcCode?: string | null;
     demo?: string | null;
   }
-  const personalProjects: { [id: number]: ProjectType } = {
-    1: {
+  const personalProjects: ProjectType[] = [
+    {
       name: "2d Platformer Game",
       url: platformerImage,
       description:
@@ -32,7 +33,7 @@ function Projects() {
       githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
       demo: "https://3manuel0.github.io/2dPlatformerGame/",
     },
-    2: {
+    {
       name: "My Portfolio Website",
       url: portfolio,
       //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
@@ -40,22 +41,22 @@ function Projects() {
       languages: ["Typescript", "Vitejs", "React", "Tailwindcss"],
       githubSrcCode: "https://github.com/3manuel0/my_react_portfolio",
     },
-    3: {
-      name: "Gameboy emulator in C (just starting) ",
+    {
+      name: "Gameboy emulator in C (in progress) ",
       url: gameboy,
       description:
-        "Just a fun project for me to work with C and learn about GameBoy Emulation 🕹️.",
+        "Just a fun project for me to work with C and learn about how Emulation and GameBoy work 🕹️.",
       languages: ["Raylib", "C"],
       githubSrcCode: "https://github.com/3manuel0/gb_emu",
     },
-    4: {
+    {
       name: "Muic Player",
       url: musicPlayer,
       description: "Music/audio player in kotlin",
       languages: ["Kotlin", "Androidstudio"],
       githubSrcCode: "https://github.com/3manuel0/3maPlayer",
     },
-    5: {
+    {
       name: "File to png website",
       url: fileToPng,
       //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
@@ -65,7 +66,7 @@ function Projects() {
       githubSrcCode: "https://github.com/3manuel0/FToP_web",
       demo: "https://3manuel0.github.io/FToP_web/",
     },
-    6: {
+    {
       name: "Chinese Flashcards Desktop app",
       url: chineseFlashCards,
       description:
@@ -73,37 +74,44 @@ function Projects() {
       languages: ["Rust", "Slint"],
       githubSrcCode: "https://github.com/3manuel0/chinese_flashcards",
     },
-  };
-  const professionalProjects: { [id: number]: ProjectType } = {
-    1: {
+  ];
+  const professionalProjects: ProjectType[] = [
+    {
+      name: "(Internship) VPS Configurator Web App",
+      url: VPS,
+      description:
+        "Designed and developed a responsive web application that allows clients to configure and order VPS (Virtual Private Server) instances based on custom parameters.",
+      languages: ["Php", "Javascript", "Html", "Css", "Mysql"],
+    },
+    {
       name: "(Freelance) Chess Puzzle website",
       url: chessPuzzle,
       description:
         "I developed a website for a client that allows users to play and solve chess puzzles, with real-time validation of legal chess moves.",
       languages: ["Javascript", "Html", "Css"],
     },
-    2: {
+    {
       name: "(Freelance) Flag Trivia Game ",
       url: flagtriviagame,
       description:
         "I created a flag trivia game for a client, where users are challenged to identify country flags from around the world. The game features multiple-choice questions, score tracking, and instant feedback to enhance learning and engagement.",
       languages: ["Python", "Pygame"],
     },
-    3: {
+    {
       name: "(Internship) Balance Checker for Bank Clients",
       url: BalanceChecker_for_Bank_Clients,
       description:
         "Developed a Flask web app to compare names from uploaded PDF/XLS files against a general bank list. Used pytesseract for OCR-based text extraction and implemented error handling to improve matching accuracy.",
       languages: ["Python", "Flask", "Html", "Css", "Mysql"],
     },
-    4: {
+    {
       name: "(Freelance) Time Warp Memory Game",
       url: TimeWarpMemory,
       description:
         "Helped a client build a Number Guessing Level for the Time Warp Memory Game, handling game logic, UI, and smooth integration to enhance memory-focused gameplay.",
       languages: ["Python", "Pygame"],
     },
-  };
+  ];
   return (
     <section className="projects p-8 mt-6" id="projects">
       <div className="prj-dev">
@@ -134,16 +142,20 @@ function Projects() {
         </div>
         <div className="grid grid-cols-1 gap-2 mt-2 lg:grid-cols-2">
           {personal
-            ? Object.keys(personalProjects).map((key) => {
-                const project = personalProjects[+key];
+            ? personalProjects.map((personalProjects, index) => {
                 return (
-                  <div className="p-5 border-2 border-white flex flex-col justify-between">
+                  <div
+                    key={index}
+                    className="p-5 border-2 border-white flex flex-col justify-between"
+                  >
                     <div className="flex col-auto">
-                      {project.githubSrcCode ? (
+                      {personalProjects.githubSrcCode ? (
                         <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
                             href={
-                              project.githubSrcCode ? project.githubSrcCode : ""
+                              personalProjects.githubSrcCode
+                                ? personalProjects.githubSrcCode
+                                : ""
                             }
                             target="_blank"
                             rel="noopener noreferrer"
@@ -152,10 +164,12 @@ function Projects() {
                           </a>
                         </h2>
                       ) : null}
-                      {project.demo ? (
+                      {personalProjects.demo ? (
                         <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
-                            href={project.demo ? project.demo : ""}
+                            href={
+                              personalProjects.demo ? personalProjects.demo : ""
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -166,16 +180,16 @@ function Projects() {
                     </div>
                     <img
                       style={{ aspectRatio: " 16 / 9 " }}
-                      src={project.url}
-                      alt={project.name}
+                      src={personalProjects.url}
+                      alt={personalProjects.name}
                     />
                     <h2 className="mt-1 text-center text-green-400">
-                      {project.name}
+                      {personalProjects.name}
                     </h2>
                     {/* h-28 */}
                     <div className="desc mt-4 overflow-hidden">
                       <p className="text-[0.6rem] leading-4 md:leading-8 md:text-base">
-                        {project.description}
+                        {personalProjects.description}
                       </p>
                     </div>
                     <h2 className="text-pink-400 text-xs sm:text-base mt-3 sm:mt-0">
@@ -183,9 +197,12 @@ function Projects() {
                     </h2>
                     <div className="mt-2">
                       <div className="flex items-center justify-between">
-                        {project.languages
-                          ? project.languages.map((lang) => (
-                              <div className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer">
+                        {personalProjects.languages
+                          ? personalProjects.languages.map((lang, index) => (
+                              <div
+                                key={index}
+                                className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer"
+                              >
                                 <img
                                   className="w-10 md:w-12"
                                   // svg link of the language
@@ -202,16 +219,20 @@ function Projects() {
                   </div>
                 );
               })
-            : Object.keys(professionalProjects).map((key) => {
-                const project = professionalProjects[+key];
+            : professionalProjects.map((professionalProjects, index) => {
                 return (
-                  <div className="p-5 border-2 border-white flex flex-col justify-between">
+                  <div
+                    key={index}
+                    className="p-5 border-2 border-white flex flex-col justify-between"
+                  >
                     <div className="flex col-auto">
-                      {project.githubSrcCode ? (
+                      {professionalProjects.githubSrcCode ? (
                         <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
                             href={
-                              project.githubSrcCode ? project.githubSrcCode : ""
+                              professionalProjects.githubSrcCode
+                                ? professionalProjects.githubSrcCode
+                                : ""
                             }
                             target="_blank"
                             rel="noopener noreferrer"
@@ -220,10 +241,14 @@ function Projects() {
                           </a>
                         </h2>
                       ) : null}
-                      {project.demo ? (
+                      {professionalProjects.demo ? (
                         <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
                           <a
-                            href={project.demo ? project.demo : ""}
+                            href={
+                              professionalProjects.demo
+                                ? professionalProjects.demo
+                                : ""
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                           >
@@ -234,16 +259,16 @@ function Projects() {
                     </div>
                     <img
                       style={{ aspectRatio: " 16 / 9 " }}
-                      src={project.url}
-                      alt={project.name}
+                      src={professionalProjects.url}
+                      alt={professionalProjects.name}
                     />
                     <h2 className="mt-1 text-center text-green-400">
-                      {project.name}
+                      {professionalProjects.name}
                     </h2>
                     {/* h-28 */}
                     <div className="desc mt-4 overflow-hidden">
                       <p className="text-[0.6rem] leading-4 md:leading-8 md:text-base">
-                        {project.description}
+                        {professionalProjects.description}
                       </p>
                     </div>
                     <h2 className="text-pink-400 text-xs sm:text-base mt-3 sm:mt-0">
@@ -251,19 +276,24 @@ function Projects() {
                     </h2>
                     <div className="mt-2">
                       <div className="flex items-center justify-between">
-                        {project.languages
-                          ? project.languages.map((lang) => (
-                              <div className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer">
-                                <img
-                                  className="w-10 md:w-12"
-                                  // svg link of the language
-                                  src={gitContenLikn + lang + ".svg"}
-                                />
-                                <div className="text-[0.5rem] md:text-xs mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
-                                  {lang}
+                        {professionalProjects.languages
+                          ? professionalProjects.languages.map(
+                              (lang, index) => (
+                                <div
+                                  key={index}
+                                  className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer"
+                                >
+                                  <img
+                                    className="w-10 md:w-12"
+                                    // svg link of the language
+                                    src={gitContenLikn + lang + ".svg"}
+                                  />
+                                  <div className="text-[0.5rem] md:text-xs mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                                    {lang}
+                                  </div>
                                 </div>
-                              </div>
-                            ))
+                              )
+                            )
                           : null}
                       </div>
                     </div>
