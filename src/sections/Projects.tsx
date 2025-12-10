@@ -1,9 +1,10 @@
 import platformerImage from "../assets/personal-projects/output.gif";
 import fileToPng from "../assets/personal-projects/file_to_png.png";
-import portfolio from "../assets/personal-projects/Prtfolio.png";
+import Sophia from "../assets/personal-projects/Sophia.png";
 import chineseFlashCards from "../assets/personal-projects/chinese_flash_cards.png";
 import musicPlayer from "../assets/personal-projects/Music_player.png";
 import gameboy from "../assets/personal-projects/gameboy.png";
+import Gamelib from "../assets/personal-projects/Gamelib.png";
 import chessPuzzle from "../assets/professional-projects/chess-puzzle.png";
 import flagtriviagame from "../assets/professional-projects/flagtriviagame.png";
 import TimeWarpMemory from "../assets/professional-projects/TimeWarpMemory.png";
@@ -28,43 +29,53 @@ function Projects() {
       name: "2d Platformer Game",
       url: platformerImage,
       description:
-        "Game demo built in C with Raylib, compiled to WebAssembly for the web",
-      languages: ["C", "Raylib", "WebAssembly", "Javascript"],
+        'Game demo built in C with Raylib, for web I used my "Gamelib"',
+      languages: ["C", "Raylib", "WebAssembly"],
       githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
       demo: "https://3manuel0.github.io/2dPlatformerGame/",
     },
     {
-      name: "My Portfolio Website",
-      url: portfolio,
-      //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
-      description: "My Personal Portfolio Website",
-      languages: ["Typescript", "Vitejs", "React", "Tailwindcss"],
-      githubSrcCode: "https://github.com/3manuel0/my_react_portfolio",
+      name: "Gamelib(My game library)",
+      url: Gamelib,
+      description:
+        "javascript script for linking raylib functions in wasm to display in the html canvas",
+      languages: ["C", "Raylib", "WebAssembly", "Javascript"],
+      githubSrcCode: "https://github.com/3manuel0/gamelib",
+      demo: "https://3manuel0.github.io/gamelib/",
     },
     {
-      name: "Gameboy emulator in C (in progress) ",
+      name: "Sphia(Discord bot)",
+      url: Sophia,
+      //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
+      description:
+        "A Discord bot that has a number game and can transform images to ascii art, hosted on a vps",
+      languages: ["C++"],
+      githubSrcCode: "https://github.com/3manuel0/Sophia_Cpp",
+    },
+    {
+      name: "Gameboy emulator in C (in progress...) ",
       url: gameboy,
       description:
-        "Just a fun project for me to work with C and learn about how Emulation and GameBoy work 🕹️.",
+        "Just a fun project for me to work with C and learn about how Emulation and GameBoy work.",
       languages: ["Raylib", "C"],
       githubSrcCode: "https://github.com/3manuel0/gb_emu",
     },
     {
-      name: "Muic Player",
-      url: musicPlayer,
-      description: "Music/audio player in kotlin",
-      languages: ["Kotlin", "Androidstudio"],
-      githubSrcCode: "https://github.com/3manuel0/3maPlayer",
-    },
-    {
-      name: "File to png website",
+      name: "FToP",
       url: fileToPng,
       //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
       description:
-        "Encodes file data into PNG pixels to explore binary representation",
-      languages: ["Javascript", "Html", "Css"],
-      githubSrcCode: "https://github.com/3manuel0/FToP_web",
-      demo: "https://3manuel0.github.io/FToP_web/",
+        "File to PNG, encodes file data into PNG pixels to explore binary representation",
+      languages: ["C", "WebAssembly", "Javascript"],
+      githubSrcCode: "https://github.com/3manuel0/FToP",
+      demo: "https://3manuel0.github.io/FToP/",
+    },
+    {
+      name: "Audio Player",
+      url: musicPlayer,
+      description: "Audio player in kotlin",
+      languages: ["Kotlin", "Androidstudio"],
+      githubSrcCode: "https://github.com/3manuel0/3maPlayer",
     },
     {
       name: "Chinese Flashcards Desktop app",
