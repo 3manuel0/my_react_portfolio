@@ -215,7 +215,7 @@ function Projects() {
                                 className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer"
                               >
                                 <img
-                                  className="w-10 md:w-12"
+                                  className="w-10"
                                   // svg link of the language
                                   src={gitContenLikn + lang + ".svg"}
                                 />
@@ -295,7 +295,7 @@ function Projects() {
                                   className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer"
                                 >
                                   <img
-                                    className="w-10 md:w-12"
+                                    className="w-10"
                                     // svg link of the language
                                     src={gitContenLikn + lang + ".svg"}
                                   />

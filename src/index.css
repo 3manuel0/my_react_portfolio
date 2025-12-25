@@ -79,7 +79,7 @@ strong{
 }
 .date {
   font-family: arcade-dates;
-  font-size: 0.75rem;
+  /* font-size: 0.75rem; */
 }
 /* @media (prefers-color-scheme: light) {
   :root {

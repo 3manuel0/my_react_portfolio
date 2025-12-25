@@ -2,17 +2,17 @@ function Contact() {
   const gitContenLikn =
     "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
   interface ContactType {
-    logo: string;
+    name: string;
     url: string;
   }
   const contact: ContactType[] = [
-    { logo: "Github.svg", url: "https://github.com/3manuel0" },
+    { name: "Github", url: "https://github.com/3manuel0" },
     {
-      logo: "Linkedin.svg",
+      name: "Linkedin",
       url: "https://www.linkedin.com/in/said-bennaji-4990492b6/",
     },
     {
-      logo: "X.svg",
+      name: "X",
       url: "https://x.com/3manuel_s",
     },
   ];
