@@ -87,25 +87,21 @@ function Aboutme() {
             ))}
           </div>
           {/* aboutme text */}
-          <p className="leading-6 text-xl text-center md:text-left md:text-2xl sm:text-left ">
+          <p className="leading-6 text-xl text-center md:text-left md:text-2xl sm:text-left">
             I am a Self-driven Developer with a deep passion for low-level in{" "}
             <span className="date text-blue-600">C and memory management</span>{" "}
-            <span className="date text-gray-500">(for 26 months)</span> , while
-            building web solutions and automation scripts in
-            <span className="date text-yellow-400">
-              javascript/typescript
-            </span>{" "}
-            and
-            <span className="date text-green-600"> Python</span> for{" "}
-            <span className="date text-gray-500"> over 2 years</span>, I've I
-            live and breathe <span className="date text-red-600">Linux</span> ,
-            which has been my primary environment for{" "}
-            <span className="date text-gray-500">2 years</span> Currently, I am
+            <span className="date text-gray-500">(for 26 months).</span> While
+            building web solutions and automation scripts in{" "}
+            <span className="date text-yellow-400">javascript/typescript</span>{" "}
+            and <span className="date text-green-600">Python</span> for{" "}
+            <span className="date text-gray-500">over 2 years</span>, I live and
+            breathe <span className="date text-red-600">Linux</span>, which has
+            been my primary environment for{" "}
+            <span className="date text-gray-500">2 years.</span> Currently, I am
             expanding my stack by Learning{" "}
             <span className="date text-purple-500">C#</span> and diving into the
             world of Machine Learning to bridge the gap between performance and
-            AI
-            {/*  , which has been my primary environment for 2 years. Currently, I am expanding my stack by mastering C# and diving into the world of Machine Learning to bridge the gap between performance and AI. */}
+            AI.
           </p>
           <div className="flex mt-8">
             <h2 className="leading-6 text-xl text-center text-blue-400">

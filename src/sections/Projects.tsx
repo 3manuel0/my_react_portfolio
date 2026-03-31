@@ -80,7 +80,7 @@ function Projects() {
       name: "FToP (File to PNG)",
       url: fileToPng,
       description:
-        "Data visualization tool that encodes raw file bytes into PNG pixels to explore binary representation and image processing via WebAssembly.",
+        "Tool that encodes raw file bytes into PNG pixels to explore binary representation and image processing via WebAssembly.",
       languages: ["C", "WebAssembly", "Javascript"],
       githubSrcCode: "https://github.com/3manuel0/FToP",
       demo: "https://3manuel0.github.io/FToP/",

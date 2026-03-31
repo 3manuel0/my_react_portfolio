@@ -6,20 +6,19 @@
   font-family: arcade-bold;
   src: url("./assets/fonts/Acme-9-Regular-Bold.ttf");
 }
+/* RobotoMono-Light.ttf */
+
 @font-face {
-  font-family: arcade-regular;
-  src: url("./assets/fonts/Acme-9-Regular.ttf");
+  font-family: robotMono;
+  src: url("./assets/fonts/RobotoMono-Medium.ttf");
 }
+
 @font-face {
-  font-family: arcade-strong;
-  src: url("./assets/fonts/Acme-9-Regular-Bold-Xtnd.ttf");
-}
-@font-face {
-  font-family: arcade-dates;
-  src: url("./assets/fonts/Acme-9-Regular-Xtnd.ttf");
+  font-family: robotMono-light;
+  src: url("./assets/fonts/RobotoMono-Light.ttf");
 }
 :root {
-  font-family: monospace, sans-serif;
+  font-family: robotMono,monospace, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -75,7 +74,7 @@ strong{
   font-size: 0.8rem;
 }
 .date, strong, p{
-  font-family: monospace, sans-serif;
+  font-family: robotMono, monospace, sans-serif;
 }
 
 #logo, .proj, a{
