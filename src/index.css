@@ -13,10 +13,6 @@
   src: url("./assets/fonts/RobotoMono-Medium.ttf");
 }
 
-@font-face {
-  font-family: robotMono-light;
-  src: url("./assets/fonts/RobotoMono-Light.ttf");
-}
 :root {
   font-family: robotMono,monospace, sans-serif;
   line-height: 1.5;
