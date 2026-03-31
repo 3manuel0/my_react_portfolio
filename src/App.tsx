@@ -4,6 +4,8 @@
 import Navbar from "./sections/Navbar";
 import Aboutme from "./sections/Aboutme";
 import Projects from "./sections/Projects";
+import Footer from "./sections/Footer";
+
 import "./App.css";
 
 function App() {
@@ -14,7 +16,7 @@ function App() {
       <Navbar />
       <Aboutme />
       <Projects />
-      {/* <Contact /> */}
+      <Footer />
     </>
   );
 }

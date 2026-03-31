@@ -4,7 +4,10 @@ import Sophia from "../assets/personal-projects/Sophia.png";
 import chineseFlashCards from "../assets/personal-projects/chinese_flash_cards.png";
 import musicPlayer from "../assets/personal-projects/Music_player.png";
 import gameboy from "../assets/personal-projects/gameboy.png";
-import Gamelib from "../assets/personal-projects/Gamelib.png";
+import C3SV from "../assets/personal-projects/C3SV.png";
+import VPS_OVH from "../assets/personal-projects/VPS.png";
+import Lib3man from "../assets/personal-projects/Lib3man.png";
+import bbbs from "../assets/personal-projects/3bs.png";
 import chessPuzzle from "../assets/professional-projects/chess-puzzle.png";
 import flagtriviagame from "../assets/professional-projects/flagtriviagame.png";
 import TimeWarpMemory from "../assets/professional-projects/TimeWarpMemory.png";
@@ -26,64 +29,85 @@ function Projects() {
   }
   const personalProjects: ProjectType[] = [
     {
+      name: "C3SV (Data Parser)",
+      url: C3SV,
+      description:
+        "A high-performance CSV parser in C with automatic type inference and JSON serialization. Optimized for memory efficiency and data-heavy backend processing.",
+      languages: ["C"],
+      githubSrcCode: "https://github.com/3manuel0/C3SV",
+    },
+    {
+      name: "Lib3man (Utility Library)",
+      url: Lib3man,
+      description:
+        "Low-level C utility library featuring custom Arena Allocators and String Views. Built to replace standard library overhead with manual, high-performance memory management.",
+      languages: ["C"],
+      githubSrcCode: "https://github.com/3manuel0/Lib3man",
+    },
+    {
+      name: "3bs_Downloader",
+      url: bbbs,
+      description:
+        "A Python CLI tool for reconstructing BigBlueButton sessions. It automates the extraction and synchronization of split streams (Audio, Slides, Chat) into a single MP4, featuring duration clipping that automatically caps at the session's actual length.",
+      languages: ["Python", "FFmpeg", "PIL"],
+      githubSrcCode: "https://github.com/3manuel0/3bs_Downloader",
+    },
+    {
+      name: "Cloud Infrastructure & SecOps",
+      url: VPS_OVH, // Suggestion: Use a screenshot of a terminal or Cloudflare dash
+      description:
+        "Managed a Linux VPS environment for bot hosting and game servers. Implemented a Cloudflare reverse proxy for DDoS protection and handled remote sysadmin tasks via SSH.",
+      languages: ["Debian", "Linux"],
+    },
+    {
       name: "2d Platformer Game",
       url: platformerImage,
       description:
-        'Game demo built in C with Raylib, for web I used my "Gamelib"',
+        'C/Raylib game demo. Developed a custom "Gamelib" JavaScript bridge to port high-performance Raylib logic to the web using WebAssembly.',
       languages: ["C", "Raylib", "WebAssembly"],
       githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
       demo: "https://3manuel0.github.io/2dPlatformerGame/",
     },
     {
-      name: "Gamelib(My game library)",
-      url: Gamelib,
-      description:
-        "javascript script for linking raylib functions in wasm to display in the html canvas",
-      languages: ["C", "Raylib", "WebAssembly", "Javascript"],
-      githubSrcCode: "https://github.com/3manuel0/gamelib",
-      demo: "https://3manuel0.github.io/gamelib/",
-    },
-    {
-      name: "Sphia(Discord bot)",
-      url: Sophia,
-      //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
-      description:
-        "A Discord bot that has a number game and can transform images to ascii art, hosted on a vps",
-      languages: ["C++"],
-      githubSrcCode: "https://github.com/3manuel0/Sophia_Cpp",
-    },
-    {
-      name: "Gameboy emulator in C (in progress...) ",
+      name: "Gameboy Emulator (Work In Progress)",
       url: gameboy,
       description:
-        "Just a fun project for me to work with C and learn about how Emulation and GameBoy work.",
-      languages: ["Raylib", "C"],
+        "Systems programming project focused on CPU instruction sets and memory mapping to recreate the original GameBoy hardware architecture in C.",
+      languages: ["C", "Raylib"],
       githubSrcCode: "https://github.com/3manuel0/gb_emu",
     },
     {
-      name: "FToP",
+      name: "FToP (File to PNG)",
       url: fileToPng,
-      //  and the file bytes become the image's pixels then you can download your png with your data and upload them again to extract data"
       description:
-        "File to PNG, encodes file data into PNG pixels to explore binary representation",
+        "Data visualization tool that encodes raw file bytes into PNG pixels to explore binary representation and image processing via WebAssembly.",
       languages: ["C", "WebAssembly", "Javascript"],
       githubSrcCode: "https://github.com/3manuel0/FToP",
       demo: "https://3manuel0.github.io/FToP/",
     },
     {
-      name: "Audio Player",
-      url: musicPlayer,
-      description: "Audio player in kotlin",
-      languages: ["Kotlin", "Androidstudio"],
-      githubSrcCode: "https://github.com/3manuel0/3maPlayer",
+      name: "Sphia (Discord Bot)",
+      url: Sophia,
+      description:
+        "C++ Discord bot featuring image-to-ASCII processing and mini-games. Served as the testbed for my VPS deployment and infrastructure experiments.",
+      languages: ["C++"],
+      githubSrcCode: "https://github.com/3manuel0/Sophia_Cpp",
     },
     {
-      name: "Chinese Flashcards Desktop app",
+      name: "Chinese Flashcards",
       url: chineseFlashCards,
       description:
-        "Rust-based desktop app using Slint for Chinese flashcard learning",
+        "Cross-platform desktop application for language learning built with Rust and the Slint UI framework.",
       languages: ["Rust", "Slint"],
       githubSrcCode: "https://github.com/3manuel0/chinese_flashcards",
+    },
+    {
+      name: "Audio Player",
+      url: musicPlayer,
+      description:
+        "Native Android audio player focusing on clean UI and local file management.",
+      languages: ["Kotlin", "Androidstudio"],
+      githubSrcCode: "https://github.com/3manuel0/3maPlayer",
     },
   ];
   const professionalProjects: ProjectType[] = [
@@ -129,7 +153,7 @@ function Projects() {
         <h1 className="text-center text-2xl md:text-4xl">Projects</h1>
         <div className="flex justify-around mt-6 gap-2">
           <h2
-            className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+            className="proj text-center border-2 text-xl md:text-base border-cyan-400 w-full p-2 cursor-pointer"
             onClick={() => setPersonal(true)}
             style={
               personal
@@ -140,7 +164,7 @@ function Projects() {
             Personal Projects
           </h2>
           <h2
-            className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+            className="proj text-center border-2 text-xl md:text-base border-cyan-400 w-full p-2 cursor-pointer"
             onClick={() => setPersonal(false)}
             style={
               !personal
@@ -161,32 +185,30 @@ function Projects() {
                   >
                     <div className="flex col-auto">
                       {personalProjects.githubSrcCode ? (
-                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
-                          <a
-                            href={
-                              personalProjects.githubSrcCode
-                                ? personalProjects.githubSrcCode
-                                : ""
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Source Code
-                          </a>
-                        </h2>
+                        <a
+                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+                          href={
+                            personalProjects.githubSrcCode
+                              ? personalProjects.githubSrcCode
+                              : ""
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <h2>Source Code</h2>
+                        </a>
                       ) : null}
                       {personalProjects.demo ? (
-                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
-                          <a
-                            href={
-                              personalProjects.demo ? personalProjects.demo : ""
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View Demo
-                          </a>
-                        </h2>
+                        <a
+                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+                          href={
+                            personalProjects.demo ? personalProjects.demo : ""
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <h2>View Demo</h2>
+                        </a>
                       ) : null}
                     </div>
                     <img
@@ -219,7 +241,7 @@ function Projects() {
                                   // svg link of the language
                                   src={gitContenLikn + lang + ".svg"}
                                 />
-                                <div className="text-[0.5rem] md:text-xs mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                                <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
                                   {lang}
                                 </div>
                               </div>
@@ -238,34 +260,32 @@ function Projects() {
                   >
                     <div className="flex col-auto">
                       {professionalProjects.githubSrcCode ? (
-                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
-                          <a
-                            href={
-                              professionalProjects.githubSrcCode
-                                ? professionalProjects.githubSrcCode
-                                : ""
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Source Code
-                          </a>
-                        </h2>
+                        <a
+                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+                          href={
+                            professionalProjects.githubSrcCode
+                              ? professionalProjects.githubSrcCode
+                              : ""
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <h2>Source Code</h2>
+                        </a>
                       ) : null}
                       {professionalProjects.demo ? (
-                        <h2 className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer">
-                          <a
-                            href={
-                              professionalProjects.demo
-                                ? professionalProjects.demo
-                                : ""
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View Demo
-                          </a>
-                        </h2>
+                        <a
+                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+                          href={
+                            professionalProjects.demo
+                              ? professionalProjects.demo
+                              : ""
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <h2>View Demo</h2>
+                        </a>
                       ) : null}
                     </div>
                     <img
@@ -299,11 +319,11 @@ function Projects() {
                                     // svg link of the language
                                     src={gitContenLikn + lang + ".svg"}
                                   />
-                                  <div className="text-[0.5rem] md:text-xs mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                                  <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
                                     {lang}
                                   </div>
                                 </div>
-                              )
+                              ),
                             )
                           : null}
                       </div>
