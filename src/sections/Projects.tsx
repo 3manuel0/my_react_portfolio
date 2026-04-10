@@ -15,18 +15,20 @@ import BalanceChecker_for_Bank_Clients from "../assets/professional-projects/Bal
 import VPS from "../assets/professional-projects/VPS.png";
 import { useState } from "react";
 
+interface ProjectType {
+  name: string;
+  url: string;
+  description: string;
+  languages?: string[] | null;
+  githubSrcCode?: string | null;
+  demo?: string | null;
+}
+const gitContenLikn =
+  "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
+
 function Projects() {
-  const gitContenLikn =
-    "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
   const [personal, setPersonal] = useState(true);
-  interface ProjectType {
-    name: string;
-    url: string;
-    description: string;
-    languages?: string[] | null;
-    githubSrcCode?: string | null;
-    demo?: string | null;
-  }
+
   const personalProjects: ProjectType[] = [
     {
       name: "C3SV (Data Parser)",
@@ -153,7 +155,7 @@ function Projects() {
         <h1 className="text-center text-2xl md:text-4xl">Projects</h1>
         <div className="flex justify-around mt-6 gap-2">
           <h2
-            className="proj text-center border-2 text-xl md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+            className="proj text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
             onClick={() => setPersonal(true)}
             style={
               personal
@@ -164,7 +166,7 @@ function Projects() {
             Personal Projects
           </h2>
           <h2
-            className="proj text-center border-2 text-xl md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+            className="proj text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
             onClick={() => setPersonal(false)}
             style={
               !personal
@@ -177,163 +179,77 @@ function Projects() {
         </div>
         <div className="grid grid-cols-1 gap-2 mt-2 lg:grid-cols-2">
           {personal
-            ? personalProjects.map((personalProjects, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="p-5 border-2 border-white flex flex-col justify-between"
-                  >
-                    <div className="flex col-auto">
-                      {personalProjects.githubSrcCode ? (
-                        <a
-                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
-                          href={
-                            personalProjects.githubSrcCode
-                              ? personalProjects.githubSrcCode
-                              : ""
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <h2>Source Code</h2>
-                        </a>
-                      ) : null}
-                      {personalProjects.demo ? (
-                        <a
-                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
-                          href={
-                            personalProjects.demo ? personalProjects.demo : ""
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <h2>View Demo</h2>
-                        </a>
-                      ) : null}
-                    </div>
-                    <img
-                      style={{ aspectRatio: " 16 / 9 " }}
-                      src={personalProjects.url}
-                      alt={personalProjects.name}
-                    />
-                    <h2 className="mt-1 text-center text-green-400">
-                      {personalProjects.name}
-                    </h2>
-                    {/* h-28 */}
-                    <div className="desc mt-4 overflow-hidden">
-                      <p className="text-[0.6rem] leading-4 md:leading-8 md:text-base">
-                        {personalProjects.description}
-                      </p>
-                    </div>
-                    <h2 className="text-pink-400 text-xs sm:text-base mt-3 sm:mt-0">
-                      Languages & Tools:
-                    </h2>
-                    <div className="mt-2">
-                      <div className="flex items-center justify-between">
-                        {personalProjects.languages
-                          ? personalProjects.languages.map((lang, index) => (
-                              <div
-                                key={index}
-                                className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer"
-                              >
-                                <img
-                                  className="w-10"
-                                  // svg link of the language
-                                  src={gitContenLikn + lang + ".svg"}
-                                />
-                                <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
-                                  {lang}
-                                </div>
-                              </div>
-                            ))
-                          : null}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            : professionalProjects.map((professionalProjects, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="p-5 border-2 border-white flex flex-col justify-between"
-                  >
-                    <div className="flex col-auto">
-                      {professionalProjects.githubSrcCode ? (
-                        <a
-                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
-                          href={
-                            professionalProjects.githubSrcCode
-                              ? professionalProjects.githubSrcCode
-                              : ""
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <h2>Source Code</h2>
-                        </a>
-                      ) : null}
-                      {professionalProjects.demo ? (
-                        <a
-                          className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
-                          href={
-                            professionalProjects.demo
-                              ? professionalProjects.demo
-                              : ""
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <h2>View Demo</h2>
-                        </a>
-                      ) : null}
-                    </div>
-                    <img
-                      style={{ aspectRatio: " 16 / 9 " }}
-                      src={professionalProjects.url}
-                      alt={professionalProjects.name}
-                    />
-                    <h2 className="mt-1 text-center text-green-400">
-                      {professionalProjects.name}
-                    </h2>
-                    {/* h-28 */}
-                    <div className="desc mt-4 overflow-hidden">
-                      <p className="text-[0.6rem] leading-4 md:leading-8 md:text-base">
-                        {professionalProjects.description}
-                      </p>
-                    </div>
-                    <h2 className="text-pink-400 text-xs sm:text-base mt-3 sm:mt-0">
-                      Languages & Tools:
-                    </h2>
-                    <div className="mt-2">
-                      <div className="flex items-center justify-between">
-                        {professionalProjects.languages
-                          ? professionalProjects.languages.map(
-                              (lang, index) => (
-                                <div
-                                  key={index}
-                                  className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer"
-                                >
-                                  <img
-                                    className="w-10"
-                                    // svg link of the language
-                                    src={gitContenLikn + lang + ".svg"}
-                                  />
-                                  <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
-                                    {lang}
-                                  </div>
-                                </div>
-                              ),
-                            )
-                          : null}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+            ? projectCards(personalProjects)
+            : projectCards(professionalProjects)}
         </div>
       </div>
     </section>
   );
 }
+
+const projectCards = (project: ProjectType[]) =>
+  project.map((p) => {
+    return (
+      <div
+        key={p.url}
+        className="p-5 border-2 border-white flex flex-col justify-between"
+      >
+        <div className="flex col-auto">
+          {p.githubSrcCode ? (
+            <a
+              className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+              href={p.githubSrcCode ? p.githubSrcCode : ""}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <h2>Source Code</h2>
+            </a>
+          ) : null}
+          {p.demo ? (
+            <a
+              className="text-center border-2 text-xs md:text-base border-cyan-400 w-full p-2 cursor-pointer"
+              href={p.demo ? p.demo : ""}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <h2>View Demo</h2>
+            </a>
+          ) : null}
+        </div>
+        <img style={{ aspectRatio: " 16 / 9 " }} src={p.url} alt={p.name} />
+        <h2 className="mt-1 text-center text-green-400">{p.name}</h2>
+        {/* h-28 */}
+        <div className="desc mt-4 overflow-hidden">
+          <p className="text-[0.6rem] leading-4 md:leading-8 md:text-base">
+            {p.description}
+          </p>
+        </div>
+        <h2 className="text-pink-400 text-xs sm:text-base mt-3 sm:mt-0">
+          Languages & Tools:
+        </h2>
+        <div className="mt-2">
+          <div className="flex items-center justify-between">
+            {p.languages
+              ? p.languages.map((lang, index) => (
+                  <div
+                    key={index}
+                    className="flex mt-2 flex-col justify-center items-center w-full group cursor-pointer"
+                  >
+                    <img
+                      className="w-10"
+                      // svg link of the language
+                      src={gitContenLikn + lang + ".svg"}
+                    />
+                    <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                      {lang}
+                    </div>
+                  </div>
+                ))
+              : null}
+          </div>
+        </div>
+      </div>
+    );
+  });
+
 export default Projects;

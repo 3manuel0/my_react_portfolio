@@ -59,7 +59,7 @@ function Aboutme() {
       <div className="flex mt-5 md:mt-8 justify-center gap-8">
         <div className="w-full lg:w-3/4 md:px-6">
           <h2 className="mb-4 text-xl text-center text-blue-400">
-            Hi, My Name is Said AKA 3manuel{" "}
+            Hi, My Name is Said AKA 3manuel (Github: 3manuel0){" "}
             <span className="wave text-2xl lg:text-3xl">👋</span>
           </h2>
           <h2 className="leading-6 text-center text-xl">
@@ -95,8 +95,9 @@ function Aboutme() {
             <span className="date text-yellow-400">javascript/typescript</span>{" "}
             and <span className="date text-green-600">Python</span> for{" "}
             <span className="date text-gray-500">over 2 years</span>, I live and
-            breathe <span className="date text-red-600">Linux</span>, which has
-            been my primary environment for{" "}
+            breathe{" "}
+            <span className="date text-red-600">Linux (void linux)</span>, which
+            has been my primary environment for{" "}
             <span className="date text-gray-500">2 years.</span> Currently, I am
             expanding my stack by Learning{" "}
             <span className="date text-purple-500">C#</span> and diving into the
