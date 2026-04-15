@@ -1,6 +1,7 @@
 import github from "../assets/logos/github.svg";
 import linkedin from "../assets/logos/linkedin.svg";
 import X from "../assets/logos/x.svg";
+// import profile from "../assets/profile/profile.png";
 function Aboutme() {
   const gitContenLikn =
     "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
@@ -31,19 +32,19 @@ function Aboutme() {
     "Flask.svg",
     "Vitejs.svg",
     "Tailwindcss.svg",
-    "Html.svg",
-    "Css.svg",
+    // "Html.svg",
+    // "Css.svg",
   ];
   const langs: string[] = [
     "C.svg",
     "C++.svg",
-    "Assembly.svg",
+    // "Assembly.svg",
     "Python.svg",
     "Javascript.svg",
     "Typescript.svg",
     "Kotlin.svg",
     "Php.svg",
-    "Csharp.svg",
+    // "Csharp.svg",
   ];
   const Other: string[] = ["Git.svg", "Linux.svg", "Voidlinux.svg", "Bash.svg"];
   const dbs: string[] = [
@@ -63,7 +64,7 @@ function Aboutme() {
             <span className="wave text-2xl lg:text-3xl">👋</span>
           </h2>
           <h2 className="leading-6 text-center text-xl">
-            Full Stack Web Developer/Software Programmer
+            Software Engineering Student/Full Stack Web Developer
           </h2>
           <h2 className="mb-2 leading-6 text-center text-xl">
             <img
@@ -87,112 +88,112 @@ function Aboutme() {
             ))}
           </div>
           {/* aboutme text */}
-          <p className="leading-6 text-xl text-center md:text-left md:text-2xl sm:text-left">
-            I am a Self-driven Developer with a deep passion for low-level in{" "}
-            <span className="date text-blue-600">C and memory management</span>{" "}
-            <span className="date text-gray-500">(for 26 months).</span> While
-            building web solutions and automation scripts in{" "}
-            <span className="date text-yellow-400">javascript/typescript</span>{" "}
-            and <span className="date text-green-600">Python</span> for{" "}
-            <span className="date text-gray-500">over 2 years</span>, I live and
-            breathe{" "}
-            <span className="date text-red-600">Linux (void linux)</span>, which
-            has been my primary environment for{" "}
-            <span className="date text-gray-500">2 years.</span> Currently, I am
-            expanding my stack by Learning{" "}
-            <span className="date text-purple-500">C#</span> and diving into the
-            world of Machine Learning to bridge the gap between performance and
-            AI.
+          <p className="leading-7 text-lg text-center md:text-center md:text-2xl sm:text-left">
+            I focus on C and manual memory management, prioritizing lean
+            foundations over heavy abstractions. While I use JavaScript and
+            Python for automation and tooling, I am currently exploring Machine
+            Learning by implementing concepts from the ground up in C. A Void
+            Linux user, I value a development workflow built on transparency and
+            technical control.
           </p>
-          <div className="flex mt-8">
-            <h2 className="leading-6 text-xl text-center text-blue-400">
-              Languages:
-            </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-y-4 place-items-center w-full md:grid-cols-5 lg:grid-cols-7 relative">
-              {langs.map((logo, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center flex-col items-center group cursor-pointer"
-                >
-                  <img
-                    className="w-11"
-                    src={gitContenLikn + logo}
-                    alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
-                  />
-                  <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
-                    {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+          <div className="w-full lg:w-3/4 md:px-6">
+            <div className="flex mt-8">
+              <h2 className="leading-6 text-xl text-center text-blue-400">
+                Languages:
+              </h2>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-y-4 place-items-center w-full md:grid-cols-5 lg:grid-cols-7 relative">
+                {langs.map((logo, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-center flex-col items-center group cursor-pointer"
+                  >
+                    <img
+                      className="w-11"
+                      src={gitContenLikn + logo}
+                      alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    />
+                    <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                      {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="flex mt-8">
-            <h2 className="leading-6 text-xl text-center text-blue-400">
-              Web Development:
-            </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 w-full gap-y-4 place-items-center md:grid-cols-5 lg:grid-cols-7 relative">
-              {Web.map((logo, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center flex-col items-center group cursor-pointer"
-                >
-                  <img
-                    className="w-11"
-                    src={gitContenLikn + logo}
-                    alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
-                  />
-                  <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
-                    {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+            <div className="flex mt-8">
+              <h2 className="leading-6 text-xl text-center text-blue-400">
+                Web Development:
+              </h2>
+              <div className="grid grid-cols-3 sm:grid-cols-4 w-full gap-y-4 place-items-center md:grid-cols-5 lg:grid-cols-7 relative">
+                {Web.map((logo, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-center flex-col items-center group cursor-pointer"
+                  >
+                    <img
+                      className="w-11"
+                      src={gitContenLikn + logo}
+                      alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    />
+                    <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                      {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="flex mt-8">
-            <h2 className="leading-6 text-xl text-center text-blue-400">
-              Databases:
-            </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 w-full gap-y-4 place-items-center md:grid-cols-5 lg:grid-cols-7 relative">
-              {dbs.map((logo, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center flex-col items-center group cursor-pointer"
-                >
-                  <img
-                    className="w-11"
-                    src={gitContenLikn + logo}
-                    alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
-                  />
-                  <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
-                    {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+            <div className="flex mt-8">
+              <h2 className="leading-6 text-xl text-center text-blue-400">
+                Databases:
+              </h2>
+              <div className="grid grid-cols-3 sm:grid-cols-4 w-full gap-y-4 place-items-center md:grid-cols-5 lg:grid-cols-7 relative">
+                {dbs.map((logo, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-center flex-col items-center group cursor-pointer"
+                  >
+                    <img
+                      className="w-11"
+                      src={gitContenLikn + logo}
+                      alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    />
+                    <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                      {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="flex mt-8">
-            <h2 className="leading-6 text-xl text-center text-blue-400">
-              Other:
-            </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 w-full gap-y-4 place-items-center md:grid-cols-5 lg:grid-cols-7 relative">
-              {Other.map((logo, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center flex-col items-center group cursor-pointer"
-                >
-                  <img
-                    className="w-11"
-                    src={gitContenLikn + logo}
-                    alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
-                  />
-                  <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
-                    {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+            <div className="flex mt-8">
+              <h2 className="leading-6 text-xl text-center text-blue-400">
+                Other:
+              </h2>
+              <div className="grid grid-cols-3 sm:grid-cols-4 w-full gap-y-4 place-items-center md:grid-cols-5 lg:grid-cols-7 relative">
+                {Other.map((logo, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-center flex-col items-center group cursor-pointer"
+                  >
+                    <img
+                      className="w-11"
+                      src={gitContenLikn + logo}
+                      alt={logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    />
+                    <div className="text-[0.5rem] md:text-lg mt-2 opacity-0  group-hover:opacity-100 absolute text-outline">
+                      {logo.split(".").length > 1 ? logo.split(".")[0] : ""}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
+        {/* profile */}
+        {/* <div className="mt-0 ml-auto mr-auto flex max-w-[1000px]">
+
+        <img className="w-1/3" src={profile} alt="profile-img" />
+      </div> */}
+        {/* languages */}
+        {/* <div className="flex mt-5 md:mt-8 justify-center gap-8"></div> */}
       </div>
     </section>
   );
