@@ -15,7 +15,7 @@ function Aboutme() {
     {
       name: "Linkedin",
       icon: linkedin,
-      url: "https://www.linkedin.com/in/said-bennaji-4990492b6/",
+      url: "https://www.linkedin.com/in/said-bennaji/",
     },
     { name: "Github", icon: github, url: "https://github.com/3manuel0" },
     {
