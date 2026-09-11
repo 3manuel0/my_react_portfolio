@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import BootScreen from "./components/Boot/BootScreen";
 import Desktop from "./components/Desktop/Desktop";
+import OsChrome from "./components/OS/ContextMenu";
 import Taskbar from "./components/Taskbar/Taskbar";
 import { Window } from "./components/Window/Window";
 import {
@@ -11,6 +12,7 @@ import {
 function DesktopEnvironment() {
   const { windows, openApp } = useWindowManager();
   const [booting, setBooting] = useState(true);
+  const [invert, setInvert] = useState(false);
   const openedAbout = useRef(false);
 
   useEffect(() => {
@@ -21,7 +23,11 @@ function DesktopEnvironment() {
   }, [booting, openApp]);
 
   return (
-    <div className="scanlines relative h-full w-full overflow-hidden bg-os-bg text-os-text">
+    <div
+      className={`scanlines relative h-full w-full overflow-hidden bg-os-bg text-os-text ${
+        invert ? "os-invert" : ""
+      }`}
+    >
       <Desktop />
 
       {/* Windows layer */}
@@ -34,6 +40,8 @@ function DesktopEnvironment() {
       <Taskbar />
 
       {booting && <BootScreen onDone={() => setBooting(false)} />}
+
+      <OsChrome invert={invert} onInvert={setInvert} />
     </div>
   );
 }

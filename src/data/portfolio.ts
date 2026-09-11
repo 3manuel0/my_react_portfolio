@@ -242,7 +242,6 @@ export interface EducationEntry {
   school: string;
   period: string;
   status: string;
-  focus: string[];
 }
 
 export const experience: ExperienceGroup[] = [
@@ -284,27 +283,18 @@ export const experience: ExperienceGroup[] = [
 
 export const education: EducationEntry[] = [
   {
-    degree: "Cycle d'Ingénieur",
-    field: "Génie Informatique",
-    school: "SUPMTI",
-    period: "In progress",
+    degree: "Engineering Degree (Cycle d'Ingénierie)",
+    field: "Computer Engineering",
+    school:
+      "École Supérieure de Management de Télécommunication et d'Informatique (Sup MTI)",
+    period: "Oct 2025 – Oct 2028",
     status: "Engineering student",
-    focus: [
-      "Computer Science fundamentals",
-      "Software engineering",
-      "Low-level systems",
-    ],
   },
   {
-    degree: "Technicien Spécialisé",
-    field: "Développement Informatique",
-    school: "OFPPT",
-    period: "Diploma",
+    degree: "Specialized Technician Diploma (Technicien Spécialisé)",
+    field: "Software Development",
+    school: "MIAGE Rabat",
+    period: "Oct 2023 – Oct 2025",
     status: "Graduated",
-    focus: [
-      "Full-Stack web development",
-      "Database design",
-      "Software development lifecycle",
-    ],
   },
 ];

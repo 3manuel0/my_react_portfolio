@@ -191,6 +191,11 @@ img.pixelated {
     1px 1px 0 #000;
 }
 
+/* Inverted "dope" theme mode (right-click fun) */
+.os-invert {
+  filter: invert(1) hue-rotate(180deg) contrast(0.9);
+}
+
 /* Drag ghost suppression */
 .no-select {
   user-select: none;

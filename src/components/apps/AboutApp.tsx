@@ -129,6 +129,7 @@ const AboutApp: React.FC = () => {
                   {e.degree} &#8212; {e.field}
                 </span>
                 <span className="text-os-dim"> &#183; {e.school} ({e.status})</span>
+                <span className="block text-os-dim">{e.period}</span>
               </p>
             ))}
           </div>

@@ -25,19 +25,12 @@ const EducationApp: React.FC = () => {
                 </h2>
                 <p className="text-[0.7rem] text-os-blue">{ed.field}</p>
               </div>
-              <span className="shrink-0 border border-os-green/40 px-2 py-0.5 text-[0.58rem] text-os-green">
-                {ed.status}
-              </span>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {ed.focus.map((f) => (
-                <span
-                  key={f}
-                  className="border border-os-border px-2 py-0.5 text-[0.6rem] text-os-dim"
-                >
-                  {f}
+              <div className="shrink-0 text-right">
+                <p className="font-mono text-[0.58rem] text-os-dim">{ed.period}</p>
+                <span className="mt-1 inline-block border border-os-green/40 px-2 py-0.5 text-[0.58rem] text-os-green">
+                  {ed.status}
                 </span>
-              ))}
+              </div>
             </div>
           </div>
         ))}
