@@ -3,7 +3,6 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
-import react from "react";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -18,15 +17,12 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    settings: { react: { version: "18.3" } },
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      react,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      ...react.configs["jsx-runtime"].rules,
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },

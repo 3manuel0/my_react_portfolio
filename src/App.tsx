@@ -1,23 +1,48 @@
-// import { useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
-import Navbar from "./sections/Navbar";
-import Aboutme from "./sections/Aboutme";
-import Projects from "./sections/Projects";
-import Footer from "./sections/Footer";
+import { useEffect, useRef, useState } from "react";
+import BootScreen from "./components/Boot/BootScreen";
+import Desktop from "./components/Desktop/Desktop";
+import Taskbar from "./components/Taskbar/Taskbar";
+import { Window } from "./components/Window/Window";
+import {
+  WindowManagerProvider,
+  useWindowManager,
+} from "./context/WindowManagerContext";
 
-import "./App.css";
+function DesktopEnvironment() {
+  const { windows, openApp } = useWindowManager();
+  const [booting, setBooting] = useState(true);
+  const openedAbout = useRef(false);
 
-function App() {
-  // const [count, setCount] = useState(0)
+  useEffect(() => {
+    if (!booting && !openedAbout.current) {
+      openedAbout.current = true;
+      openApp("about");
+    }
+  }, [booting, openApp]);
 
   return (
-    <>
-      <Navbar />
-      <Aboutme />
-      <Projects />
-      <Footer />
-    </>
+    <div className="scanlines relative h-full w-full overflow-hidden bg-os-bg text-os-text">
+      <Desktop />
+
+      {/* Windows layer */}
+      <div className="pointer-events-none absolute inset-0 isolate" data-testid="windows-layer">
+        {windows.map((w) => (
+          <Window key={w.id} window={w} />
+        ))}
+      </div>
+
+      <Taskbar />
+
+      {booting && <BootScreen onDone={() => setBooting(false)} />}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <WindowManagerProvider>
+      <DesktopEnvironment />
+    </WindowManagerProvider>
   );
 }
 

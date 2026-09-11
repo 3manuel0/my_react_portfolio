@@ -6,7 +6,6 @@
   font-family: arcade-bold;
   src: url("./assets/fonts/Acme-9-Regular-Bold.ttf");
 }
-/* RobotoMono-Light.ttf */
 
 @font-face {
   font-family: robotMono;
@@ -14,77 +13,214 @@
 }
 
 :root {
-  font-family: robotMono,monospace, sans-serif;
+  font-family: robotMono, monospace, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: white;
-  background-color: #242424;
-
+  color-scheme: dark;
+  color: #c8d1e0;
+  background-color: #0b0e14;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+
+* {
+  box-sizing: border-box;
 }
-a:hover {
-  color: #535bf2;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 body {
-  margin: 0;
   min-width: 320px;
   min-height: 100vh;
 }
 
-h1 {
-  font-family: arcade-bold, sans-serif;
-  font-size: 3.2em;
-  line-height: 1.1;
+a {
+  color: #7aa2f7;
+  text-decoration: none;
+}
+a:hover {
+  color: #9ece6a;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-strong{
-  font-size: 0.8rem;
-}
-.date, strong, p{
-  font-family: robotMono, monospace, sans-serif;
 }
 
-#logo, .proj, a{
-  font-family: arcade-bold, sans-serif;
+/* Native inputs must never look like form fields inside the terminal/OS */
+input,
+textarea {
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
 }
-/* @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+/* Pixelated image rendering for retro icons */
+img.pixelated {
+  image-rendering: pixelated;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0e1219;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a4256;
+  border: 1px solid #55607a;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #55607a;
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #7dcfff;
+  outline-offset: 1px;
+}
+
+/* Window animations */
+@keyframes window-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
   }
-  a:hover {
-    color: #747bff;
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@keyframes window-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
-} */
+  to {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+  }
+}
+
+.window-enter {
+  animation: window-in 140ms ease-out;
+}
+.window-leave {
+  animation: window-out 120ms ease-in forwards;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.menu-enter {
+  animation: menu-in 110ms ease-out;
+}
+
+@keyframes boot-line {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.boot-line {
+  opacity: 0;
+  animation: boot-line 120ms ease-out forwards;
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.crt-flicker {
+  animation: crt-flicker 2.4s linear infinite;
+}
+
+/* Scanline overlay for CRT feel */
+.scanlines::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.08) 3px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  z-index: 9999;
+}
+
+.text-outline {
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+/* Drag ghost suppression */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Terminal block cursor */
+.terminal-block-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background-color: #5eead4;
+}
+@keyframes terminal-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.terminal-block-cursor {
+  animation: terminal-blink 1.05s step-end infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
