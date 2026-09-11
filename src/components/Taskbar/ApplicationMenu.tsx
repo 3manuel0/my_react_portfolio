@@ -23,7 +23,7 @@ const MENU_STRUCTURE: MenuCategory[] = [
   },
   {
     label: "System",
-    apps: ["resume", "contact", "system"],
+    apps: ["contact", "system"],
   },
 ];
 
@@ -66,21 +66,18 @@ const ApplicationMenu: React.FC<ApplicationMenuProps> = ({ onClose }) => {
       ref={ref}
       role="menu"
       aria-label="Application menu"
-      className="menu-enter absolute bottom-12 left-1 z-50 w-[260px] border border-os-border2 bg-os-surface/95 p-2 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur"
+      className="menu-enter absolute bottom-12 left-1 z-50 w-[330px] border border-os-border2 bg-os-surface/95 p-3 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur"
     >
-      <div className="mb-2 flex items-center gap-2 border-b border-os-border pb-2">
-        <span className="flex h-7 w-7 items-center justify-center bg-os-accent font-arcade text-sm text-black">
-          3m
-        </span>
-        <div className="leading-tight">
-          <p className="text-xs font-bold text-os-text">3manuel OS</p>
-          <p className="text-[0.55rem] text-os-dim">portfolio-wm 1.0</p>
-        </div>
+      <div className="mb-3 border-b border-os-border pb-3">
+        <p className="font-arcade text-[1.7rem] leading-none text-os-accent">
+          3manuel<span className="text-os-text">OS</span>
+        </p>
+        <p className="mt-1.5 text-[0.6rem] text-os-dim">portfolio-wm 1.0</p>
       </div>
 
       {MENU_STRUCTURE.map((cat) => (
-        <div key={cat.label} className="mb-1">
-          <p className="px-1 pb-0.5 text-[0.55rem] uppercase tracking-widest text-os-dim">
+        <div key={cat.label} className="mb-1.5">
+          <p className="px-1.5 pb-1 text-[0.6rem] uppercase tracking-widest text-os-dim">
             {cat.label}
           </p>
           <div className="grid grid-cols-2">
@@ -93,16 +90,16 @@ const ApplicationMenu: React.FC<ApplicationMenuProps> = ({ onClose }) => {
                   type="button"
                   role="menuitem"
                   onClick={() => launch(appId)}
-                  className={`flex items-center gap-2 px-1.5 py-1.5 text-left text-[0.68rem] transition-colors ${
+                  className={`flex items-center gap-2.5 px-2 py-2 text-left text-[0.72rem] transition-colors ${
                     open
                       ? "text-os-green"
                       : "text-os-text hover:bg-os-blue/10 hover:text-os-accent"
                   }`}
                 >
-                  <AppIcon name={desc.icon} size={20} />
+                  <AppIcon name={desc.icon} size={24} />
                   <span className="truncate">{desc.title}</span>
                   {open && (
-                    <span className="ml-auto block h-1 w-1 bg-os-green" aria-hidden="true" />
+                    <span className="ml-auto block h-1.5 w-1.5 bg-os-green" aria-hidden="true" />
                   )}
                 </button>
               );
@@ -111,14 +108,14 @@ const ApplicationMenu: React.FC<ApplicationMenuProps> = ({ onClose }) => {
         </div>
       ))}
 
-      <div className="mt-2 border-t border-os-border pt-1.5">
+      <div className="mt-2 border-t border-os-border pt-2">
         <a
           href="https://github.com/3manuel0"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-1.5 py-1 text-[0.68rem] text-os-text hover:bg-os-blue/10"
+          className="flex items-center gap-2 px-2 py-1.5 text-[0.72rem] text-os-text hover:bg-os-blue/10"
         >
-          <span className="font-arcade text-sm text-os-accent">&gt;_</span>
+          <span className="font-arcade text-base text-os-accent">&gt;_</span>
           github.com/3manuel0
         </a>
       </div>

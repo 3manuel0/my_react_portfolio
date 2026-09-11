@@ -8,7 +8,7 @@ interface MailItem {
   subject: string;
   url: string;
   body: string[];
-  type: "github" | "linkedin" | "x" | "email";
+  type: "github" | "linkedin" | "x";
 }
 
 const MAILS: MailItem[] = [
@@ -43,23 +43,12 @@ const MAILS: MailItem[] = [
     ],
     type: "x",
   },
-  {
-    id: 4,
-    from: "Email",
-    subject: "Or just drop a message",
-    url: "mailto:contact@3manuel.dev",
-    body: [
-      "Open to freelance work, internships, and collaboration on low-level systems projects.",
-    ],
-    type: "email",
-  },
 ];
 
 const TYPE_ICON: Record<MailItem["type"], string> = {
   github: "github",
-  linkedin: "about",
-  x: "about",
-  email: "contact",
+  linkedin: "linkedin",
+  x: "x",
 };
 
 const ContactApp: React.FC = () => {
@@ -117,7 +106,7 @@ const ContactApp: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2">
           <a
             href={active.url}
-            target={active.url.startsWith("mailto:") ? undefined : "_blank"}
+            target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open ${active.from} contact`}
             className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"

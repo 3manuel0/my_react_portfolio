@@ -63,28 +63,6 @@ const Wallpaper: React.FC = () => {
           <rect x="420" y="50" width="3" height="3" />
         </g>
 
-        {/* subtle terminal prompt */}
-        <text
-          x="34"
-          y="100"
-          fontFamily="Monospace"
-          fontSize="13"
-          fill="#24344e"
-          opacity="0.85"
-        >
-          {"$ cat /sys/class/3manuel/os/kernel_version"}
-        </text>
-        <text
-          x="34"
-          y="122"
-          fontFamily="Monospace"
-          fontSize="13"
-          fill="#1e2c42"
-          opacity="0.7"
-        >
-          {"6.9.0-webassembly-3manuel"}
-        </text>
-
         {/* corner brackets */}
         <g stroke="#22324f" strokeWidth="2" fill="none" opacity="0.8">
           <path d="M16 36 V16 H36" />

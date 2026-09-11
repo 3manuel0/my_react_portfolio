@@ -234,7 +234,7 @@ const TerminalApp: React.FC = () => {
       case "about":
         return (
           <div className="whitespace-pre">
-            {`${profile.name}\n${profile.title}\n${profile.location}\n\n${profile.bio}\n\nwaiting for: ${profile.lookingFor}`}
+            {`${profile.name}\n${profile.title}\n${profile.location}\n\n${profile.bio}`}
           </div>
         );
       case "projects":
@@ -302,7 +302,7 @@ const TerminalApp: React.FC = () => {
       case "date":
         return <p className="text-os-text">{new Date().toString()}</p>;
       case "ls":
-        return <p className="text-os-text">about/ projects/ skills/ experience/ education/ resume.txt contact/ terminal</p>;
+        return <p className="text-os-text">about.txt projects/ skills/ experience/ education/ contact/ terminal/</p>;
       case "exit":
         return <p className="text-os-dim">this is the portfolio shell -- there is no exit. try "help".</p>;
       default:

@@ -5,7 +5,6 @@ import ProjectsApp from "../components/apps/ProjectsApp";
 import SkillsApp from "../components/apps/SkillsApp";
 import ExperienceApp from "../components/apps/ExperienceApp";
 import EducationApp from "../components/apps/EducationApp";
-import ResumeApp from "../components/apps/ResumeApp";
 import ContactApp from "../components/apps/ContactApp";
 import GitHubApp from "../components/apps/GitHubApp";
 import TerminalApp from "../components/apps/TerminalApp";
@@ -17,7 +16,6 @@ export type AppId =
   | "skills"
   | "experience"
   | "education"
-  | "resume"
   | "contact"
   | "github"
   | "terminal"
@@ -73,14 +71,6 @@ export const APPS: Record<AppId, AppDescriptor> = {
     defaultSize: { width: 620, height: 460 },
     component: EducationApp,
     category: "Portfolio",
-  },
-  resume: {
-    id: "resume",
-    title: "Resume",
-    icon: "resume",
-    defaultSize: { width: 680, height: 620 },
-    component: ResumeApp,
-    category: "System",
   },
   contact: {
     id: "contact",

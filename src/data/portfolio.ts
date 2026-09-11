@@ -25,8 +25,6 @@ export const profile = {
   location: "Morocco, Rabat",
   website: "https://3manuel.dev",
   bio: "I focus on C and manual memory management, prioritizing lean foundations over heavy abstractions. While I use JavaScript and Python for automation and tooling, I am currently exploring Machine Learning by implementing concepts from the ground up in C. A Void Linux user, I value a development workflow built on transparency and technical control.",
-  lookingFor:
-    "Open to freelance work, internships, and collaborating on low-level systems projects.",
 };
 
 export const contactLinks = [
@@ -44,11 +42,6 @@ export const contactLinks = [
     name: "X (Twitter)",
     url: "https://x.com/3manuel_s",
     handle: "@3manuel_s",
-  },
-  {
-    name: "Email",
-    url: "mailto:contact@3manuel.dev",
-    handle: "contact@3manuel.dev",
   },
 ];
 
