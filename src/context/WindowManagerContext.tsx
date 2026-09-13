@@ -138,7 +138,15 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
   }, [openApp]);
 
   const closeWindow = useCallback((id: string) => {
+    const closed = windowsRef.current.find((w) => w.id === id);
     setWindows((ws) => ws.filter((w) => w.id !== id));
+    if (closed && window.location.hash === `#/${closed.appId}`) {
+      globalThis.history?.replaceState(
+        null,
+        "",
+        `${window.location.pathname}${window.location.search}`,
+      );
+    }
     setActiveWindowId((cur) => {
       if (cur !== id) return cur;
       const next = windowsRef.current.find(
@@ -209,6 +217,45 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
     (appId: AppId) => windowsRef.current.some((w) => w.appId === appId),
     [],
   );
+
+  // Keyboard shortcuts (in-page safe combos; Alt+Tab/Alt+F4 are grabbed by the OS/browser)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.altKey) {
+        const open = (w: WindowInstance) => focusWindow(w.id);
+        if (e.key === "ArrowRight" || e.key === "Tab") {
+          e.preventDefault();
+          const order = windowsRef.current
+            .slice()
+            .sort((a, b) => a.zIndex - b.zIndex);
+          if (!order.length) return;
+          const activeIdx = order.findIndex((w) => w.id === activeWindowId);
+          open(order[(activeIdx + 1) % order.length]);
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          const order = windowsRef.current
+            .slice()
+            .sort((a, b) => a.zIndex - b.zIndex);
+          if (!order.length) return;
+          const activeIdx = order.findIndex((w) => w.id === activeWindowId);
+          open(order[(activeIdx - 1 + order.length) % order.length]);
+        } else if (e.key === "Q" || e.key === "q") {
+          e.preventDefault();
+          if (activeWindowId) {
+            const target = windowsRef.current.find(
+              (w) => w.id === activeWindowId,
+            );
+            if (target) closeWindow(target.id);
+          }
+        } else if (e.key === "T" || e.key === "t") {
+          e.preventDefault();
+          openAppRef.current("terminal");
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeWindowId, focusWindow, closeWindow]);
 
   // Hash routing: open apps from URL (#/about, #/projects, ...)
   useEffect(() => {

@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import { AppIcon } from "../AppIcons";
+import {
+  WALLPAPER_IDS,
+  wallpaperLabel,
+  type WallpaperId,
+} from "../Desktop/Wallpaper";
 import MatrixRain from "./MatrixRain";
 import RmFakeTerminal from "./RmFakeTerminal";
 
@@ -19,14 +24,16 @@ interface Item {
 interface OsChromeProps {
   invert: boolean;
   onInvert: (v: boolean) => void;
+  wallpaper: WallpaperId;
+  onWallpaper: (id: WallpaperId) => void;
 }
 
 const MENU_W = 250;
-const MENU_H = 520;
+const MENU_H = 620;
 
 type RmStage = "off" | "running" | "bsod";
 
-const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert }) => {
+const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWallpaper }) => {
   const { openApp } = useWindowManager();
   const [pos, setPos] = useState<MenuPos | null>(null);
   const [matrix, setMatrix] = useState(false);
@@ -35,6 +42,7 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert }) => {
   const [shutdown, setShutdown] = useState<"off" | "shutting" | "safe">("off");
   const [locked, setLocked] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [clock, setClock] = useState<number>(Date.now());
 
   const rmRef = useRef<RmStage>("off");
   useEffect(() => {
@@ -89,7 +97,6 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert }) => {
     const id = setInterval(() => setClock(Date.now()), 15000);
     return () => clearInterval(id);
   }, [locked]);
-  const [clock, setClock] = useState<number>(Date.now());
 
   const launch =
     (appId: "terminal" | "about" | "system") =>
@@ -164,6 +171,14 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert }) => {
       items: [
         { label: "Refresh", onPick: () => window.location.reload() },
         { label: "Fullscreen", onPick: toggleFullscreen },
+        ...WALLPAPER_IDS.map((id) => ({
+          label: `Wallpaper: ${wallpaperLabel(id)}`,
+          active: wallpaper === id,
+          onPick: () => {
+            onWallpaper(id);
+            close();
+          },
+        })),
       ],
     },
     {
@@ -230,9 +245,10 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert }) => {
             </div>
           ))}
 
-          <div className="mt-1 flex items-center gap-1.5 border-t border-os-border px-1.5 pb-0.5 pt-1.5 text-[0.55rem] text-os-dim">
+          <div className="mt-1 flex flex-wrap items-center gap-1.5 border-t border-os-border px-1.5 pb-0.5 pt-1.5 text-[0.55rem] text-os-dim">
             <AppIcon name="terminal" size={12} />
-            3manuelOS ctx.v1 &#183; right-click anywhere
+            3manuelOS ctx.v1
+            <span className="ml-auto">ctrl+alt+&#8592;/&#8594; switch</span>
           </div>
         </div>
       )}

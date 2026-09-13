@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { type WindowInstance, TASKBAR_HEIGHT, useWindowManager } from "../../context/WindowManagerContext";
 import { APPS } from "../../data/appRegistry";
 import { AppIcon } from "../AppIcons";
@@ -21,6 +21,14 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
   const drag = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
   const resize = useRef<{ startX: number; startY: number; origW: number; origH: number } | null>(null);
   const isFocused = activeWindowId === window.id;
+  const [closing, setClosing] = useState(false);
+  const windowId = window.id;
+
+  const requestClose = useCallback(() => {
+    if (closing) return;
+    setClosing(true);
+    globalThis.setTimeout(() => closeWindow(windowId), 140);
+  }, [closing, closeWindow, windowId]);
 
   const onTitlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -102,7 +110,13 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
       aria-label={window.title}
       aria-modal="false"
       tabIndex={-1}
-      className={`window-enter pointer-events-auto absolute flex flex-col overflow-hidden border bg-os-surface shadow-[0_10px_40px_rgba(0,0,0,0.55)] transition-shadow ${
+      className={`${
+        closing ? "window-leave" : "window-enter"
+      } pointer-events-auto absolute flex flex-col overflow-hidden border bg-os-surface ${
+        window.maximized
+          ? "transition-[left,top,width,height] duration-150 ease-out"
+          : "shadow-[0_10px_40px_rgba(0,0,0,0.55)]"
+      } ${
         isFocused
           ? "border-os-border2"
           : "border-os-border opacity-90"
@@ -111,6 +125,7 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
         ...style,
         zIndex: window.zIndex,
         display: window.minimized ? "none" : "flex",
+        pointerEvents: closing ? "none" : undefined,
       }}
       onPointerDown={() => {
         if (!isFocused) focusWindow(window.id);
@@ -160,7 +175,7 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
             title="Close"
             onClick={(e) => {
               e.stopPropagation();
-              closeWindow(window.id);
+              requestClose();
             }}
             className="flex h-6 w-7 items-center justify-center border border-os-border text-xs text-os-dim hover:bg-os-red hover:text-black"
           >

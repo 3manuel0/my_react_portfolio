@@ -51,6 +51,25 @@ const LANG_COLORS: Record<string, string> = {
   Java: "#b07219",
 };
 
+const RemoteImage: React.FC<{
+  src: string;
+  alt: string;
+  className?: string;
+  loading?: "lazy" | "eager";
+}> = ({ src, alt, className, loading }) => {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      loading={loading}
+      onError={() => setFailed(true)}
+    />
+  );
+};
+
 const GitHubApp: React.FC = () => {
   const [search, setSearch] = useState("");
 
@@ -123,8 +142,8 @@ const GitHubApp: React.FC = () => {
       </div>
 
       <div className="flex flex-wrap items-center gap-2 border-b border-os-border bg-os-surface2/30 px-3 py-2">
-        <img src={FOLLOWERS_BADGE} alt="GitHub followers" loading="lazy" className="h-6" />
-        <img src={STARS_BADGE} alt="GitHub total stars" loading="lazy" className="h-6" />
+        <RemoteImage src={FOLLOWERS_BADGE} alt="GitHub followers" className="h-6" loading="lazy" />
+        <RemoteImage src={STARS_BADGE} alt="GitHub total stars" className="h-6" loading="lazy" />
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
@@ -133,22 +152,22 @@ const GitHubApp: React.FC = () => {
           <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
             GitHub Stats
           </p>
-          <img
+          <RemoteImage
             src={STATS_IMG_URL}
             alt="GitHub stats: stars, commits, pull requests"
-            loading="lazy"
             className="w-full max-w-[420px]"
+            loading="lazy"
           />
         </div>
         <div className="border border-os-border bg-os-surface2/40 p-3">
           <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
             Top Languages
           </p>
-          <img
+          <RemoteImage
             src={TOP_LANGS_URL}
             alt="Top languages from GitHub profile"
-            loading="lazy"
             className="w-full max-w-[540px]"
+            loading="lazy"
           />
         </div>
       </div>

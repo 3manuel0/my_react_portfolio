@@ -1,18 +1,18 @@
-import c3sv from "../assets/personal-projects/C3SV.png";
-import lib3man from "../assets/personal-projects/Lib3man.png";
-import bs3 from "../assets/personal-projects/3bs.png";
-import vpsPersonal from "../assets/personal-projects/VPS.png";
-import outputGif from "../assets/personal-projects/output.gif";
-import gameboy from "../assets/personal-projects/gameboy.png";
-import fileToPng from "../assets/personal-projects/file_to_png.png";
-import sophia from "../assets/personal-projects/Sophia.png";
-import chineseFlashCards from "../assets/personal-projects/chinese_flash_cards.png";
-import musicPlayer from "../assets/personal-projects/Music_player.png";
-import vpsProfessional from "../assets/professional-projects/VPS.png";
-import chessPuzzle from "../assets/professional-projects/chess-puzzle.png";
-import flagTrivia from "../assets/professional-projects/flagtriviagame.png";
-import balanceChecker from "../assets/professional-projects/BalanceChecker_for_Bank_Clients.png";
-import timeWarp from "../assets/professional-projects/TimeWarpMemory.png";
+import c3sv from "../assets/personal-projects/C3SV.webp";
+import lib3man from "../assets/personal-projects/Lib3man.webp";
+import bs3 from "../assets/personal-projects/3bs.webp";
+import vpsPersonal from "../assets/personal-projects/VPS.webp";
+import outputDemo from "../assets/personal-projects/output.webp";
+import gameboy from "../assets/personal-projects/gameboy.webp";
+import fileToPng from "../assets/personal-projects/file_to_png.webp";
+import sophia from "../assets/personal-projects/Sophia.webp";
+import chineseFlashCards from "../assets/personal-projects/chinese_flash_cards.webp";
+import musicPlayer from "../assets/personal-projects/Music_player.webp";
+import vpsProfessional from "../assets/professional-projects/VPS.webp";
+import chessPuzzle from "../assets/professional-projects/chess-puzzle.webp";
+import flagTrivia from "../assets/professional-projects/flagtriviagame.webp";
+import balanceChecker from "../assets/professional-projects/BalanceChecker_for_Bank_Clients.webp";
+import timeWarp from "../assets/professional-projects/TimeWarpMemory.webp";
 
 export const gitContentBase =
   "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
@@ -121,7 +121,7 @@ export const personalProjects = [
     languages: ["C", "Raylib", "WebAssembly"],
     githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
     demo: "https://3manuel0.github.io/2dPlatformerGame/",
-    screenshot: outputGif,
+    screenshot: outputDemo,
     type: "personal",
   },
   {

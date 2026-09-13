@@ -2,7 +2,7 @@ import React from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import type { AppId } from "../../data/appRegistry";
 import DesktopIcon from "./DesktopIcon";
-import Wallpaper from "./Wallpaper";
+import Wallpaper, { type WallpaperId } from "./Wallpaper";
 
 const DESKTOP_ICONS: { appId: AppId; label: string }[] = [
   { appId: "about", label: "About Me" },
@@ -14,12 +14,16 @@ const DESKTOP_ICONS: { appId: AppId; label: string }[] = [
   { appId: "system", label: "System" },
 ];
 
-const Desktop: React.FC = () => {
+interface DesktopProps {
+  wallpaper: WallpaperId;
+}
+
+const Desktop: React.FC<DesktopProps> = ({ wallpaper }) => {
   const { openApp } = useWindowManager();
 
   return (
     <div className="absolute inset-0 select-none overflow-hidden" aria-label="Desktop">
-      <Wallpaper />
+      <Wallpaper variant={wallpaper} />
       <div className="absolute inset-x-0 bottom-[52px] top-2 flex flex-col flex-wrap content-start gap-x-2 gap-y-1 px-3">
         {DESKTOP_ICONS.map(({ appId, label }) => (
           <DesktopIcon

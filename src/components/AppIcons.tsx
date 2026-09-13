@@ -29,13 +29,24 @@ interface IconProps {
   className?: string;
 }
 
-const PIXELS: Record<IconName, string> = {
-  about:
-    "M3,1 L7,1 7,3 3,3 Z M1,4 L9,4 9,8 1,8 Z M2,3 L8,3 8,4 2,4 Z",
-  projects:
-    "M1,1 L9,1 9,3 1,3 Z M0,3 L10,3 10,9 0,9 Z",
-  skills:
-    "M2,2 L8,2 8,3 2,3 Z M1,3 L9,3 9,5 1,5 Z M2,5 L8,5 8,7 2,7 Z M1,7 L9,7 9,9 1,9 Z M0,9 L10,9 10,10 0,10 Z",
+interface PixelIcon {
+  main: string;
+  accent?: string;
+}
+
+const PIXELS: Record<IconName, string | PixelIcon> = {
+  about: {
+    main: "M0,7 h1 v1 h-1 Z M0,8 h1 v1 h-1 Z M1,6 h1 v1 h-1 Z M1,7 h1 v1 h-1 Z M1,8 h1 v1 h-1 Z M2,2 h1 v1 h-1 Z M2,3 h1 v1 h-1 Z M2,6 h1 v1 h-1 Z M2,7 h1 v1 h-1 Z M2,8 h1 v1 h-1 Z M3,1 h1 v1 h-1 Z M3,2 h1 v1 h-1 Z M3,3 h1 v1 h-1 Z M3,4 h1 v1 h-1 Z M3,5 h1 v1 h-1 Z M3,6 h1 v1 h-1 Z M3,7 h1 v1 h-1 Z M3,8 h1 v1 h-1 Z M4,1 h1 v1 h-1 Z M4,2 h1 v1 h-1 Z M4,3 h1 v1 h-1 Z M4,4 h1 v1 h-1 Z M4,5 h1 v1 h-1 Z M4,6 h1 v1 h-1 Z M4,7 h1 v1 h-1 Z M4,8 h1 v1 h-1 Z M5,1 h1 v1 h-1 Z M5,2 h1 v1 h-1 Z M5,3 h1 v1 h-1 Z M5,4 h1 v1 h-1 Z M5,5 h1 v1 h-1 Z M5,6 h1 v1 h-1 Z M5,7 h1 v1 h-1 Z M5,8 h1 v1 h-1 Z M6,2 h1 v1 h-1 Z M6,3 h1 v1 h-1 Z M6,6 h1 v1 h-1 Z M6,7 h1 v1 h-1 Z M6,8 h1 v1 h-1 Z M7,7 h1 v1 h-1 Z M7,8 h1 v1 h-1 Z M8,8 h1 v1 h-1 Z",
+    accent: "M3,1 h1 v1 h-1 Z M3,2 h1 v1 h-1 Z M4,1 h1 v1 h-1 Z",
+  },
+  projects: {
+    main: "M0,2 h1 v1 h-1 Z M0,3 h1 v1 h-1 Z M0,4 h1 v1 h-1 Z M0,5 h1 v1 h-1 Z M0,6 h1 v1 h-1 Z M0,7 h1 v1 h-1 Z M0,8 h1 v1 h-1 Z M1,1 h1 v1 h-1 Z M1,2 h1 v1 h-1 Z M1,3 h1 v1 h-1 Z M1,4 h1 v1 h-1 Z M1,5 h1 v1 h-1 Z M1,6 h1 v1 h-1 Z M1,7 h1 v1 h-1 Z M1,8 h1 v1 h-1 Z M2,1 h1 v1 h-1 Z M2,2 h1 v1 h-1 Z M2,3 h1 v1 h-1 Z M2,4 h1 v1 h-1 Z M2,5 h1 v1 h-1 Z M2,6 h1 v1 h-1 Z M2,7 h1 v1 h-1 Z M2,8 h1 v1 h-1 Z M3,1 h1 v1 h-1 Z M3,2 h1 v1 h-1 Z M3,3 h1 v1 h-1 Z M3,4 h1 v1 h-1 Z M3,5 h1 v1 h-1 Z M3,6 h1 v1 h-1 Z M3,7 h1 v1 h-1 Z M3,8 h1 v1 h-1 Z M4,2 h1 v1 h-1 Z M4,3 h1 v1 h-1 Z M4,4 h1 v1 h-1 Z M4,5 h1 v1 h-1 Z M4,6 h1 v1 h-1 Z M4,7 h1 v1 h-1 Z M4,8 h1 v1 h-1 Z M5,2 h1 v1 h-1 Z M5,3 h1 v1 h-1 Z M5,4 h1 v1 h-1 Z M5,5 h1 v1 h-1 Z M5,6 h1 v1 h-1 Z M5,7 h1 v1 h-1 Z M5,8 h1 v1 h-1 Z M6,2 h1 v1 h-1 Z M6,3 h1 v1 h-1 Z M6,4 h1 v1 h-1 Z M6,5 h1 v1 h-1 Z M6,6 h1 v1 h-1 Z M6,7 h1 v1 h-1 Z M6,8 h1 v1 h-1 Z M7,2 h1 v1 h-1 Z M7,3 h1 v1 h-1 Z M7,4 h1 v1 h-1 Z M7,5 h1 v1 h-1 Z M7,6 h1 v1 h-1 Z M7,7 h1 v1 h-1 Z M7,8 h1 v1 h-1 Z M8,2 h1 v1 h-1 Z M8,3 h1 v1 h-1 Z M8,4 h1 v1 h-1 Z M8,5 h1 v1 h-1 Z M8,6 h1 v1 h-1 Z M8,7 h1 v1 h-1 Z M8,8 h1 v1 h-1 Z",
+    accent: "M1,3 h1 v1 h-1 Z M1,4 h1 v1 h-1 Z M1,5 h1 v1 h-1 Z M1,6 h1 v1 h-1 Z M1,7 h1 v1 h-1 Z M2,3 h1 v1 h-1 Z M2,4 h1 v1 h-1 Z M2,5 h1 v1 h-1 Z M2,6 h1 v1 h-1 Z M2,7 h1 v1 h-1 Z M3,3 h1 v1 h-1 Z M3,4 h1 v1 h-1 Z M3,5 h1 v1 h-1 Z M3,6 h1 v1 h-1 Z M3,7 h1 v1 h-1 Z M4,3 h1 v1 h-1 Z M4,4 h1 v1 h-1 Z M4,5 h1 v1 h-1 Z M4,6 h1 v1 h-1 Z M4,7 h1 v1 h-1 Z M5,3 h1 v1 h-1 Z M5,4 h1 v1 h-1 Z M5,5 h1 v1 h-1 Z M5,6 h1 v1 h-1 Z M5,7 h1 v1 h-1 Z M6,3 h1 v1 h-1 Z M6,4 h1 v1 h-1 Z M6,5 h1 v1 h-1 Z M6,6 h1 v1 h-1 Z M6,7 h1 v1 h-1 Z M7,3 h1 v1 h-1 Z M7,4 h1 v1 h-1 Z M7,5 h1 v1 h-1 Z M7,6 h1 v1 h-1 Z M7,7 h1 v1 h-1 Z",
+  },
+  skills: {
+    main: "M1,3 h1 v1 h-1 Z M1,4 h1 v1 h-1 Z M1,5 h1 v1 h-1 Z M1,6 h1 v1 h-1 Z M2,2 h1 v1 h-1 Z M2,3 h1 v1 h-1 Z M2,4 h1 v1 h-1 Z M2,5 h1 v1 h-1 Z M2,6 h1 v1 h-1 Z M2,7 h1 v1 h-1 Z M3,1 h1 v1 h-1 Z M3,2 h1 v1 h-1 Z M3,3 h1 v1 h-1 Z M3,4 h1 v1 h-1 Z M3,5 h1 v1 h-1 Z M3,6 h1 v1 h-1 Z M3,7 h1 v1 h-1 Z M3,8 h1 v1 h-1 Z M4,1 h1 v1 h-1 Z M4,2 h1 v1 h-1 Z M4,3 h1 v1 h-1 Z M4,4 h1 v1 h-1 Z M4,5 h1 v1 h-1 Z M4,6 h1 v1 h-1 Z M4,7 h1 v1 h-1 Z M4,8 h1 v1 h-1 Z M5,1 h1 v1 h-1 Z M5,2 h1 v1 h-1 Z M5,3 h1 v1 h-1 Z M5,4 h1 v1 h-1 Z M5,5 h1 v1 h-1 Z M5,6 h1 v1 h-1 Z M5,7 h1 v1 h-1 Z M5,8 h1 v1 h-1 Z M6,1 h1 v1 h-1 Z M6,2 h1 v1 h-1 Z M6,3 h1 v1 h-1 Z M6,4 h1 v1 h-1 Z M6,5 h1 v1 h-1 Z M6,6 h1 v1 h-1 Z M6,7 h1 v1 h-1 Z M6,8 h1 v1 h-1 Z M7,2 h1 v1 h-1 Z M7,3 h1 v1 h-1 Z M7,4 h1 v1 h-1 Z M7,5 h1 v1 h-1 Z M7,6 h1 v1 h-1 Z M7,7 h1 v1 h-1 Z M8,3 h1 v1 h-1 Z M8,4 h1 v1 h-1 Z M8,5 h1 v1 h-1 Z M8,6 h1 v1 h-1 Z",
+    accent: "M4,4 h1 v1 h-1 Z M4,5 h1 v1 h-1 Z M5,4 h1 v1 h-1 Z M5,5 h1 v1 h-1 Z",
+  },
   experience:
     "M1,0 L6,0 6,5 1,5 Z M0,1 L7,1 7,8 0,8 Z M2,2 L5,2 5,3 2,3 Z M1,4 L6,4 6,5 1,5 Z M3,5 L4,5 4,6 3,6 Z",
   education:
@@ -93,6 +104,12 @@ const COLORS: Record<string, string> = {
   fork: "#78829a",
 };
 
+const ACCENTS: Partial<Record<IconName, string>> = {
+  about: "#c9e89a",
+  projects: "#9cc0fb",
+  skills: "#d6c9fb",
+};
+
 const BRANDS: Partial<Record<IconName, string>> = {
   linkedin:
     "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z",
@@ -114,7 +131,9 @@ export const AppIcon: React.FC<IconProps> = ({ name, size = 48, className }) => 
       </svg>
     );
   }
-  const d = PIXELS[name];
+  const d = typeof PIXELS[name] === "string" ? (PIXELS[name] as string) : PIXELS[name].main;
+  const accent =
+    typeof PIXELS[name] === "object" ? PIXELS[name].accent : undefined;
   const fill = COLORS[name] ?? "#7aa2f7";
   return (
     <svg
@@ -127,6 +146,7 @@ export const AppIcon: React.FC<IconProps> = ({ name, size = 48, className }) => 
     >
       <path d={d} fill={fill} opacity={0.35} transform="translate(0.5,0.5)" />
       <path d={d} fill={fill} />
+      {accent && <path d={accent} fill={ACCENTS[name] ?? fill} />}
     </svg>
   );
 };

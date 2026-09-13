@@ -66,7 +66,7 @@ const ApplicationMenu: React.FC<ApplicationMenuProps> = ({ onClose }) => {
       ref={ref}
       role="menu"
       aria-label="Application menu"
-      className="menu-enter absolute bottom-12 left-1 z-50 w-[330px] border border-os-border2 bg-os-surface/95 p-3 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur"
+      className="menu-enter absolute bottom-12 left-1 z-50 w-[330px] max-w-[calc(100vw-0.5rem)] border border-os-border2 bg-os-surface/95 p-3 shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur"
     >
       <div className="mb-3 border-b border-os-border pb-3">
         <p className="font-arcade text-[1.7rem] leading-none text-os-accent">
