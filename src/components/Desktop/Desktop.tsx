@@ -1,22 +1,17 @@
 import React from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
-import type { AppId } from "../../data/appRegistry";
+import { APP_LIST, type AppId } from "../../data/appRegistry";
 import DesktopIcon from "./DesktopIcon";
 import Wallpaper, { type WallpaperId } from "./Wallpaper";
 
-const DESKTOP_ICONS: { appId: AppId; label: string }[] = [
-  { appId: "about", label: "About Me" },
-  { appId: "projects", label: "Projects" },
-  { appId: "skills", label: "Skills" },
-  { appId: "experience", label: "Experience" },
-  { appId: "education", label: "Education" },
-  { appId: "github", label: "GitHub" },
-  { appId: "contact", label: "Contact" },
-  { appId: "files", label: "Files" },
-  { appId: "terminal", label: "Terminal" },
-  { appId: "system", label: "System" },
-  { appId: "game", label: "2D Platformer" },
-];
+const LABEL_OVERRIDES: Partial<Record<AppId, string>> = {
+  game: "2D Platformer",
+};
+
+const DESKTOP_ICONS = APP_LIST.map((app) => ({
+  appId: app.id,
+  label: LABEL_OVERRIDES[app.id] ?? app.title,
+}));
 
 interface DesktopProps {
   wallpaper: WallpaperId;
