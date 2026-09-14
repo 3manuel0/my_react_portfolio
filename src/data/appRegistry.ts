@@ -11,6 +11,7 @@ import TerminalApp from "../components/apps/TerminalApp";
 import SystemInfoApp from "../components/apps/SystemInfoApp";
 import GameApp from "../components/apps/GameApp";
 import FilesApp from "../components/apps/FilesApp";
+import MediaPlayerApp from "../components/apps/MediaPlayerApp";
 
 export type AppId =
   | "about"
@@ -23,7 +24,8 @@ export type AppId =
   | "terminal"
   | "system"
   | "game"
-  | "files";
+  | "files"
+  | "media";
 
 export interface AppDescriptor {
   id: AppId;
@@ -124,6 +126,14 @@ export const APPS: Record<AppId, AppDescriptor> = {
     defaultSize: { width: 640, height: 480 },
     component: FilesApp,
     category: "System",
+  },
+  media: {
+    id: "media",
+    title: "Media Player",
+    icon: "music",
+    defaultSize: { width: 480, height: 520 },
+    component: MediaPlayerApp,
+    category: "Apps",
   },
 };
 

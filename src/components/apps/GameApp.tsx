@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import { useOsMode } from "../../context/OsModeContext";
+import { useOsSound } from "../../context/OsSoundContext";
 
 const GAME_ASPECT_RATIO = 16 / 9;
 const GAME_ORIGIN = "https://3manuel0.github.io/2dPlatformerGame/";
@@ -26,9 +27,13 @@ let _gestureArmed = false;
 let _gameSession = false;
 let _pendingKillTimer: number | null = null;
 let _watchdog: MutationObserver | null = null;
-// The canvas DOM element that was last transferred. StrictMode reuses the same
-// element across mount→cleanup→remount, so we can detect it by identity.
 let _transferredCanvas: HTMLCanvasElement | null = null;
+let _gameVolume = 0.2;
+let _osGain = 1;
+
+function _applyVolume() {
+  if (_audio) _audio.volume = Math.min(1, _gameVolume * _osGain);
+}
 
 // Hard teardown — the definitive "game is really gone" path. Called when the
 // canvas leaves the document or an old worker is replaced. Terminates the
@@ -88,6 +93,12 @@ const GameApp: React.FC = () => {
   const { mode: osMode } = useOsMode();
   const isPhone = osMode === "phone";
 
+  const { gain } = useOsSound();
+  useEffect(() => {
+    _osGain = gain;
+    _applyVolume();
+  }, [gain]);
+
   // Boot the worker exactly once per canvas element.
   // StrictMode reuses the same <canvas> DOM node across mount→cleanup→remount,
   // so we detect it by identity: same canvas + alive worker = skip.
@@ -142,6 +153,7 @@ const GameApp: React.FC = () => {
       _audio = new Audio();
       _audio.preload = "auto";
     }
+    _applyVolume();
 
     const absoluteSrc = (src: string) =>
       src.startsWith("http") ? src : GAME_ORIGIN + src.replace(/^\.\//, "");
@@ -188,7 +200,8 @@ const GameApp: React.FC = () => {
             // The game races SetMasterVolume(0.04) every frame ≈ 4% — that's
             // effectively inaudible on phone/laptop speakers. Clamp to an
             // audible floor while keeping the game's own fading below 1.
-            _audio.volume = Math.min(1, Math.max(0.2, d.volume ?? 1));
+            _gameVolume = Math.min(1, Math.max(0.2, d.volume ?? 1));
+            _applyVolume();
             break;
           case "loop":
             _audio.loop = !!d.loop;

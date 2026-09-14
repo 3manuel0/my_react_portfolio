@@ -11,6 +11,7 @@ import {
   useWindowManager,
 } from "./context/WindowManagerContext";
 import { OsModeProvider, useOsMode } from "./context/OsModeContext";
+import { OsSoundProvider } from "./context/OsSoundContext";
 
 const WALLPAPER_KEY = "3manuelos.wallpaper";
 
@@ -110,9 +111,11 @@ function Root() {
 function App() {
   return (
     <OsModeProvider>
-      <WindowManagerProvider>
-        <Root />
-      </WindowManagerProvider>
+      <OsSoundProvider>
+        <WindowManagerProvider>
+          <Root />
+        </WindowManagerProvider>
+      </OsSoundProvider>
     </OsModeProvider>
   );
 }

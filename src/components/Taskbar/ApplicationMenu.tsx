@@ -19,7 +19,7 @@ const MENU_STRUCTURE: MenuCategory[] = [
   },
   {
     label: "Apps",
-    apps: ["game"],
+    apps: ["game", "media"],
   },
   {
     label: "Portfolio",
