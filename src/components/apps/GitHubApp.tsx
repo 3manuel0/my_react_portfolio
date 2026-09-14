@@ -4,19 +4,6 @@ import { AppIcon } from "../AppIcons";
 
 const githubUsername = profile.githubUsername;
 
-const STATS_IMG_URL =
-  `https://github-readme-stats-fast.vercel.app/api?username=${githubUsername}` +
-  `&show_icons=true&theme=dark&title_color=5EEAD4&text_color=C8D1E0&bg_color=0D1219` +
-  `&border_color=3A4256&icon_color=7AA2F7&border_radius=4&hide_rank=true`;
-
-const FOLLOWERS_BADGE =
-  `https://img.shields.io/github/followers/${githubUsername}` +
-  `?style=for-the-badge&label=Followers&labelColor=11151F&color=5EEAD4`;
-
-const STARS_BADGE =
-  `https://img.shields.io/github/stars/${githubUsername}` +
-  `?style=for-the-badge&label=Stars&labelColor=11151F&color=7AA2F7`;
-
 const TOP_LANGS_URL =
   `https://github-readme-stats-fast.vercel.app/api/top-langs/?username=${githubUsername}` +
   `&layout=compact&theme=dark&title_color=5EEAD4&text_color=C8D1E0&bg_color=0D1219` +
@@ -195,99 +182,77 @@ const GitHubApp: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 border-b border-os-border px-3 py-3">
-        <img
-          src={`https://github.com/${githubUsername}.png`}
-          alt="GitHub avatar"
-          className="h-14 w-14 border border-os-border bg-os-surface2"
-          style={{ imageRendering: "pixelated" }}
-        />
-        <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-os-text">{profile.name}</p>
-          <p className="text-[0.62rem] text-os-dim">@{githubUsername}</p>
-          <p className="mt-0.5 max-w-xs truncate text-[0.62rem] text-os-text/90">
-            {profile.title}
-          </p>
-        </div>
-        <div className="ml-auto flex items-center gap-2 text-[0.6rem] text-os-dim">
-          {profile.location && (
-            <span className="hidden items-center gap-1 sm:flex" title="Location">
-              <AppIcon name="location" size={12} />
-              {profile.location}
-            </span>
-          )}
-          {repos && (
-            <span>{repos.filter((r) => !r.fork).length} public repos</span>
-          )}
-        </div>
-        <a
-          href={`https://github.com/${githubUsername}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Open GitHub profile in new tab"
-          className="flex shrink-0 items-center gap-1.5 border border-os-border px-2.5 py-1.5 text-[0.62rem] text-os-text hover:border-os-green hover:text-os-green"
-        >
-          <AppIcon name="github" size={13} /> Open Profile
-        </a>
-      </div>
-
-      {rank && (
-        <a
-          href={`https://committers.top/${RANK_AREA}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 border-y border-os-green/30 bg-os-green/5 px-3 py-2 hover:bg-os-green/10"
-        >
-          <TrophyIcon className="shrink-0 text-os-green" />
-          <div className="min-w-0 flex-1">
-            <p className="text-[0.55rem] uppercase tracking-[0.18em] text-os-dim">
-              {rank.area} · {rank.metric}
-            </p>
-            <p className="flex items-baseline gap-2">
-              <span className="font-arcade text-xl leading-none text-os-green">
-                #{rank.rank}
-              </span>
-              <span className="text-[0.62rem] text-os-text">committers.top</span>
-            </p>
-          </div>
-          <span className="shrink-0 text-[0.62rem] text-os-green" aria-hidden="true">
-            ↗
-          </span>
-        </a>
-      )}
-
-      <div className="flex flex-wrap items-center gap-2 border-b border-os-border bg-os-surface2/30 px-3 py-2">
-        <RemoteImage src={FOLLOWERS_BADGE} alt="GitHub followers" className="h-6" loading="lazy" />
-        <RemoteImage src={STARS_BADGE} alt="GitHub total stars" className="h-6" loading="lazy" />
-      </div>
-
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <div className="border border-os-border bg-os-surface2/40 p-3">
-            <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
-              GitHub Stats
+        <div className="flex flex-wrap items-center gap-3 pb-3">
+          <img
+            src={`https://github.com/${githubUsername}.png`}
+            alt="GitHub avatar"
+            className="h-16 w-16 rounded-full border border-os-accent/40 bg-os-surface2 object-cover"
+          />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-os-text">{profile.name}</p>
+            <p className="text-[0.62rem] text-os-dim">@{githubUsername}</p>
+            <p className="mt-0.5 max-w-xs truncate text-[0.62rem] text-os-text/90">
+              {profile.title}
             </p>
-            <RemoteImage
-              src={STATS_IMG_URL}
-              alt="GitHub stats: stars, commits, pull requests"
-              className="w-full max-w-[420px]"
-              loading="lazy"
-            />
           </div>
-          <div className="border border-os-border bg-os-surface2/40 p-3">
-            <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
-              Top Languages
-            </p>
-            <RemoteImage
-              src={TOP_LANGS_URL}
-              alt="Top languages from GitHub profile"
-              className="w-full max-w-[540px]"
-              loading="lazy"
-            />
+          <div className="ml-auto flex items-center gap-2 text-[0.6rem] text-os-dim">
+            {profile.location && (
+              <span className="hidden items-center gap-1 sm:flex" title="Location">
+                <AppIcon name="location" size={12} />
+                {profile.location}
+              </span>
+            )}
+            {repos && (
+              <span>{repos.filter((r) => !r.fork).length} public repos</span>
+            )}
           </div>
+          <a
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open GitHub profile in new tab"
+            className="flex shrink-0 items-center gap-1.5 border border-os-border px-2.5 py-1.5 text-[0.62rem] text-os-text hover:border-os-green hover:text-os-green"
+          >
+            <AppIcon name="github" size={13} /> Open Profile
+          </a>
         </div>
 
-        <div className="mt-3 border-t border-os-border pt-3">
+        {rank && (
+          <a
+            href={`https://committers.top/${RANK_AREA}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-3 flex items-center gap-3 border-y border-os-green/30 bg-os-green/5 px-3 py-2 hover:bg-os-green/10"
+          >
+            <TrophyIcon className="shrink-0 text-os-green" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[0.55rem] uppercase tracking-[0.18em] text-os-dim">
+                {rank.area} · {rank.metric}
+              </p>
+              <p className="flex items-baseline gap-2">
+                <span className="font-arcade text-xl leading-none text-os-green">
+                  #{rank.rank}
+                </span>
+                <span className="text-[0.62rem] text-os-text">committers.top</span>
+              </p>
+            </div>
+            <span className="shrink-0 text-[0.62rem] text-os-green" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        )}
+
+        <div className="mb-3 w-full border border-os-border bg-os-surface2/40 p-3">
+          <RemoteImage
+            src={TOP_LANGS_URL}
+            alt="Top languages from GitHub profile"
+            className="w-full"
+            loading="lazy"
+          />
+        </div>
+
+        <div className="border-t border-os-border pt-3">
           <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
             Repositories
           </p>

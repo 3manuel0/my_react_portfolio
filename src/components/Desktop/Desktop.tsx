@@ -12,6 +12,7 @@ const DESKTOP_ICONS: { appId: AppId; label: string }[] = [
   { appId: "education", label: "Education" },
   { appId: "github", label: "GitHub" },
   { appId: "contact", label: "Contact" },
+  { appId: "files", label: "Files" },
   { appId: "terminal", label: "Terminal" },
   { appId: "system", label: "System" },
   { appId: "game", label: "2D Platformer" },

@@ -136,8 +136,16 @@ export function buildPortfolioFS(): FSDir {
             file(
               block(
                 <span className="font-bold text-os-green">{c.name}</span>,
-                <span className="text-os-text">handle: {c.handle}</span>,
-                <a className="text-os-blue underline decoration-dotted underline-offset-2" href={c.url} target="_blank" rel="noopener noreferrer">{c.url}</a>,
+                c.url ? (
+                  <>
+                    <span className="text-os-text">handle: {c.handle}</span>
+                    <a className="text-os-blue underline decoration-dotted underline-offset-2" href={c.url} target="_blank" rel="noopener noreferrer">{c.url}</a>
+                  </>
+                ) : (
+                  <span className="text-os-text">
+                    handle: {c.handle} &#8212; copy it and send an invite to connect
+                  </span>
+                ),
               ),
             ),
           ]),

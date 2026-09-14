@@ -28,6 +28,15 @@ const ExperienceApp: React.FC = () => {
                     </p>
                     <p className="text-[0.6rem] text-os-dim">{entry.company}</p>
                   </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[0.58rem] text-os-dim">
+                    <span>{entry.period}</span>
+                    {entry.location && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span>{entry.location}</span>
+                      </>
+                    )}
+                  </div>
                   <p className="mt-1.5 text-[0.68rem] leading-relaxed text-os-text">
                     {entry.description}
                   </p>

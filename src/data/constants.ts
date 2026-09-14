@@ -1,0 +1,1 @@
+export const KERNEL_VERSION = "6.9.0-webassembly";

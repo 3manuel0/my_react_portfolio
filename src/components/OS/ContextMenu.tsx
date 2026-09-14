@@ -7,7 +7,6 @@ import {
   wallpaperLabel,
   type WallpaperId,
 } from "../Desktop/Wallpaper";
-import MatrixRain from "./MatrixRain";
 import RmFakeTerminal from "./RmFakeTerminal";
 
 interface MenuPos {
@@ -38,12 +37,10 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
   const { openApp } = useWindowManager();
   const { mode, override, setOverride } = useOsMode();
   const [pos, setPos] = useState<MenuPos | null>(null);
-  const [matrix, setMatrix] = useState(false);
   const [rm, setRm] = useState<RmStage>("off");
   const [restarting, setRestarting] = useState(false);
   const [shutdown, setShutdown] = useState<"off" | "shutting" | "safe">("off");
   const [locked, setLocked] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
   const [clock, setClock] = useState<number>(Date.now());
 
   const rmRef = useRef<RmStage>("off");
@@ -113,13 +110,6 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
     close();
   };
 
-  const toggleMatrix = () => {
-    setMatrix((v) => !v);
-    setToast(matrixTo ? "leaving the matrix..." : "wake up, neo...");
-    close();
-  };
-  const matrixTo = matrix;
-
   const toggleInvert = () => {
     onInvert(!invert);
     close();
@@ -133,12 +123,6 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
   const onRmFinished = () => {
     setRm("bsod");
     window.setTimeout(() => setRm("off"), 6500);
-  };
-
-  const dontClick = () => {
-    close();
-    setToast("nothing to see here. the file was imaginary too.");
-    window.setTimeout(() => setToast(null), 2800);
   };
 
   const lockNow = () => {
@@ -186,10 +170,8 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
     {
       label: "Fun",
       items: [
-        { label: "Enter the Matrix", active: matrix, onPick: toggleMatrix },
         { label: "Invert Colors", active: invert, onPick: toggleInvert },
         { label: "sudo rm -rf /", danger: true, onPick: sudoRm },
-        { label: "Don't click this", onPick: dontClick },
       ],
     },
     {
@@ -215,8 +197,6 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
 
   return (
     <>
-      {matrix && <MatrixRain />}
-
       {pos && (
         <div
           data-context-menu
@@ -263,12 +243,6 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
             3manuelOS ctx.v1
             <span className="ml-auto">ctrl+alt+&#8592;/&#8594; switch</span>
           </div>
-        </div>
-      )}
-
-      {toast && (
-        <div className="menu-enter fixed left-1/2 top-6 z-[10080] -translate-x-1/2 border border-os-border2 bg-os-surface/95 px-3 py-2 text-[0.68rem] text-os-text shadow-lg backdrop-blur">
-          {toast}
         </div>
       )}
 

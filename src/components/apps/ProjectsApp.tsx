@@ -186,7 +186,7 @@ const ProjectsApp: React.FC = () => {
               </p>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto p-3">
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {projects.map((p) => (
                   <ProjectCard
                     key={p.name}

@@ -6,9 +6,10 @@ interface MailItem {
   id: number;
   from: string;
   subject: string;
-  url: string;
+  url?: string;
+  copy?: string;
   body: string[];
-  type: "github" | "linkedin" | "x" | "web";
+  type: "github" | "linkedin" | "x" | "discord";
 }
 
 const MAILS: MailItem[] = [
@@ -45,14 +46,14 @@ const MAILS: MailItem[] = [
   },
   {
     id: 4,
-    from: "Website",
-    subject: "Visit my portfolio",
-    url: profile.website,
+    from: "Discord",
+    subject: "Message me on Discord",
+    copy: "3manuel",
     body: [
-      "My personal site built as an interactive desktop experience.",
-      "Browse projects, skills, and everything I'm working on.",
+      "Username: 3manuel",
+      "Copy it and send me a friend request to start a chat.",
     ],
-    type: "web",
+    type: "discord",
   },
 ];
 
@@ -60,7 +61,7 @@ const TYPE_ICON: Record<MailItem["type"], string> = {
   github: "github",
   linkedin: "linkedin",
   x: "x",
-  web: "home",
+  discord: "discord",
 };
 
 const ContactApp: React.FC = () => {
@@ -139,40 +140,63 @@ const ContactApp: React.FC = () => {
   );
 };
 
-const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => (
-  <div>
-    <p className="text-[0.6rem] text-os-dim">From: {active.from}</p>
-    <h2 className="mt-0.5 text-sm font-bold text-os-text">{active.subject}</h2>
+const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard?.writeText(active.copy ?? "").catch(() => {});
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1500);
+  };
 
-    <div className="my-3 border border-os-border bg-os-surface2/50 p-3">
-      {active.body.map((line) => (
-        <p key={line} className="mb-2 text-[0.7rem] leading-relaxed text-os-text">
-          {line}
-        </p>
-      ))}
-    </div>
+  return (
+    <div>
+      <p className="text-[0.6rem] text-os-dim">From: {active.from}</p>
+      <h2 className="mt-0.5 text-sm font-bold text-os-text">{active.subject}</h2>
 
-    <div className="flex flex-wrap items-center gap-2">
-      <a
-        href={active.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Open ${active.from} contact`}
-        className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"
-      >
-        <AppIcon name={TYPE_ICON[active.type] as never} size={14} />
-        Open {active.from}
-      </a>
-      <span className="min-w-0 truncate text-[0.58rem] text-os-dim">{active.url}</span>
-    </div>
+      <div className="my-3 border border-os-border bg-os-surface2/50 p-3">
+        {active.body.map((line) => (
+          <p key={line} className="mb-2 text-[0.7rem] leading-relaxed text-os-text">
+            {line}
+          </p>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {active.copy ? (
+          <button
+            type="button"
+            onClick={copy}
+            aria-label={`Copy ${active.from} username`}
+            className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"
+          >
+            <AppIcon name={TYPE_ICON[active.type] as never} size={14} />
+            {copied ? "Copied!" : "Copy username"}
+          </button>
+        ) : (
+          <a
+            href={active.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open ${active.from} contact`}
+            className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"
+          >
+            <AppIcon name={TYPE_ICON[active.type] as never} size={14} />
+            Open {active.from}
+          </a>
+        )}
+        <span className="min-w-0 truncate text-[0.58rem] text-os-dim">
+          {active.copy ?? active.url}
+        </span>
+      </div>
 
     <div className="mt-5 border-t border-os-border pt-3 font-mono text-[0.6rem] text-os-dim">
-      <p>
-        <span className="text-os-green">{">"} _</span> replies usually within 24h
-        &#8212; {profile.website}
-      </p>
+        <p>
+          <span className="text-os-green">{">"} _</span> replies usually within 24h
+          &#8212; {profile.website}
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default ContactApp;

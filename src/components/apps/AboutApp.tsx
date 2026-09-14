@@ -1,5 +1,5 @@
-import React from "react";
-import { contactLinks, education, experience, profile, skills } from "../../data/portfolio";
+import React, { useState } from "react";
+import { certifications, contactLinks, education, experience, profile, skills, type ContactLink } from "../../data/portfolio";
 import { TechIcon, Title } from "./shared";
 import { AppIcon } from "../AppIcons";
 
@@ -11,14 +11,94 @@ const AboutApp: React.FC = () => {
     "Other",
   ] as const;
 
-  const iconFor = (name: string): "github" | "linkedin" | "x" | "about" =>
-    name === "GitHub" ? "github" : name === "LinkedIn" ? "linkedin" : name === "X (Twitter)" ? "x" : "about";
+  const iconFor = (name: string): "github" | "linkedin" | "x" | "discord" | "about" =>
+    name === "GitHub" ? "github"
+      : name === "LinkedIn" ? "linkedin"
+      : name === "X (Twitter)" ? "x"
+      : name === "Discord" ? "discord"
+      : "about";
+
+  const copyValue = (c: ContactLink) => c.copy ?? c.handle;
+
+  const ContactIconButton: React.FC<{ link: ContactLink }> = ({ link }) => {
+    const [copied, setCopied] = useState(false);
+    const copy = () => {
+      navigator.clipboard?.writeText(copyValue(link)).catch(() => {});
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    };
+    if (link.url) {
+      return (
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={link.name}
+          aria-label={link.name}
+          className="flex h-9 w-9 items-center justify-center border border-os-border bg-os-surface2 text-os-dim transition-colors hover:border-os-accent hover:text-os-accent"
+        >
+          <AppIcon name={iconFor(link.name)} size={18} />
+        </a>
+      );
+    }
+    return (
+      <button
+        type="button"
+        title={`Copy ${link.name} username: ${copyValue(link)}`}
+        aria-label={`Copy ${link.name} username`}
+        onClick={copy}
+        className="flex h-9 w-9 items-center justify-center border border-os-border bg-os-surface2 text-os-dim transition-colors hover:border-os-accent hover:text-os-accent"
+      >
+        {copied ? (
+          <span className="text-[0.6rem] font-bold text-os-green">&#10003;</span>
+        ) : (
+          <AppIcon name={iconFor(link.name)} size={18} />
+        )}
+      </button>
+    );
+  };
+
+  const ContactPill: React.FC<{ link: ContactLink }> = ({ link }) => {
+    const [copied, setCopied] = useState(false);
+    const copy = () => {
+      navigator.clipboard?.writeText(copyValue(link)).catch(() => {});
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    };
+    const classes =
+      "flex items-center gap-1.5 border border-os-border px-2 py-1.5 text-[0.62rem] text-os-text hover:border-os-accent hover:text-os-accent";
+    const inner = (
+      <>
+        <AppIcon name={iconFor(link.name)} size={13} />
+        {link.name}
+        <span className="text-os-dim">{link.handle}</span>
+      </>
+    );
+    if (link.url) {
+      return (
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes}
+        >
+          {inner}
+        </a>
+      );
+    }
+    return (
+      <button type="button" title={`Copy ${link.name} username: ${copyValue(link)}`} onClick={copy} className={classes}>
+        {inner}
+        {copied ? <span className="font-bold text-os-green">&#10003; copied</span> : null}
+      </button>
+    );
+  };
 
   const summary = [
     "Full-Stack Web Developer and Software Engineering student.",
     "Deep focus on C/C++, manual memory management, and low-level systems.",
     "Currently implementing Machine Learning concepts from the ground up in C.",
-    "Shipped games, emulators, CLI tools, web apps, and infrastructure.",
+    "Shipped games, CLI tools, and web apps.",
   ];
 
   return (
@@ -51,17 +131,7 @@ const AboutApp: React.FC = () => {
         </div>
         <div className="flex shrink-0 gap-2">
           {contactLinks.map((c) => (
-            <a
-              key={c.name}
-              href={c.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={c.name}
-              aria-label={c.name}
-              className="flex h-9 w-9 items-center justify-center border border-os-border bg-os-surface2 text-os-dim transition-colors hover:border-os-accent hover:text-os-accent"
-            >
-              <AppIcon name={iconFor(c.name)} size={18} />
-            </a>
+            <ContactIconButton key={c.name} link={c} />
           ))}
         </div>
       </div>
@@ -134,21 +204,32 @@ const AboutApp: React.FC = () => {
             ))}
           </div>
 
+          <div className="mt-5">
+            <Title>Certifications</Title>
+            {certifications.map((c) => (
+              <p key={c.url} className="mt-1 text-[0.68rem] leading-relaxed text-os-text">
+                <span className="font-bold text-os-accent">{c.name}</span>
+                <a
+                  href={c.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-1 inline-flex items-center gap-1 text-os-blue underline decoration-dotted underline-offset-2 hover:text-os-green"
+                >
+                  verify
+                  <span aria-hidden="true">&#8599;</span>
+                </a>
+                <span className="block text-os-dim">
+                  {c.issuer} &#183; {c.year}
+                </span>
+              </p>
+            ))}
+          </div>
+
           <div className="mt-5 border-t border-os-border pt-3">
             <Title>Contact</Title>
             <div className="flex flex-wrap gap-2">
               {contactLinks.map((c) => (
-                <a
-                  key={c.name}
-                  href={c.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 border border-os-border px-2 py-1.5 text-[0.62rem] text-os-text hover:border-os-accent hover:text-os-accent"
-                >
-                  <AppIcon name={iconFor(c.name)} size={13} />
-                  {c.name}
-                  <span className="text-os-dim">{c.handle}</span>
-                </a>
+                <ContactPill key={c.name} link={c} />
               ))}
             </div>
           </div>

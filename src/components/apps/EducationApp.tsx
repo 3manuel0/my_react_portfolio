@@ -24,6 +24,9 @@ const EducationApp: React.FC = () => {
                   {ed.degree}
                 </h2>
                 <p className="text-[0.7rem] text-os-blue">{ed.field}</p>
+                {ed.location && (
+                  <p className="mt-0.5 text-[0.62rem] text-os-dim">{ed.location}</p>
+                )}
               </div>
               <div className="shrink-0 text-right">
                 <p className="font-mono text-[0.58rem] text-os-dim">{ed.period}</p>

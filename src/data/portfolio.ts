@@ -27,7 +27,15 @@ export const profile = {
   bio: "I focus on C and manual memory management, prioritizing lean foundations over heavy abstractions. While I use JavaScript and Python for automation and tooling, I am currently exploring Machine Learning by implementing concepts from the ground up in C. A Void Linux user, I value a development workflow built on transparency and technical control.",
 };
 
-export const contactLinks = [
+export interface ContactLink {
+  name: string;
+  handle: string;
+  url?: string;
+  /** Discord-style: no direct link — the value to copy so people can send a friend request. */
+  copy?: string;
+}
+
+export const contactLinks: ContactLink[] = [
   {
     name: "GitHub",
     url: "https://github.com/3manuel0",
@@ -42,6 +50,11 @@ export const contactLinks = [
     name: "X (Twitter)",
     url: "https://x.com/3manuel_s",
     handle: "@3manuel_s",
+  },
+  {
+    name: "Discord",
+    handle: "3manuel",
+    copy: "3manuel",
   },
 ];
 
@@ -228,6 +241,8 @@ export const allProjects: ProjectType[] = [
 export interface ExperienceEntry {
   role: string;
   company: string;
+  period: string;
+  location: string;
   description: string;
 }
 
@@ -240,6 +255,7 @@ export interface EducationEntry {
   degree: string;
   field: string;
   school: string;
+  location: string;
   period: string;
   status: string;
 }
@@ -249,22 +265,33 @@ export const experience: ExperienceGroup[] = [
     year: "2025",
     entries: [
       {
+        role: "C Programming Tutor",
+        company: "Freelance",
+        period: "Aug 2025 - Present",
+        location: "Remote",
+        description:
+          "Provided one-on-one online tutoring in C programming, covering topics such as fundamentals, pointers, arrays, and memory management. Guided students through exercises and small projects to improve their problem-solving and low-level programming skills. Created personalized learning materials and practical examples tailored to each student's level and goals.",
+      },
+      {
         role: "Full-Stack Developer Intern",
         company: "MTDS",
+        period: "May 2025 (2 months)",
+        location: "Rabat, Morocco (Hybrid)",
         description:
-          "Built internal web applications for banking clients, including OCR-based balance checking with Flask/MySQL and a VPS configuration platform using PHP/JS.",
+          "Designed and developed a responsive web application that allows users to configure and order custom VPS servers, selecting RAM, CPU, storage, and licenses. Implemented a secure client system and an administrative panel for order tracking, updates, and configuration management using PHP, JavaScript, and SQL. Integrated dynamic frontend elements with AJAX to ensure smooth and responsive user interactions.",
       },
+    ],
+  },
+  {
+    year: "2024",
+    entries: [
       {
-        role: "Freelance C Tutor",
-        company: "Independent",
+        role: "Web Developer Intern",
+        company: "Managtech",
+        period: "Sept 2024 (1 month)",
+        location: "Rabat, Morocco",
         description:
-          "Provided one-on-one tutoring in the C programming language, covering memory management, pointers, and systems-level concepts.",
-      },
-      {
-        role: "Freelance Developer",
-        company: "Independent",
-        description:
-          "Delivered custom games and web experiences for clients (chess puzzle website, flag trivia, memory game) using Python/Pygame and vanilla JS.",
+          "Developed a Flask-based web application that compares client names extracted from uploaded PDF/XLS files with a master database of bank clients. Integrated OCR capabilities using pytesseract to extract and process data from scanned documents. Implemented robust error handling and a clean user interface using HTML, CSS, and JavaScript to improve accuracy and user experience.",
       },
     ],
   },
@@ -272,12 +299,29 @@ export const experience: ExperienceGroup[] = [
     year: "2023",
     entries: [
       {
-        role: "Started Systems Programming",
-        company: "Personal projects",
+        role: "Freelance Full-Stack Developer / Automation Programmer",
+        company: "Self-Employed",
+        period: "Apr 2023 - Present",
+        location: "Remote",
         description:
-          "Began building low-level projects in C: a GameBoy emulator, CSV parser, and custom utility libraries with manual memory allocation.",
+          "Delivered full-stack web solutions for various international clients, focusing on both frontend and backend development. Built responsive websites and admin dashboards using PHP, React, JavaScript, HTML, and CSS, with data management in MySQL and SQLite. Developed Python automation scripts for web scraping, file extraction, and workflow optimization. Created small-scale games and interactive tools using Pygame and Python. Collaborated directly with clients to gather requirements, design features, and deliver maintainable, production-ready code.",
       },
     ],
+  },
+];
+
+export const certifications = [
+  {
+    name: "CodinGame Certification — Python 3",
+    issuer: "CodinGame (Verify)",
+    year: "2025",
+    url: "https://www.codingame.com/certification/3NVm0g6PyhxfwXhdnVp8zQ",
+  },
+  {
+    name: "CodinGame Certification — C",
+    issuer: "CodinGame (Verify)",
+    year: "2025",
+    url: "https://www.codingame.com/certification/Raf4-S25vVVg-APrkRpwsQ",
   },
 ];
 
@@ -285,16 +329,25 @@ export const education: EducationEntry[] = [
   {
     degree: "Engineering Degree (Cycle d'Ingénierie)",
     field: "Computer Engineering",
-    school:
-      "École Supérieure de Management de Télécommunication et d'Informatique (Sup MTI)",
-    period: "Oct 2025 – Oct 2028",
+    school: "École Supérieure de Management de Télécommunication et d'Informatique (Sup MTI)",
+    location: "Rabat, Morocco",
+    period: "2025 - 2028 (Expected)",
     status: "Engineering student",
   },
   {
     degree: "Specialized Technician Diploma (Technicien Spécialisé)",
     field: "Software Development",
-    school: "MIAGE Rabat",
-    period: "Oct 2023 – Oct 2025",
+    school: "Group MIAGE Rabat-Salé",
+    location: "Rabat, Morocco",
+    period: "2023 - 2025",
+    status: "Graduated",
+  },
+  {
+    degree: "Baccalauréat",
+    field: "Physics & Chemistry",
+    school: "Si Jil Masa High School",
+    location: "Errachidia, Morocco",
+    period: "2018",
     status: "Graduated",
   },
 ];

@@ -1,14 +1,15 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { profile } from "../../data/portfolio";
+import { KERNEL_VERSION } from "../../data/constants";
 
-const VOID_ART = [
-  "    _______",
-  " _ \\______ -",
-  "| \\  ___  \\ |",
-  "| | /   \\ | |",
-  "| | \\___/ | |",
-  "| \\______ \\_|",
-  " -_______\\",
+const OS_ART = [
+  "  .-------.",
+  "  | 3m  OS|",
+  "  |-------|",
+  "  | $ _   |",
+  "  |       |",
+  "  |       |",
+  "  '-------'",
 ];
 
 const MEM_TOTAL = 16;
@@ -42,12 +43,12 @@ const SystemInfoApp: React.FC = () => {
   const memBarFilled = Math.round(memPct / 10);
 
   const rows: [string, ReactNode][] = [
-    ["OS", <span key="os"><span className="text-os-green">Void Linux</span> (x86_64)</span>],
+    ["OS", <span key="os"><span className="text-os-green">3manuelOS</span> (webassembly)</span>],
     ["Host", profile.website],
-    ["Kernel", "6.9.0-void"],
+    ["Kernel", KERNEL_VERSION],
     ["Uptime", uptime],
     ["Shell", "bash 5.2.26"],
-    ["CPU", "8 cores @ 3.8GHz (CISC, void-safe)"],
+    ["CPU", "8 cores @ 3.8GHz (CISC, browser-safe)"],
     [
       "Memory",
       <span key="mem" className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
@@ -75,7 +76,7 @@ const SystemInfoApp: React.FC = () => {
           className="shrink-0 select-none whitespace-pre text-[0.8rem] leading-[1.25] text-os-green sm:text-[0.9rem]"
           aria-hidden="true"
         >
-          {VOID_ART.join("\n")}
+          {OS_ART.join("\n")}
         </pre>
 
         {/* Info */}

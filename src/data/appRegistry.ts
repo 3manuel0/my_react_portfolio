@@ -47,7 +47,7 @@ export const APPS: Record<AppId, AppDescriptor> = {
   projects: {
     id: "projects",
     title: "Projects",
-    icon: "projects",
+    icon: "source",
     defaultSize: { width: 760, height: 560 },
     component: ProjectsApp,
     category: "Portfolio",
@@ -120,7 +120,7 @@ export const APPS: Record<AppId, AppDescriptor> = {
   files: {
     id: "files",
     title: "Files",
-    icon: "folder",
+    icon: "projects",
     defaultSize: { width: 640, height: 480 },
     component: FilesApp,
     category: "System",

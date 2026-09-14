@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { profile } from "../../data/portfolio";
+import { KERNEL_VERSION } from "../../data/constants";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import type { AppId } from "../../data/appRegistry";
 import {
@@ -64,6 +65,7 @@ const HELP: [string, string][] = [
 const TerminalApp: React.FC = () => {
   const [lines, setLines] = useState<Line[]>([]);
   const [input, setInput] = useState("");
+  const [cursor, setCursor] = useState(0);
   const [history, setHistory] = useState<string[]>([]);
   const [histIdx, setHistIdx] = useState(-1);
   const [cwd, setCwd] = useState(HOME);
@@ -92,7 +94,7 @@ const TerminalApp: React.FC = () => {
           <div>
             <p>
               <span className="font-bold text-os-green">3manuel OS</span>{" "}
-              <span className="text-os-dim">shell -- portfolio-wm v1.0 / kernel 6.9.0-webassembly</span>
+              <span className="text-os-dim">{`shell -- portfolio-wm v1.0 / kernel ${KERNEL_VERSION}`}</span>
             </p>
             <p className="text-os-dim">
               a real little filesystem, full tab completion. type{" "}
@@ -108,6 +110,7 @@ const TerminalApp: React.FC = () => {
     if (isActive) {
       inputRef.current?.focus();
       inputRef.current?.setSelectionRange(valueRef.current.length, valueRef.current.length);
+      setCursor(valueRef.current.length);
     }
   }, [isActive]);
 
@@ -278,7 +281,7 @@ const TerminalApp: React.FC = () => {
                 </p>
                 <p>
                   <span className="inline-block w-24 text-os-blue">Kernel:</span>{" "}
-                  6.9.0-webassembly
+                  {KERNEL_VERSION}
                 </p>
                 <p>
                   <span className="inline-block w-24 text-os-blue">Shell:</span>{" "}
@@ -358,6 +361,7 @@ const TerminalApp: React.FC = () => {
     setHistIdx(-1);
     runCommand(text);
     setInput("");
+    setCursor(0);
   }, [runCommand]);
 
   const navHistory = useCallback(
@@ -367,15 +371,18 @@ const TerminalApp: React.FC = () => {
         if (history[next]) {
           setHistIdx(next);
           setInput(history[next]);
+          setCursor(history[next].length);
         }
       } else {
         const next = histIdx - 1;
         if (next < 0) {
           setHistIdx(-1);
           setInput("");
+          setCursor(0);
         } else {
           setHistIdx(next);
           setInput(history[next]);
+          setCursor(history[next].length);
         }
       }
     },
@@ -391,6 +398,7 @@ const TerminalApp: React.FC = () => {
       const matches = COMMANDS.filter((c) => c.startsWith(partial));
       if (matches.length === 1) {
         setInput(matches[0]);
+        setCursor(matches[0].length);
       } else if (matches.length > 1) {
         print(text, (
           <p className="text-os-text">
@@ -408,7 +416,9 @@ const TerminalApp: React.FC = () => {
       const partial = tokens[tokens.length - 1];
       const matches = completePath(fsRef.current!, cwdRef.current, partial);
       if (matches.length === 1) {
-        setInput(tokens.slice(0, -1).join(" ") + " " + matches[0]);
+        const next = tokens.slice(0, -1).join(" ") + " " + matches[0];
+        setInput(next);
+        setCursor(next.length);
       } else if (matches.length > 1) {
         print(text, (
           <p className="text-os-text">
@@ -435,6 +445,7 @@ const TerminalApp: React.FC = () => {
         e.preventDefault();
         setLines((prev) => [...prev, { input: "^C", output: null }]);
         setInput("");
+        setCursor(0);
         setHistIdx(-1);
         return;
       }
@@ -455,6 +466,7 @@ const TerminalApp: React.FC = () => {
       if (e.key === "Backspace") {
         e.preventDefault();
         setInput((v) => v.slice(0, -1));
+        setCursor(Math.max(0, valueRef.current.length - 1));
         return;
       }
       if (e.key === "Tab") {
@@ -474,6 +486,7 @@ const TerminalApp: React.FC = () => {
       }
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
         setInput((v) => v + e.key);
+        setCursor(valueRef.current.length + 1);
       }
     };
     document.addEventListener("keydown", onKey, true);
@@ -537,7 +550,13 @@ const TerminalApp: React.FC = () => {
               ref={inputRef}
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.currentTarget.value);
+                setCursor(e.currentTarget.selectionStart ?? e.currentTarget.value.length);
+              }}
+              onSelect={(e) =>
+                setCursor(e.currentTarget.selectionStart ?? e.currentTarget.value.length)
+              }
               onKeyDown={onKeyDownInput}
               aria-label="Terminal command input"
               autoComplete="off"
@@ -546,8 +565,11 @@ const TerminalApp: React.FC = () => {
               className="absolute inset-0 h-full w-full bg-transparent text-transparent caret-transparent outline-none"
             />
             <span className="pointer-events-none select-none whitespace-pre-wrap break-all">
-              <span className="text-os-text">{input}</span>
+              <span className="text-os-text">{input.slice(0, cursor)}</span>
               <span className="terminal-block-cursor" aria-hidden="true" />
+              {input.length > cursor && (
+                <span className="text-os-text">{input.slice(cursor)}</span>
+              )}
             </span>
           </span>
         </form>

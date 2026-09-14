@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from "react";
 
-export type WallpaperId = "tron" | "matrix" | "synthwave" | "void";
+export type WallpaperId = "tron" | "synthwave";
 
 interface WallpaperProps {
   variant: WallpaperId;
@@ -9,9 +9,7 @@ interface WallpaperProps {
 
 const WALLPAPERS: Record<WallpaperId, { label: string }> = {
   tron: { label: "Neon Tron" },
-  matrix: { label: "Matrix" },
   synthwave: { label: "Synthwave" },
-  void: { label: "Void" },
 };
 
 export const WALLPAPER_IDS = Object.keys(WALLPAPERS) as WallpaperId[];
@@ -77,51 +75,6 @@ const Tron: React.FC = () => (
   </svg>
 );
 
-const GLYPHS = "アイウエオカキクケコ0139ABCDEF$#<>";
-
-const Matrix: React.FC = () => (
-  <svg
-    className="h-full w-full"
-    viewBox="0 0 1440 900"
-    preserveAspectRatio="xMidYMid slice"
-  >
-    <defs>
-      <radialGradient id="mGlow" cx="50%" cy="40%" r="90%">
-        <stop offset="0%" stopColor="#0b1f14" />
-        <stop offset="60%" stopColor="#06130c" />
-        <stop offset="100%" stopColor="#020804" />
-      </radialGradient>
-      <pattern id="mGrid" width="36" height="36" patternUnits="userSpaceOnUse">
-        <path d="M36 0H0V36" fill="none" stroke="#0e3d26" strokeWidth="1" />
-      </pattern>
-    </defs>
-
-    <rect width="1440" height="900" fill="url(#mGlow)" />
-    <rect width="1440" height="900" fill="url(#mGrid)" opacity="0.6" />
-
-    <g fontFamily="monospace" fontWeight="bold">
-      {Array.from({ length: 24 }).map((_, col) => (
-        <g key={col} fill="#0f4130" opacity={0.25 + (col % 4) * 0.12}>
-          {Array.from({ length: 26 }).map((_, row) => (
-            <text
-              key={row}
-              x={20 + col * 60}
-              y={30 + row * 36}
-              fontSize="20"
-            >
-              {GLYPHS[(col * 13 + row * 7) % GLYPHS.length]}
-            </text>
-          ))}
-        </g>
-      ))}
-    </g>
-
-    <text x="1080" y="820" fontSize="26" fill="#5eead4" opacity="0.7" fontFamily="monospace">
-      wake up, neo...
-    </text>
-  </svg>
-);
-
 const Synthwave: React.FC = () => (
   <svg
     className="h-full w-full"
@@ -176,63 +129,12 @@ const Synthwave: React.FC = () => (
   </svg>
 );
 
-const VoidWp: React.FC = () => (
-  <svg
-    className="h-full w-full"
-    viewBox="0 0 1440 900"
-    preserveAspectRatio="xMidYMid slice"
-  >
-    <defs>
-      <radialGradient id="vBg" cx="50%" cy="50%" r="75%">
-        <stop offset="0%" stopColor="#0d1117" />
-        <stop offset="100%" stopColor="#05070a" />
-      </radialGradient>
-    </defs>
-
-    <rect width="1440" height="900" fill="url(#vBg)" />
-
-    <g stroke="#2a3a4d" strokeWidth="1.5" fill="none" opacity="0.8">
-      <g transform="translate(648, 330) scale(8)">
-        <path d="M0 8 L6 8 6 12 0 12 Z" />
-        <path d="M9 8 L15 8 15 12 9 12 Z" />
-      </g>
-      <g transform="translate(700, 330) scale(8)">
-        <path d="M0 6 L7 10 L0 14" />
-      </g>
-    </g>
-
-    <g fill="#3d4d63" opacity="0.4" fontFamily="monospace" fontSize="18">
-      {Array.from({ length: 7 }).map((_, i) => (
-        <text key={i} x={80 + i * 80} y={140} opacity={0.5 - i * 0.05}>
-          {Array.from({ length: 6 })
-            .map(() => "01")
-            .join("")}
-        </text>
-      ))}
-    </g>
-
-    <text
-      x="720"
-      y="620"
-      textAnchor="middle"
-      fontFamily="monospace"
-      fontSize="22"
-      fill="#9ece6a"
-      opacity="0.5"
-    >
-      $ void-run fast --free && stay minimal
-    </text>
-  </svg>
-);
-
 const WALLPAPER_COMPONENTS: Record<
   WallpaperId,
   React.ComponentType
 > = {
   tron: Tron,
-  matrix: Matrix,
   synthwave: Synthwave,
-  void: VoidWp,
 };
 
 const Wallpaper: React.FC<WallpaperProps> = ({ variant }) => {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { KERNEL_VERSION } from "../../data/constants";
 
 const BOOT_LINES = [
   "Initializing portfolio... [ OK ]",
@@ -36,7 +37,7 @@ const BootScreen: React.FC<{ onDone: () => void }> = ({ onDone }) => {
       <div className="w-[320px] sm:w-[400px] font-mono text-[0.72rem] leading-relaxed">
         <p className="text-lg font-bold text-os-accent">3manuel OS</p>
         <p className="mb-3 text-os-dim">
-          {`3manuel-os ${new Date().getFullYear()} -- kernel 6.9.0-webassembly`}
+          {`3manuel-os ${new Date().getFullYear()} -- kernel ${KERNEL_VERSION}`}
         </p>
         <div className="border border-os-border p-3">
           {Array.from({ length: visibleLines }).map((_, i) => (
