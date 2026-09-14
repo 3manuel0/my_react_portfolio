@@ -19,75 +19,19 @@ self.fetch = function (input, init) {
 };
 
 // ---------------------------------------------------------------
-// 2.  Save/load relay.
+// 2.  Save/load disabled.
 //     The web build of the game reads/writes wasm memory directly and the
-//     page script persisted it to localStorage. Workers can't touch
-//     localStorage, so we cache the save here and tell the main thread to
-//     persist it. The main thread feeds the initial save back via
-//     { type: "save-data" }.
+//     page script persisted it to localStorage. Save/load is intentionally
+//     turned off here (game state is not persisted between sessions). The
+//     glue still CALLS these env functions, so they're kept as harmless
+//     no-ops instead of being removed (an undefined reference would throw).
 // ---------------------------------------------------------------
-let _saveCache = { playerX: null, playerY: null, cameraX: null, hp: null };
-
-function _saveNow() {
-  try {
-    self.postMessage({ type: "save", data: { ..._saveCache } });
-  } catch (e) {
-    console.warn("[game] save relay failed:", e);
-  }
-}
-
-// Safety stub — workers have no localStorage; the page script used it, the
-// glue itself doesn't. Any unexpected access returns null instead of throwing.
-self.localStorage = {
-  getItem: () => null,
-  setItem: () => {},
-  removeItem: () => {},
-  clear: () => {},
-  get length() {
-    return 0;
-  },
-  key: () => null,
-};
 
 // Called by the game's env (loadSavedGame) with (player_ptr, camera_ptr).
-self.loadSave = (player_ptr, camera_ptr) => {
-  if (typeof wasm === "undefined" || !wasm?.instance) return;
-  try {
-    const buffer = wasm.instance.exports.memory.buffer;
-    const px = parseFloat(_saveCache.playerX);
-    const py = parseFloat(_saveCache.playerY);
-    const cx = parseFloat(_saveCache.cameraX);
-    const hp = parseInt(_saveCache.hp, 10);
-    new Float32Array(buffer, player_ptr, 1).set([Number.isFinite(px) ? px : 0]);
-    new Float32Array(buffer, player_ptr + 4, 1).set([Number.isFinite(py) ? py : 0]);
-    new Float32Array(buffer, camera_ptr, 1).set([Number.isFinite(cx) ? cx : 0]);
-    new Uint32Array(buffer, player_ptr + 16 + 16 + 4, 1).set([
-      Number.isFinite(hp) ? hp : 1000,
-    ]);
-  } catch (e) {
-    console.warn("[game] loadSave failed:", e);
-  }
-};
+self.loadSave = () => {};
 
 // Called by the game's env (saveGame) with (player_ptr, camera_ptr).
-self.SaveGamejs = (player_ptr, camera_ptr) => {
-  if (typeof wasm === "undefined" || !wasm?.instance) return;
-  try {
-    const buffer = wasm.instance.exports.memory.buffer;
-    const [x, y] = new Float32Array(buffer, player_ptr, 2);
-    const [camx] = new Float32Array(buffer, camera_ptr, 1);
-    const [hp] = new Uint32Array(buffer, player_ptr + 16 + 16 + 4, 1);
-    _saveCache = {
-      playerX: String(x),
-      playerY: String(y),
-      cameraX: String(camx),
-      hp: String(hp),
-    };
-    _saveNow();
-  } catch (e) {
-    console.warn("[game] SaveGamejs failed:", e);
-  }
-};
+self.SaveGamejs = () => {};
 
 // ---------------------------------------------------------------
 // 3.  Image shim — fetch + createImageBitmap in the worker
@@ -366,14 +310,8 @@ self.onmessage = function (e) {
   }
 
   if (d.type === "save-data") {
-    // Pre-populate the save cache (from localStorage on the main thread).
-    const s = d.data ?? {};
-    _saveCache = {
-      playerX: s.playerX ?? null,
-      playerY: s.playerY ?? null,
-      cameraX: s.cameraX ?? null,
-      hp: s.hp ?? null,
-    };
+    // Accepted for compatibility with older main-thread builds, but save/load
+    // is disabled — nothing to do.
     return;
   }
 
