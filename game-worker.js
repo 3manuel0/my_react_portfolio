@@ -19,8 +19,25 @@ self.fetch = function (input, init) {
 };
 
 // ---------------------------------------------------------------
-// 2.  Storage + save/load stubs (referenced by the game env)
+// 2.  Save/load relay.
+//     The web build of the game reads/writes wasm memory directly and the
+//     page script persisted it to localStorage. Workers can't touch
+//     localStorage, so we cache the save here and tell the main thread to
+//     persist it. The main thread feeds the initial save back via
+//     { type: "save-data" }.
 // ---------------------------------------------------------------
+let _saveCache = { playerX: null, playerY: null, cameraX: null, hp: null };
+
+function _saveNow() {
+  try {
+    self.postMessage({ type: "save", data: { ..._saveCache } });
+  } catch (e) {
+    console.warn("[game] save relay failed:", e);
+  }
+}
+
+// Safety stub — workers have no localStorage; the page script used it, the
+// glue itself doesn't. Any unexpected access returns null instead of throwing.
 self.localStorage = {
   getItem: () => null,
   setItem: () => {},
@@ -31,8 +48,46 @@ self.localStorage = {
   },
   key: () => null,
 };
-self.loadSave = function () {};
-self.SaveGamejs = function () {};
+
+// Called by the game's env (loadSavedGame) with (player_ptr, camera_ptr).
+self.loadSave = (player_ptr, camera_ptr) => {
+  if (typeof wasm === "undefined" || !wasm?.instance) return;
+  try {
+    const buffer = wasm.instance.exports.memory.buffer;
+    const px = parseFloat(_saveCache.playerX);
+    const py = parseFloat(_saveCache.playerY);
+    const cx = parseFloat(_saveCache.cameraX);
+    const hp = parseInt(_saveCache.hp, 10);
+    new Float32Array(buffer, player_ptr, 1).set([Number.isFinite(px) ? px : 0]);
+    new Float32Array(buffer, player_ptr + 4, 1).set([Number.isFinite(py) ? py : 0]);
+    new Float32Array(buffer, camera_ptr, 1).set([Number.isFinite(cx) ? cx : 0]);
+    new Uint32Array(buffer, player_ptr + 16 + 16 + 4, 1).set([
+      Number.isFinite(hp) ? hp : 1000,
+    ]);
+  } catch (e) {
+    console.warn("[game] loadSave failed:", e);
+  }
+};
+
+// Called by the game's env (saveGame) with (player_ptr, camera_ptr).
+self.SaveGamejs = (player_ptr, camera_ptr) => {
+  if (typeof wasm === "undefined" || !wasm?.instance) return;
+  try {
+    const buffer = wasm.instance.exports.memory.buffer;
+    const [x, y] = new Float32Array(buffer, player_ptr, 2);
+    const [camx] = new Float32Array(buffer, camera_ptr, 1);
+    const [hp] = new Uint32Array(buffer, player_ptr + 16 + 16 + 4, 1);
+    _saveCache = {
+      playerX: String(x),
+      playerY: String(y),
+      cameraX: String(camx),
+      hp: String(hp),
+    };
+    _saveNow();
+  } catch (e) {
+    console.warn("[game] SaveGamejs failed:", e);
+  }
+};
 
 // ---------------------------------------------------------------
 // 3.  Image shim — fetch + createImageBitmap in the worker
@@ -77,11 +132,54 @@ class WorkerImage {
 }
 self.Image = WorkerImage;
 
+// Audio shim — the game's LoadMusicStream does `new Audio(path)` and
+// UpdateMusicStream calls `audio.play()` every frame. Workers have no audio,
+// so we relay only real state changes to the main thread which owns an
+// HTMLAudioElement. Play is posted once (the main thread loops it).
+let _audioState = { src: null, volume: 1, loop: false, started: false };
 self.Audio = class {
-  play() {}
-  pause() {}
-  set volume(_v) {}
-  set loop(_l) {}
+  constructor(src) {
+    this._src = null;
+    if (src != null) this.src = src;
+  }
+  get src() {
+    return this._src;
+  }
+  set src(val) {
+    this._src = val;
+    _audioState.src = val;
+    _audioState.started = false;
+    self.postMessage({ type: "audio", cmd: "load", src: val });
+  }
+  play() {
+    if (!_audioState.started) {
+      _audioState.started = true;
+      self.postMessage({ type: "audio", cmd: "play", src: this._src });
+    }
+    return Promise.resolve();
+  }
+  pause() {
+    _audioState.started = false;
+    self.postMessage({ type: "audio", cmd: "pause" });
+  }
+  set volume(v) {
+    if (v !== _audioState.volume) {
+      _audioState.volume = v;
+      self.postMessage({ type: "audio", cmd: "volume", volume: v });
+    }
+  }
+  get volume() {
+    return _audioState.volume;
+  }
+  set loop(v) {
+    if (!!v !== _audioState.loop) {
+      _audioState.loop = !!v;
+      self.postMessage({ type: "audio", cmd: "loop", loop: !!v });
+    }
+  }
+  get loop() {
+    return _audioState.loop;
+  }
 };
 
 // Events like KeyboardEvent/MouseEvent don't exist in Workers — shim them.
@@ -106,12 +204,18 @@ if (typeof MouseEvent === "undefined") {
   };
 }
 
-// rAF polyfill — workers have no requestAnimationFrame
+// rAF polyfill — workers have no requestAnimationFrame. Instead of a fixed
+// setTimeout (which jitters), the MAIN THREAD drives the loop: its real
+// requestAnimationFrame posts { type:"tick", timestamp } on each vsync.
+// The shim just stores the callback; the tick message fires it.
+let _pendingRafCb = null;
+let _pendingRafId = 0;
 self.requestAnimationFrame = function (cb) {
-  return setTimeout(() => cb(performance.now()), 16);
+  _pendingRafCb = cb;
+  return ++_pendingRafId;
 };
-self.cancelAnimationFrame = function (id) {
-  clearTimeout(id);
+self.cancelAnimationFrame = function () {
+  _pendingRafCb = null;
 };
 
 // ---------------------------------------------------------------
@@ -238,6 +342,16 @@ self.document = {
 self.onmessage = function (e) {
   const d = e.data;
 
+  if (d.type === "tick") {
+    // Main thread's real requestAnimationFrame fires this on each vsync.
+    if (_pendingRafCb) {
+      const cb = _pendingRafCb;
+      _pendingRafCb = null;
+      cb(d.timestamp);
+    }
+    return;
+  }
+
   if (d.type === "canvas") {
     try {
       _offscreen = d.canvas;
@@ -248,6 +362,18 @@ self.onmessage = function (e) {
       console.error("[game] failed to initialise OffscreenCanvas:", err);
       self.postMessage({ type: "error", message: String(err) });
     }
+    return;
+  }
+
+  if (d.type === "save-data") {
+    // Pre-populate the save cache (from localStorage on the main thread).
+    const s = d.data ?? {};
+    _saveCache = {
+      playerX: s.playerX ?? null,
+      playerY: s.playerY ?? null,
+      cameraX: s.cameraX ?? null,
+      hp: s.hp ?? null,
+    };
     return;
   }
 
