@@ -219,6 +219,96 @@ img.pixelated {
   animation: terminal-blink 1.05s step-end infinite;
 }
 
+/* Phone (Android) transitions */
+@keyframes phone-app-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes phone-app-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+.phone-app-enter {
+  animation: phone-app-in 180ms ease-out;
+}
+.phone-app-leave {
+  animation: phone-app-out 150ms ease-in forwards;
+}
+
+@keyframes phone-shade-in {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.phone-shade-enter {
+  animation: phone-shade-in 240ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+@keyframes phone-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes phone-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.phone-enter {
+  animation: phone-fade-in 200ms ease-out;
+}
+.phone-leave {
+  animation: phone-fade-out 180ms ease-in forwards;
+}
+
+@keyframes phone-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.phone-scale-enter {
+  animation: phone-scale-in 160ms ease-out;
+}
+
+/* Lock screen clock pulse */
+@keyframes phone-lock-hint {
+  0%, 100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.phone-lock-hint {
+  animation: phone-lock-hint 2.6s ease-in-out infinite;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

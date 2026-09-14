@@ -9,6 +9,7 @@ import ContactApp from "../components/apps/ContactApp";
 import GitHubApp from "../components/apps/GitHubApp";
 import TerminalApp from "../components/apps/TerminalApp";
 import SystemInfoApp from "../components/apps/SystemInfoApp";
+import GameApp from "../components/apps/GameApp";
 
 export type AppId =
   | "about"
@@ -19,7 +20,8 @@ export type AppId =
   | "contact"
   | "github"
   | "terminal"
-  | "system";
+  | "system"
+  | "game";
 
 export interface AppDescriptor {
   id: AppId;
@@ -103,6 +105,15 @@ export const APPS: Record<AppId, AppDescriptor> = {
     defaultSize: { width: 640, height: 520 },
     component: SystemInfoApp,
     category: "System",
+  },
+  game: {
+    id: "game",
+    title: "2D Platformer",
+    icon: "game",
+    defaultSize: { width: 800, height: 560 },
+    minSize: { width: 400, height: 320 },
+    component: GameApp,
+    category: "Apps",
   },
 };
 

@@ -18,6 +18,10 @@ const MENU_STRUCTURE: MenuCategory[] = [
     apps: ["terminal", "github", "skills"],
   },
   {
+    label: "Apps",
+    apps: ["game"],
+  },
+  {
     label: "Portfolio",
     apps: ["about", "projects", "experience", "education"],
   },

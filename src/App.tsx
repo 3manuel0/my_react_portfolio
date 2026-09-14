@@ -3,12 +3,14 @@ import BootScreen from "./components/Boot/BootScreen";
 import Desktop from "./components/Desktop/Desktop";
 import { WALLPAPER_IDS, type WallpaperId } from "./components/Desktop/Wallpaper";
 import OsChrome from "./components/OS/ContextMenu";
+import PhoneShell from "./components/Phone/PhoneShell";
 import Taskbar from "./components/Taskbar/Taskbar";
 import { Window } from "./components/Window/Window";
 import {
   WindowManagerProvider,
   useWindowManager,
 } from "./context/WindowManagerContext";
+import { OsModeProvider, useOsMode } from "./context/OsModeContext";
 
 const WALLPAPER_KEY = "3manuelos.wallpaper";
 
@@ -19,17 +21,23 @@ function loadWallpaper(): WallpaperId {
     : "tron";
 }
 
-function DesktopEnvironment() {
-  const { windows, openApp } = useWindowManager();
-  const [booting, setBooting] = useState(true);
-  const [invert, setInvert] = useState(false);
-  const [wallpaper, setWallpaper] = useState<WallpaperId>(loadWallpaper);
-  const openedAbout = useRef(false);
+interface DesktopEnvProps {
+  booting: boolean;
+  invert: boolean;
+  onInvert: (v: boolean) => void;
+  wallpaper: WallpaperId;
+  onWallpaper: (id: WallpaperId) => void;
+}
 
-  const changeWallpaper = (next: WallpaperId) => {
-    setWallpaper(next);
-    globalThis.localStorage?.setItem(WALLPAPER_KEY, next);
-  };
+function DesktopEnvironment({
+  booting,
+  invert,
+  onInvert,
+  wallpaper,
+  onWallpaper,
+}: DesktopEnvProps) {
+  const { windows, openApp } = useWindowManager();
+  const openedAbout = useRef(false);
 
   useEffect(() => {
     if (!booting && !openedAbout.current) {
@@ -55,23 +63,57 @@ function DesktopEnvironment() {
 
       <Taskbar />
 
-      {booting && <BootScreen onDone={() => setBooting(false)} />}
-
       <OsChrome
         invert={invert}
-        onInvert={setInvert}
+        onInvert={onInvert}
         wallpaper={wallpaper}
-        onWallpaper={changeWallpaper}
+        onWallpaper={onWallpaper}
       />
     </div>
   );
 }
 
+function Root() {
+  const { mode } = useOsMode();
+  const [booting, setBooting] = useState(true);
+  const [invert, setInvert] = useState(false);
+  const [wallpaper, setWallpaper] = useState<WallpaperId>(loadWallpaper);
+
+  const changeWallpaper = (next: WallpaperId) => {
+    setWallpaper(next);
+    globalThis.localStorage?.setItem(WALLPAPER_KEY, next);
+  };
+
+  return (
+    <>
+      {mode === "phone" ? (
+        <PhoneShell
+          wallpaper={wallpaper}
+          invert={invert}
+          onInvert={setInvert}
+        />
+      ) : (
+        <DesktopEnvironment
+          booting={booting}
+          invert={invert}
+          onInvert={setInvert}
+          wallpaper={wallpaper}
+          onWallpaper={changeWallpaper}
+        />
+      )}
+
+      {booting && <BootScreen onDone={() => setBooting(false)} />}
+    </>
+  );
+}
+
 function App() {
   return (
-    <WindowManagerProvider>
-      <DesktopEnvironment />
-    </WindowManagerProvider>
+    <OsModeProvider>
+      <WindowManagerProvider>
+        <Root />
+      </WindowManagerProvider>
+    </OsModeProvider>
   );
 }
 

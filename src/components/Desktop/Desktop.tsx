@@ -14,6 +14,7 @@ const DESKTOP_ICONS: { appId: AppId; label: string }[] = [
   { appId: "contact", label: "Contact" },
   { appId: "terminal", label: "Terminal" },
   { appId: "system", label: "System" },
+  { appId: "game", label: "2D Platformer" },
 ];
 
 interface DesktopProps {

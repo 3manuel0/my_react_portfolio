@@ -12,6 +12,7 @@ export type IconName =
   | "x"
   | "terminal"
   | "system"
+  | "game"
   | "folder"
   | "file"
   | "firefox"
@@ -78,6 +79,10 @@ const PIXELS: Record<IconName, string | PixelIcon> = {
   location: "M5,0 C6.1,0 7.5,1 7.5,2.5 C7.5,4 5,6 5,6 C5,6 2.5,4 2.5,2.5 C2.5,1 3.9,0 5,0 Z M5,2.5 C5.55,2.5 6,2.95 6,3.5 C6,4.05 5.55,4.5 5,4.5 C4.45,4.5 4,4.05 4,3.5 C4,2.95 4.45,2.5 5,2.5 Z",
   star: "M5,1 L6,3.4 8.5,3.7 6.7,5.5 7.2,8 5,6.8 2.8,8 3.3,5.5 1.5,3.7 4,3.4 Z",
   fork: "M3,1 L3,5 C3,6 4,6.5 5,6.5 C6,6.5 7,6 7,5 L7,1 Z M3,1 C3,0.5 3.5,0 4,0 C4.5,0 5,0.5 5,1 M5,1 L7,1 C7,0.5 7.5,0 8,0 C8.5,0 9,0.5 9,1 L9,5 C9,7 7,8 5,8 C3,8 1,7 1,5 Z",
+  game: {
+    main: "M3,2 h1 v1 h-1 Z M4,2 h1 v1 h-1 Z M5,2 h1 v1 h-1 Z M6,2 h1 v1 h-1 Z M2,3 h1 v1 h-1 Z M3,3 h1 v1 h-1 Z M4,3 h1 v1 h-1 Z M5,3 h1 v1 h-1 Z M6,3 h1 v1 h-1 Z M7,3 h1 v1 h-1 Z M1,4 h1 v1 h-1 Z M2,4 h1 v1 h-1 Z M3,4 h1 v1 h-1 Z M4,4 h1 v1 h-1 Z M5,4 h1 v1 h-1 Z M6,4 h1 v1 h-1 Z M7,4 h1 v1 h-1 Z M8,4 h1 v1 h-1 Z M0,5 h1 v1 h-1 Z M1,5 h1 v1 h-1 Z M2,5 h1 v1 h-1 Z M3,5 h1 v1 h-1 Z M4,5 h1 v1 h-1 Z M5,5 h1 v1 h-1 Z M6,5 h1 v1 h-1 Z M7,5 h1 v1 h-1 Z M8,5 h1 v1 h-1 Z M0,6 h1 v1 h-1 Z M1,6 h1 v1 h-1 Z M7,6 h1 v1 h-1 Z M8,6 h1 v1 h-1 Z M3,7 h1 v1 h-1 Z M4,7 h1 v1 h-1 Z M5,7 h1 v1 h-1 Z M6,7 h1 v1 h-1 Z M4,8 h1 v1 h-1 Z M5,8 h1 v1 h-1 Z",
+    accent: "M3,3 h1 v1 h-1 Z M2,4 h1 v1 h-1 Z M3,4 h1 v1 h-1 Z M4,4 h1 v1 h-1 Z M3,5 h1 v1 h-1 Z M6,3 h1 v1 h-1 Z M7,4 h1 v1 h-1 Z M6,5 h1 v1 h-1 Z",
+  },
 };
 
 const COLORS: Record<string, string> = {
@@ -102,12 +107,14 @@ const COLORS: Record<string, string> = {
   location: "#7dcfff",
   star: "#e0af68",
   fork: "#78829a",
+  game: "#f7768e",
 };
 
 const ACCENTS: Partial<Record<IconName, string>> = {
   about: "#c9e89a",
   projects: "#9cc0fb",
   skills: "#d6c9fb",
+  game: "#ffb3c1",
 };
 
 const BRANDS: Partial<Record<IconName, string>> = {

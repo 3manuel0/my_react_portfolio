@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
+import { useOsMode, type OsModeOverride } from "../../context/OsModeContext";
 import { AppIcon } from "../AppIcons";
 import {
   WALLPAPER_IDS,
@@ -35,6 +36,7 @@ type RmStage = "off" | "running" | "bsod";
 
 const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWallpaper }) => {
   const { openApp } = useWindowManager();
+  const { mode, override, setOverride } = useOsMode();
   const [pos, setPos] = useState<MenuPos | null>(null);
   const [matrix, setMatrix] = useState(false);
   const [rm, setRm] = useState<RmStage>("off");
@@ -197,6 +199,17 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
         { label: "Restart", onPick: doRestart },
         { label: "Shut Down", onPick: doShutdown },
       ],
+    },
+    {
+      label: `Device Mode (now: ${mode === "phone" ? "phone" : "pc"})`,
+      items: (["auto", "phone", "desktop"] as OsModeOverride[]).map((m) => ({
+        label: m === "auto" ? "Auto (follow screen)" : m === "phone" ? "Phone (Android)" : "Desktop (PC)",
+        active: override === m,
+        onPick: () => {
+          setOverride(m);
+          close();
+        },
+      })),
     },
   ];
 
