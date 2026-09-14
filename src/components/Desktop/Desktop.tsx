@@ -8,6 +8,8 @@ const DESKTOP_ICONS: { appId: AppId; label: string }[] = [
   { appId: "about", label: "About Me" },
   { appId: "projects", label: "Projects" },
   { appId: "skills", label: "Skills" },
+  { appId: "experience", label: "Experience" },
+  { appId: "education", label: "Education" },
   { appId: "github", label: "GitHub" },
   { appId: "contact", label: "Contact" },
   { appId: "terminal", label: "Terminal" },

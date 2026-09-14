@@ -1,6 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { contactLinks, education, experience, profile, skills } from "../../data/portfolio";
+import { profile } from "../../data/portfolio";
 import { useWindowManager } from "../../context/WindowManagerContext";
+import type { AppId } from "../../data/appRegistry";
+import {
+  HOME,
+  buildPortfolioFS,
+  completePath,
+  formatLsChildren,
+  normalizePath,
+  resolvePath,
+  type FSNode,
+} from "../../data/terminalFs.tsx";
 
 interface Line {
   input?: string;
@@ -15,19 +25,40 @@ const NEOFETCH_ART = `       .--.
    /'\\_   _/\`\\
    \\___)=(___/`;
 
+const COMMANDS = [
+  "help",
+  "ls",
+  "cd",
+  "pwd",
+  "cat",
+  "echo",
+  "clear",
+  "open",
+  "whoami",
+  "neofetch",
+  "sudo",
+  "date",
+  "uname",
+  "history",
+  "github",
+  "exit",
+  "rm",
+];
+
 const HELP: [string, string][] = [
   ["help", "show this help"],
-  ["about", "about the developer"],
-  ["projects", "list projects"],
-  ["skills", "list skills"],
-  ["experience", "list experience"],
-  ["education", "list education"],
-  ["contact", "show contact info"],
-  ["github", "open github profile"],
-  ["neofetch", "system info"],
+  ["ls", "list directory contents"],
+  ["cd <path>", "change directory"],
+  ["pwd", "print working directory"],
+  ["cat <file>", "read a file"],
+  ["echo <text>", "print text"],
+  ["open <app>", "open an app window"],
   ["whoami", "who am I"],
+  ["neofetch", "system info"],
+  ["history", "command history"],
   ["clear", "clear the screen"],
-  ["sudo", "try it"],
+  ["tab", "autocomplete commands & paths"],
+  ["↑ ↓", "navigate history"],
 ];
 
 const TerminalApp: React.FC = () => {
@@ -35,22 +66,38 @@ const TerminalApp: React.FC = () => {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [histIdx, setHistIdx] = useState(-1);
+  const [cwd, setCwd] = useState(HOME);
   const endRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const valueRef = useRef("");
+  const cwdRef = useRef(HOME);
   valueRef.current = input;
+  cwdRef.current = cwd;
 
-  const { windows, activeWindowId } = useWindowManager();
+  const { windows, activeWindowId, openApp } = useWindowManager();
   const terminalWindow = windows.find((w) => w.appId === "terminal");
   const isActive = !!terminalWindow && activeWindowId === terminalWindow.id;
+
+  const fsRef = useRef<FSNode | null>(null);
+  if (!fsRef.current) fsRef.current = buildPortfolioFS();
+
+  const shortCwd = (path: string) =>
+    path === HOME ? "~" : path.startsWith(HOME + "/") ? "~" + path.slice(HOME.length) : path;
 
   useEffect(() => {
     setLines([
       {
         output: (
           <div>
-            <p>3manuel OS shell -- type <span className="text-os-yellow">help</span> to get started.</p>
-            <p>portfolio-wm v1.0.0 / kernel 6.9.0-webassembly</p>
+            <p>
+              <span className="font-bold text-os-green">3manuel OS</span>{" "}
+              <span className="text-os-dim">shell -- portfolio-wm v1.0 / kernel 6.9.0-webassembly</span>
+            </p>
+            <p className="text-os-dim">
+              a real little filesystem, full tab completion. type{" "}
+              <span className="text-os-yellow">help</span> to get started.
+            </p>
           </div>
         ),
       },
@@ -58,22 +105,247 @@ const TerminalApp: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isActive) inputRef.current?.focus();
+    if (isActive) {
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(valueRef.current.length, valueRef.current.length);
+    }
   }, [isActive]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [lines]);
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [lines, input]);
 
-  const runCommand = useCallback((raw: string) => {
-    const cmd = raw.trim().toLowerCase();
-    if (cmd === "clear") {
-      processCommand(cmd);
-      return;
-    }
-    const out = processCommand(cmd);
+  const print = useCallback((raw: string, out: React.ReactNode) => {
     setLines((prev) => [...prev, { input: raw, output: out }]);
   }, []);
+
+  const processCommand = useCallback(
+    (raw: string): React.ReactNode => {
+      const trimmed = raw.trim();
+      const [name, ...args] = trimmed.split(/\s+/).filter(Boolean);
+      const fs = fsRef.current!;
+      const cwdNow = cwdRef.current;
+
+      const noSuch = (target: string) => (
+        <p className="text-os-red">
+          {name}: cannot access &lsquo;{target}&rsquo;: No such file or directory
+        </p>
+      );
+
+      switch (name) {
+        case "":
+          return null;
+        case "help":
+          return (
+            <div>
+              {HELP.map(([c, d]) => (
+                <p key={c}>
+                  <span className="text-os-green">{c.padEnd(16)}</span>
+                  <span className="text-os-dim">{d}</span>
+                </p>
+              ))}
+            </div>
+          );
+        case "clear":
+          setLines([]);
+          return null;
+        case "pwd":
+          return <p className="text-os-text">{cwdNow}</p>;
+        case "echo":
+          return <p className="text-os-text">{args.join(" ")}</p>;
+        case "ls": {
+          const target = args[0] ?? ".";
+          const node = resolvePath(fs, cwdNow, target);
+          if (!node) return noSuch(target);
+          if (node.type === "file") {
+            return <p className="text-os-text">{target}</p>;
+          }
+          const listing = formatLsChildren(node);
+          if (!listing) return <p className="text-os-dim">(empty)</p>;
+          return (
+            <p className="text-os-text">
+              {listing.split("   ").map((n) => (
+                <span
+                  key={n}
+                  className={
+                    n.endsWith("/")
+                      ? "mr-3 text-os-blue"
+                      : "mr-3 text-os-text"
+                  }
+                >
+                  {n}
+                </span>
+              ))}
+            </p>
+          );
+        }
+        case "cd": {
+          const target = args[0] ?? HOME;
+          const node = resolvePath(fs, cwdNow, target);
+          if (!node) return noSuch(target);
+          if (node.type !== "dir") {
+            return (
+              <p className="text-os-red">
+                cd: not a directory: {target}
+              </p>
+            );
+          }
+          setCwd(normalizePath(cwdNow, target));
+          return null;
+        }
+        case "cat": {
+          const target = args[0];
+          if (!target) {
+            return (
+              <p className="text-os-red">
+                usage: cat &lt;file&gt;
+              </p>
+            );
+          }
+          const node = resolvePath(fs, cwdNow, target);
+          if (!node) return noSuch(target);
+          if (node.type === "dir") {
+            return (
+              <p className="text-os-red">
+                cat: {target}: Is a directory
+              </p>
+            );
+          }
+          return node.content;
+        }
+        case "open": {
+          const target = args[0];
+          if (!target) {
+            return (
+              <p className="text-os-red">
+                usage: open &lt;about|projects|skills|experience|education|contact|github|terminal|system&gt;
+              </p>
+            );
+          }
+          const map: Record<string, AppId> = {
+            about: "about",
+            projects: "projects",
+            skills: "skills",
+            experience: "experience",
+            education: "education",
+            contact: "contact",
+            github: "github",
+            terminal: "terminal",
+            system: "system",
+            sysinfo: "system",
+          };
+          const appId = map[target.toLowerCase()];
+          if (!appId) {
+            return (
+              <p className="text-os-red">
+                open: unknown app: {target}
+              </p>
+            );
+          }
+          openApp(appId);
+          return <p className="text-os-dim">opening {target}...</p>;
+        }
+        case "whoami":
+          return (
+            <div className="whitespace-pre">
+              {`${profile.alias}\n\n${profile.title}\nC/C++ · Linux · WebAssembly · React`}
+            </div>
+          );
+        case "neofetch":
+          return (
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+              <pre className="shrink-0 whitespace-pre text-os-green text-[0.6rem] leading-tight">
+                {NEOFETCH_ART}
+              </pre>
+              <div className="text-[0.62rem] leading-5">
+                <p>
+                  <span className="text-os-accent">{profile.alias}@localhost</span>
+                  <span className="text-os-text">---------------</span>
+                </p>
+                <p>
+                  <span className="inline-block w-24 text-os-blue">OS:</span>{" "}
+                  {profile.alias} OS
+                </p>
+                <p>
+                  <span className="inline-block w-24 text-os-blue">Host:</span>{" "}
+                  {profile.website}
+                </p>
+                <p>
+                  <span className="inline-block w-24 text-os-blue">Kernel:</span>{" "}
+                  6.9.0-webassembly
+                </p>
+                <p>
+                  <span className="inline-block w-24 text-os-blue">Shell:</span>{" "}
+                  portfolio
+                </p>
+                <p>
+                  <span className="inline-block w-24 text-os-blue">Theme:</span>{" "}
+                  dark
+                </p>
+                <p>
+                  <span className="inline-block w-24 text-os-blue">Stack:</span>{" "}
+                  React + TypeScript
+                </p>
+                <p>
+                  <span className="inline-block w-24 text-os-blue">Uptime:</span>{" "}
+                  2022 2026
+                </p>
+              </div>
+            </div>
+          );
+        case "sudo":
+          if (args[0] === "rm" && args.includes("-rf") && args.includes("/")) {
+            return <p className="text-os-red">3manuel is not in the sudoers file. This incident will be reported.</p>;
+          }
+          return <p className="text-os-red">3manuel is not in the sudoers file. This incident will be reported.</p>;
+        case "rm":
+          return <p className="text-os-yellow">nice try. use the resumé, not the filesystem.</p>;
+        case "date":
+          return <p className="text-os-text">{new Date().toString()}</p>;
+        case "uname":
+          return <p className="text-os-text">3manuel-os webassembly 6.9.0-generic x86_64</p>;
+        case "history":
+          return (
+            <div>
+              {history.map((h, i) => (
+                <p key={i} className="text-os-dim">{`${String(history.length - i).padStart(3)}  ${h}`}</p>
+              ))}
+              {history.length === 0 && <p className="text-os-dim">no history yet. type something.</p>}
+            </div>
+          );
+        case "github":
+          window.open("https://github.com/3manuel0", "_blank", "noopener,noreferrer");
+          return <p className="text-os-dim">opening github.com/3manuel0 in a new tab...</p>;
+        case "exit":
+          return <p className="text-os-dim">this is the portfolio shell -- there is no exit. try "help".</p>;
+        case "ls -l":
+        case "ll":
+          return <p className="text-os-dim">aliases are still being written. try `ls`.</p>;
+        default:
+          return (
+            <p className="text-os-red">
+              {name}: command not found. type <span className="text-os-yellow">help</span> for available commands.
+            </p>
+          );
+      }
+    },
+    [history, openApp],
+  );
+
+  const runCommand = useCallback(
+    (raw: string) => {
+      const cmd = raw.trim().toLowerCase();
+      if (cmd === "clear") {
+        processCommand(cmd);
+        return;
+      }
+      const out = processCommand(raw);
+      setLines((prev) => [...prev, { input: raw, output: out }]);
+    },
+    [processCommand],
+  );
 
   const runSubmit = useCallback(() => {
     const text = valueRef.current;
@@ -106,9 +378,63 @@ const TerminalApp: React.FC = () => {
     [history, histIdx],
   );
 
+  const complete = useCallback(() => {
+    const text = valueRef.current;
+    const tokens = text.split(/\s+/).filter(Boolean);
+    const appMaps: string[] = [];
+    if (tokens.length <= 1) {
+      const partial = (tokens[0] ?? "").toLowerCase();
+      const matches = COMMANDS.filter((c) => c.startsWith(partial));
+      if (matches.length === 1) {
+        setInput(matches[0]);
+      } else if (matches.length > 1) {
+        print(text, (
+          <p className="text-os-text">
+            {matches.map((m) => (
+              <span key={m} className="mr-3 text-os-blue">{m}</span>
+            ))}
+          </p>
+        ));
+      }
+      void appMaps;
+      return;
+    }
+    const first = tokens[0].toLowerCase();
+    if (["cd", "cat", "ls", "open"].includes(first)) {
+      const partial = tokens[tokens.length - 1];
+      const matches = completePath(fsRef.current!, cwdRef.current, partial);
+      if (matches.length === 1) {
+        setInput(tokens.slice(0, -1).join(" ") + " " + matches[0]);
+      } else if (matches.length > 1) {
+        print(text, (
+          <p className="text-os-text">
+            {matches.map((m) => (
+              <span key={m} className="mr-3 text-os-blue">{m}</span>
+            ))}
+          </p>
+        ));
+      }
+    }
+  }, [print]);
+
   // Terminal-wide key capture: typing reaches the shell no matter where focus is
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (!isActive) return;
+
+      if (e.ctrlKey && (e.key === "l" || e.key === "L")) {
+        e.preventDefault();
+        setLines([]);
+        return;
+      }
+      if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
+        e.preventDefault();
+        setLines((prev) => [...prev, { input: "^C", output: null }]);
+        setInput("");
+        setHistIdx(-1);
+        return;
+      }
+
       const t = e.target as HTMLElement | null;
       if (
         t &&
@@ -116,7 +442,6 @@ const TerminalApp: React.FC = () => {
       ) {
         return;
       }
-      if (!isActive) return;
 
       if (e.key === "Enter") {
         e.preventDefault();
@@ -130,7 +455,7 @@ const TerminalApp: React.FC = () => {
       }
       if (e.key === "Tab") {
         e.preventDefault();
-        setInput((v) => v + "    ");
+        complete();
         return;
       }
       if (e.key === "ArrowUp") {
@@ -143,184 +468,19 @@ const TerminalApp: React.FC = () => {
         navHistory(-1);
         return;
       }
-      if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
-        e.preventDefault();
-        setLines((prev) => [...prev, { input: "^C", output: null }]);
-        setInput("");
-        setHistIdx(-1);
-        return;
-      }
-      if (e.ctrlKey && (e.key === "l" || e.key === "L")) {
-        e.preventDefault();
-        setLines([]);
-        return;
-      }
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
         setInput((v) => v + e.key);
       }
     };
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
-  }, [isActive, runSubmit, navHistory]);
+  }, [isActive, runSubmit, navHistory, complete]);
 
-  const processCommand = (cmd: string): React.ReactNode => {
-    const name = cmd.split(/\s+/)[0];
-
-    switch (name) {
-      case "":
-        return null;
-      case "help":
-        return (
-          <div>
-            {HELP.map(([c, d]) => (
-              <p key={c}>
-                <span className="text-os-green">{c.padEnd(10)}</span>
-                <span className="text-os-dim">{d}</span>
-              </p>
-            ))}
-          </div>
-        );
-      case "clear":
-        setLines([]);
-        return null;
-      case "whoami":
-        return (
-          <div className="whitespace-pre">
-            {`${profile.alias}\n\n${profile.title}\nC/C++ · Linux · WebAssembly · React`}
-          </div>
-        );
-      case "neofetch":
-        return (
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-            <pre className="shrink-0 whitespace-pre text-os-green text-[0.6rem] leading-tight">
-              {NEOFETCH_ART}
-            </pre>
-            <div className="text-[0.62rem] leading-5">
-              <p>
-                <span className="text-os-accent">{profile.alias}@localhost</span>
-                <span className="text-os-text">---------------</span>
-              </p>
-              <p>
-                <span className="inline-block w-24 text-os-blue">OS:</span>{" "}
-                {profile.alias} OS
-              </p>
-              <p>
-                <span className="inline-block w-24 text-os-blue">Host:</span>{" "}
-                {profile.website}
-              </p>
-              <p>
-                <span className="inline-block w-24 text-os-blue">Kernel:</span>{" "}
-                6.9.0-webassembly
-              </p>
-              <p>
-                <span className="inline-block w-24 text-os-blue">Shell:</span>{" "}
-                portfolio
-              </p>
-              <p>
-                <span className="inline-block w-24 text-os-blue">Theme:</span>{" "}
-                dark
-              </p>
-              <p>
-                <span className="inline-block w-24 text-os-blue">Stack:</span>{" "}
-                React + TypeScript
-              </p>
-              <p>
-                <span className="inline-block w-24 text-os-blue">Uptime:</span>{" "}
-                2022 2026
-              </p>
-            </div>
-          </div>
-        );
-      case "about":
-        return (
-          <div className="whitespace-pre">
-            {`${profile.name}\n${profile.title}\n${profile.location}\n\n${profile.bio}`}
-          </div>
-        );
-      case "projects":
-        return (
-          <div>
-            {experience_flatProjects()}
-            <p className="text-os-dim">open the Projects app for details, screenshots and demos.</p>
-          </div>
-        );
-      case "skills":
-        return (
-          <div>
-            {Object.entries(skills).map(([cat, tools]) => (
-              <p key={cat}>
-                <span className="text-os-blue">{cat}:</span>{" "}
-                <span className="text-os-text">{tools.join(", ")}</span>
-              </p>
-            ))}
-          </div>
-        );
-      case "experience":
-        return (
-          <div>
-            {experience.map((g) => (
-              <div key={g.year}>
-                <p className="text-os-yellow">[{g.year}]</p>
-                {g.entries.map((e) => (
-                  <p key={e.role} className="text-os-text">
-                    {"  "}
-                    {e.role} <span className="text-os-dim">@ {e.company}</span>
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-        );
-      case "education":
-        return (
-          <div>
-            {education.map((e) => (
-              <p key={e.school} className="text-os-text">
-                <span className="text-os-accent">{e.degree}</span> — {e.field}{" "}
-                <span className="text-os-dim">@{e.school}</span>
-              </p>
-            ))}
-          </div>
-        );
-      case "contact":
-        return (
-          <div>
-            {contactLinks.map((c) => (
-              <p key={c.name}>
-                <span className="text-os-blue">{c.name.padEnd(8)}</span>
-                <span className="text-os-text">{c.handle}</span>
-                <span className="text-os-dim"> ({c.url})</span>
-              </p>
-            ))}
-          </div>
-        );
-      case "github":
-        window.open("https://github.com/3manuel0", "_blank", "noopener,noreferrer");
-        return <p className="text-os-dim">opening github.com/3manuel0 in a new tab...</p>;
-      case "sudo":
-        return <p className="text-os-red">3manuel is not in the sudoers file. This incident will be reported.</p>;
-      case "date":
-        return <p className="text-os-text">{new Date().toString()}</p>;
-      case "ls":
-        return <p className="text-os-text">about.txt projects/ skills/ experience/ education/ contact/ terminal/</p>;
-      case "exit":
-        return <p className="text-os-dim">this is the portfolio shell -- there is no exit. try "help".</p>;
-      default:
-        return (
-          <p className="text-os-red">
-            {name}: command not found. type <span className="text-os-yellow">help</span> for available commands.
-          </p>
-        );
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    runSubmit();
-  };
-
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowUp") {
+  const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      complete();
+    } else if (e.key === "ArrowUp") {
       e.preventDefault();
       navHistory(1);
     } else if (e.key === "ArrowDown") {
@@ -336,25 +496,37 @@ const TerminalApp: React.FC = () => {
       role="log"
       aria-label="Terminal output"
     >
-      <div className="flex-1 overflow-y-auto px-3 py-2 text-[0.68rem] leading-relaxed">
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto overscroll-contain px-3 py-2 text-[0.68rem] leading-relaxed"
+        style={{ overscrollBehavior: "contain" }}
+      >
         {lines.map((l, i) => (
           <div key={i} className="mb-1">
             {l.input !== undefined && (
-              <p>
-                <span className="text-os-green">3manuel@localhost</span>
-                <span className="text-os-dim">:~$</span>
-                <span className="inline-block w-2" />
+              <p className="whitespace-pre-wrap break-all">
+                <span className="text-os-green">3manuel</span>
+                <span className="text-os-dim">@localhost</span>
+                <span className="text-os-blue">{shortCwd(cwd)}</span>
+                <span className="text-os-dim">$ </span>
                 <span className="text-os-text">{l.input}</span>
               </p>
             )}
             {l.output && <div className="text-os-text">{l.output}</div>}
           </div>
         ))}
-        <form onSubmit={handleSubmit} className="flex items-center gap-0">
-          <label className="shrink-0 cursor-text">
-            <span className="text-os-green">3manuel@localhost</span>
-            <span className="text-os-dim">:~$</span>
-            <span className="inline-block w-2" />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            runSubmit();
+          }}
+          className="flex items-center gap-0"
+        >
+          <label className="shrink-0 cursor-text" aria-hidden="true">
+            <span className="text-os-green">3manuel</span>
+            <span className="text-os-dim">@localhost</span>
+            <span className="text-os-blue">{shortCwd(cwd)}</span>
+            <span className="text-os-dim">$ </span>
           </label>
           <span className="relative flex min-w-0 flex-1 items-center">
             <input
@@ -362,18 +534,16 @@ const TerminalApp: React.FC = () => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
+              onKeyDown={onKeyDownInput}
               aria-label="Terminal command input"
               autoComplete="off"
+              autoCapitalize="off"
               spellCheck={false}
               className="absolute inset-0 h-full w-full bg-transparent text-transparent caret-transparent outline-none"
             />
             <span className="pointer-events-none select-none whitespace-pre-wrap break-all">
               <span className="text-os-text">{input}</span>
-              <span
-                className="terminal-block-cursor"
-                aria-hidden="true"
-              />
+              <span className="terminal-block-cursor" aria-hidden="true" />
             </span>
           </span>
         </form>
@@ -382,30 +552,5 @@ const TerminalApp: React.FC = () => {
     </div>
   );
 };
-
-function experience_flatProjects(): React.ReactNode {
-  return (
-    <div>
-      <p className="text-os-accent">~/projects</p>
-      {[
-        "C3SV (C)",
-        "Lib3man (C)",
-        "3bs_Downloader (Python)",
-        "Cloud Infrastructure & SecOps",
-        "2d Platformer Game (C/Raylib/WASM)",
-        "Gameboy Emulator (C)",
-        "FToP — File to PNG (C/WASM)",
-        "Sphia Discord Bot (C++)",
-        "Chinese Flashcards (Rust/Slint)",
-        "Audio Player (Kotlin/Android)",
-      ].map((p) => (
-        <p key={p} className="text-os-text">
-          {"  "}
-          {p}
-        </p>
-      ))}
-    </div>
-  );
-}
 
 export default TerminalApp;

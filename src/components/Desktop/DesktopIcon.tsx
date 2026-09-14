@@ -25,12 +25,13 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ appId, label, onOpen }) => {
     const isTouch =
       (window.matchMedia?.("(pointer: coarse)").matches ?? false) ||
       navigator.maxTouchPoints > 0;
+    if (isTouch) {
+      open();
+      return;
+    }
     if (armTimer.current !== null) {
       clearTimeout(armTimer.current);
       armTimer.current = null;
-      if (isTouch) {
-        open();
-      }
       return;
     }
     setSelected(true);

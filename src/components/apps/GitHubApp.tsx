@@ -148,82 +148,83 @@ const GitHubApp: React.FC = () => {
 
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div className="border border-os-border bg-os-surface2/40 p-3">
-          <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
-            GitHub Stats
-          </p>
-          <RemoteImage
-            src={STATS_IMG_URL}
-            alt="GitHub stats: stars, commits, pull requests"
-            className="w-full max-w-[420px]"
-            loading="lazy"
-          />
+          <div className="border border-os-border bg-os-surface2/40 p-3">
+            <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
+              GitHub Stats
+            </p>
+            <RemoteImage
+              src={STATS_IMG_URL}
+              alt="GitHub stats: stars, commits, pull requests"
+              className="w-full max-w-[420px]"
+              loading="lazy"
+            />
+          </div>
+          <div className="border border-os-border bg-os-surface2/40 p-3">
+            <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
+              Top Languages
+            </p>
+            <RemoteImage
+              src={TOP_LANGS_URL}
+              alt="Top languages from GitHub profile"
+              className="w-full max-w-[540px]"
+              loading="lazy"
+            />
+          </div>
         </div>
-        <div className="border border-os-border bg-os-surface2/40 p-3">
-          <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
-            Top Languages
-          </p>
-          <RemoteImage
-            src={TOP_LANGS_URL}
-            alt="Top languages from GitHub profile"
-            className="w-full max-w-[540px]"
-            loading="lazy"
-          />
-        </div>
-      </div>
 
-      <div className="mt-3 mb-0 border-t border-os-border pt-3">
-        {repos.length === 0 && (
-          <p className="pb-6 text-center text-[0.68rem] text-os-dim">
-            No repositories match &ldquo;{search}&rdquo;
-          </p>
-        )}
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-          {repos.map(({ repo, slug, url }) => (
-            <div
-              key={slug}
-              className="flex flex-col border border-os-border bg-os-surface2/40 p-3"
-            >
-              <div className="flex items-center gap-1.5">
-                <AppIcon name="folder" size={13} />
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="truncate text-[0.7rem] font-bold text-os-accent hover:text-os-green"
-                >
-                  {githubUsername}/{slug}
-                </a>
+        <div className="mt-3 border-t border-os-border pt-3">
+          {repos.length === 0 && (
+            <p className="pb-6 text-center text-[0.68rem] text-os-dim">
+              No repositories match &ldquo;{search}&rdquo;
+            </p>
+          )}
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            {repos.map(({ repo, slug, url }) => (
+              <div
+                key={slug}
+                className="flex flex-col border border-os-border bg-os-surface2/40 p-3"
+              >
+                <div className="flex items-center gap-1.5">
+                  <AppIcon name="folder" size={13} />
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="truncate text-[0.7rem] font-bold text-os-accent hover:text-os-green"
+                  >
+                    {githubUsername}/{slug}
+                  </a>
+                </div>
+                <div className="mt-1.5 flex gap-1.5 overflow-hidden">
+                  {repo.languages?.map((l) => (
+                    <span key={l} className="flex items-center gap-1 text-[0.55rem] text-os-dim">
+                      <span
+                        className="h-1.5 w-1.5"
+                        style={{ backgroundColor: LANG_COLORS[l] ?? "#bb9af7" }}
+                        aria-hidden="true"
+                      />
+                      {l}
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-1.5 line-clamp-2 text-[0.62rem] leading-relaxed text-os-dim">
+                  {repo.description}
+                </p>
+                <div className="mt-2 aspect-video overflow-hidden border border-os-border bg-os-bg">
+                  <img
+                    src={repo.screenshot}
+                    alt={`${repo.name} screenshot`}
+                    loading="lazy"
+                    className="h-full w-full object-contain transition-transform hover:scale-105"
+                  />
+                </div>
+                <div className="mt-auto flex items-center gap-3 pt-2 text-[0.55rem] text-os-dim">
+                  <span className="ml-auto">open on github</span>
+                </div>
               </div>
-              <div className="mt-1.5 flex gap-1.5 overflow-hidden">
-                {repo.languages?.map((l) => (
-                  <span key={l} className="flex items-center gap-1 text-[0.55rem] text-os-dim">
-                    <span
-                      className="h-1.5 w-1.5"
-                      style={{ backgroundColor: LANG_COLORS[l] ?? "#bb9af7" }}
-                      aria-hidden="true"
-                    />
-                    {l}
-                  </span>
-                ))}
-              </div>
-              <p className="mt-1.5 line-clamp-2 text-[0.62rem] leading-relaxed text-os-dim">
-                {repo.description}
-              </p>
-              <img
-                src={repo.screenshot}
-                alt={`${repo.name} screenshot`}
-                loading="lazy"
-                className="mt-2 h-20 w-full border border-os-border object-cover transition-transform hover:scale-[1.5] hover:object-contain"
-                style={{ imageRendering: "pixelated" }}
-              />
-              <div className="mt-auto flex items-center gap-3 pt-2 text-[0.55rem] text-os-dim">
-                <span className="ml-auto">open on github</span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

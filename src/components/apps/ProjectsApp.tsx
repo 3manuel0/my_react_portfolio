@@ -18,12 +18,12 @@ const ProjectCard: React.FC<{
     onClick={onOpen}
     className="group flex cursor-pointer flex-col border border-os-border bg-os-surface2/50 p-2 text-left transition-colors hover:border-os-accent"
   >
-    <div className="relative aspect-video overflow-hidden border border-os-border">
+    <div className="relative aspect-video overflow-hidden border border-os-border bg-os-bg">
       <img
         src={project.screenshot}
         alt={project.name}
         loading="lazy"
-        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
       />
       <span className="absolute left-1 top-1 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 text-[0.5rem] text-os-green">
         <AppIcon name="file" size={10} />
@@ -57,11 +57,11 @@ const ProjectDetail: React.FC<{
 
     <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
       <div>
-        <div className="aspect-video overflow-hidden border border-os-border">
+        <div className="aspect-video overflow-hidden border border-os-border bg-os-bg">
           <img
             src={project.screenshot}
             alt={project.name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
           />
         </div>
         <div className="mt-3 flex flex-wrap gap-2">

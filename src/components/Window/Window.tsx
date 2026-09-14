@@ -7,7 +7,7 @@ interface WindowProps {
   window: WindowInstance;
 }
 
-export const Window: React.FC<WindowProps> = ({ window }) => {
+export const Window: React.FC<WindowProps> = ({ window: win }) => {
   const {
     focusWindow,
     closeWindow,
@@ -17,12 +17,12 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
     resizeWindow,
     activeWindowId,
   } = useWindowManager();
-  const desc = APPS[window.appId];
+  const desc = APPS[win.appId];
   const drag = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
   const resize = useRef<{ startX: number; startY: number; origW: number; origH: number } | null>(null);
-  const isFocused = activeWindowId === window.id;
+  const isFocused = activeWindowId === win.id;
   const [closing, setClosing] = useState(false);
-  const windowId = window.id;
+  const windowId = win.id;
 
   const requestClose = useCallback(() => {
     if (closing) return;
@@ -32,20 +32,20 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
 
   const onTitlePointerDown = useCallback(
     (e: React.PointerEvent) => {
-      if (window.maximized) return;
+      if (win.maximized) return;
       if (e.button !== 0) return;
       e.preventDefault();
-      focusWindow(window.id);
+      focusWindow(win.id);
       drag.current = {
         startX: e.clientX,
         startY: e.clientY,
-        origX: window.x,
-        origY: window.y,
+        origX: win.x,
+        origY: win.y,
       };
       const onMove = (ev: PointerEvent) => {
         if (!drag.current) return;
         moveWindow(
-          window.id,
+          win.id,
           drag.current.origX + (ev.clientX - drag.current.startX),
           drag.current.origY + (ev.clientY - drag.current.startY),
         );
@@ -58,26 +58,26 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
       globalThis.addEventListener("pointermove", onMove);
       globalThis.addEventListener("pointerup", onUp);
     },
-    [window, focusWindow, moveWindow],
+    [win, focusWindow, moveWindow],
   );
 
   const onResizePointerDown = useCallback(
     (e: React.PointerEvent) => {
-      if (window.maximized) return;
+      if (win.maximized) return;
       if (e.button !== 0) return;
       e.preventDefault();
       e.stopPropagation();
-      focusWindow(window.id);
+      focusWindow(win.id);
       resize.current = {
         startX: e.clientX,
         startY: e.clientY,
-        origW: window.width,
-        origH: window.height,
+        origW: win.width,
+        origH: win.height,
       };
       const onMove = (ev: PointerEvent) => {
         if (!resize.current) return;
         resizeWindow(
-          window.id,
+          win.id,
           resize.current.origW + (ev.clientX - resize.current.startX),
           resize.current.origH + (ev.clientY - resize.current.startY),
         );
@@ -90,30 +90,30 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
       globalThis.addEventListener("pointermove", onMove);
       globalThis.addEventListener("pointerup", onUp);
     },
-    [window, focusWindow, resizeWindow],
+    [win, focusWindow, resizeWindow],
   );
 
-  const style: React.CSSProperties = window.maximized
+  const style: React.CSSProperties = win.maximized
     ? {
         left: 0,
         top: 0,
         width: "100vw",
         height: globalThis.innerHeight ? globalThis.innerHeight - TASKBAR_HEIGHT : undefined,
       }
-    : { left: window.x, top: window.y, width: window.width, height: window.height };
+    : { left: win.x, top: win.y, width: win.width, height: win.height };
 
   const AppComponent = desc.component;
 
   return (
     <div
       role="dialog"
-      aria-label={window.title}
+      aria-label={win.title}
       aria-modal="false"
       tabIndex={-1}
       className={`${
         closing ? "window-leave" : "window-enter"
       } pointer-events-auto absolute flex flex-col overflow-hidden border bg-os-surface ${
-        window.maximized
+        win.maximized
           ? "transition-[left,top,width,height] duration-150 ease-out"
           : "shadow-[0_10px_40px_rgba(0,0,0,0.55)]"
       } ${
@@ -123,12 +123,12 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
       }`}
       style={{
         ...style,
-        zIndex: window.zIndex,
-        display: window.minimized ? "none" : "flex",
+        zIndex: win.zIndex,
+        display: win.minimized ? "none" : "flex",
         pointerEvents: closing ? "none" : undefined,
       }}
       onPointerDown={() => {
-        if (!isFocused) focusWindow(window.id);
+        if (!isFocused) focusWindow(win.id);
       }}
     >
       {/* Title bar */}
@@ -138,11 +138,11 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
         } active:cursor-grabbing`}
         style={{ touchAction: "none" }}
         onPointerDown={onTitlePointerDown}
-        onDoubleClick={() => toggleMaximize(window.id)}
+        onDoubleClick={() => toggleMaximize(win.id)}
       >
         <span className="flex items-center gap-1.5">
           <AppIcon name={desc.icon} size={15} />
-          <span className="truncate text-xs tracking-wide text-os-text">{window.title}</span>
+          <span className="truncate text-xs tracking-wide text-os-text">{win.title}</span>
         </span>
         <span className="ml-auto flex items-center gap-1">
           <button
@@ -151,7 +151,7 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
             title="Minimize"
             onClick={(e) => {
               e.stopPropagation();
-              minimizeWindow(window.id);
+              minimizeWindow(win.id);
             }}
             className="flex h-6 w-7 items-center justify-center border border-os-border text-xs text-os-dim hover:bg-os-border hover:text-os-text"
           >
@@ -159,15 +159,15 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
           </button>
           <button
             type="button"
-            aria-label={window.maximized ? "Restore" : "Maximize"}
-            title={window.maximized ? "Restore" : "Maximize"}
+            aria-label={win.maximized ? "Restore" : "Maximize"}
+            title={win.maximized ? "Restore" : "Maximize"}
             onClick={(e) => {
               e.stopPropagation();
-              toggleMaximize(window.id);
+              toggleMaximize(win.id);
             }}
             className="flex h-6 w-7 items-center justify-center border border-os-border text-[0.6rem] text-os-dim hover:bg-os-border hover:text-os-text"
           >
-            {window.maximized ? "\u2750" : "\u25A1"}
+            {win.maximized ? "\u2750" : "\u25A1"}
           </button>
           <button
             type="button"
@@ -190,14 +190,20 @@ export const Window: React.FC<WindowProps> = ({ window }) => {
       </div>
 
       {/* Resize handle */}
-      {!window.maximized && (
+      {!win.maximized && (
         <div
-          className="absolute bottom-0 right-0 z-10 h-4 w-4 cursor-se-resize"
+          className="absolute bottom-0 right-0 z-10 flex h-4 w-4 cursor-se-resize items-center justify-center opacity-40 hover:opacity-80"
           style={{ touchAction: "none" }}
           onPointerDown={onResizePointerDown}
           title="Resize"
           aria-hidden="true"
-        />
+        >
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+            <path d="M7 1L1 7" stroke="currentColor" strokeWidth="1" className="text-os-dim" />
+            <path d="M7 4L4 7" stroke="currentColor" strokeWidth="1" className="text-os-dim" />
+            <path d="M7 7L7 7" stroke="currentColor" strokeWidth="1" className="text-os-dim" />
+          </svg>
+        </div>
       )}
     </div>
   );
