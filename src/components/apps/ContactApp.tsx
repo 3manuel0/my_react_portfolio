@@ -8,7 +8,7 @@ interface MailItem {
   subject: string;
   url: string;
   body: string[];
-  type: "github" | "linkedin" | "x";
+  type: "github" | "linkedin" | "x" | "web";
 }
 
 const MAILS: MailItem[] = [
@@ -43,12 +43,24 @@ const MAILS: MailItem[] = [
     ],
     type: "x",
   },
+  {
+    id: 4,
+    from: "Website",
+    subject: "Visit my portfolio",
+    url: profile.website,
+    body: [
+      "My personal site built as an interactive desktop experience.",
+      "Browse projects, skills, and everything I'm working on.",
+    ],
+    type: "web",
+  },
 ];
 
 const TYPE_ICON: Record<MailItem["type"], string> = {
   github: "github",
   linkedin: "linkedin",
   x: "x",
+  web: "home",
 };
 
 const ContactApp: React.FC = () => {
