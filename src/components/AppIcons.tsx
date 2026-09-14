@@ -30,6 +30,12 @@ interface IconProps {
   className?: string;
 }
 
+// Raster icons — rendered as <img> instead of inline SVG. The game app uses
+// the same Warrior logo the 2D Platformer game itself uses as its favicon.
+const IMAGES: Partial<Record<IconName, string>> = {
+  game: "/icons/game-logo.png",
+};
+
 interface PixelIcon {
   main: string;
   accent?: string;
@@ -124,6 +130,20 @@ const BRANDS: Partial<Record<IconName, string>> = {
 };
 
 export const AppIcon: React.FC<IconProps> = ({ name, size = 48, className }) => {
+  const img = IMAGES[name];
+  if (img) {
+    return (
+      <img
+        src={img}
+        width={size}
+        height={size}
+        alt=""
+        draggable={false}
+        className={className}
+        style={{ imageRendering: "pixelated" }}
+      />
+    );
+  }
   const brand = BRANDS[name];
   if (brand) {
     return (
