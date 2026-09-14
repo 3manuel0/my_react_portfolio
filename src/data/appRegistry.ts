@@ -10,6 +10,7 @@ import GitHubApp from "../components/apps/GitHubApp";
 import TerminalApp from "../components/apps/TerminalApp";
 import SystemInfoApp from "../components/apps/SystemInfoApp";
 import GameApp from "../components/apps/GameApp";
+import FilesApp from "../components/apps/FilesApp";
 
 export type AppId =
   | "about"
@@ -21,7 +22,8 @@ export type AppId =
   | "github"
   | "terminal"
   | "system"
-  | "game";
+  | "game"
+  | "files";
 
 export interface AppDescriptor {
   id: AppId;
@@ -114,6 +116,14 @@ export const APPS: Record<AppId, AppDescriptor> = {
     minSize: { width: 400, height: 320 },
     component: GameApp,
     category: "Apps",
+  },
+  files: {
+    id: "files",
+    title: "Files",
+    icon: "folder",
+    defaultSize: { width: 640, height: 480 },
+    component: FilesApp,
+    category: "System",
   },
 };
 

@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { personalProjects, profile } from "../../data/portfolio";
+import React, { useEffect, useMemo, useState } from "react";
+import { profile } from "../../data/portfolio";
 import { AppIcon } from "../AppIcons";
 
 const githubUsername = profile.githubUsername;
@@ -22,19 +22,29 @@ const TOP_LANGS_URL =
   `&layout=compact&theme=dark&title_color=5EEAD4&text_color=C8D1E0&bg_color=0D1219` +
   `&border_color=3A4256&icon_color=7AA2F7&border_radius=4&langs_count=8&card_width=520&hide_progress=false`;
 
-const CURATED_REPOS = personalProjects.filter((p) => p.githubSrcCode);
+// committers.top rank badge — the default SVG is a stock shields pill; we fetch
+// it just to parse the rank out, then render our own theme-styled badge.
+const RANK_AREA = "morocco";
+const RANK_BADGE_URL = `https://user-badge.committers.top/${RANK_AREA}/${githubUsername}.svg`;
 
-interface Curated {
-  repo: (typeof personalProjects)[number];
-  slug: string;
-  url: string;
+interface CommitterRank {
+  area: string;
+  rank: string;
+  metric: string;
 }
 
-const REPOS: Curated[] = CURATED_REPOS.map((repo) => ({
-  repo,
-  slug: (repo.githubSrcCode?.split("/").pop() ?? repo.name).toLowerCase(),
-  url: repo.githubSrcCode ?? "",
-}));
+interface GitHubRepo {
+  id: number;
+  name: string;
+  full_name: string;
+  html_url: string;
+  description: string | null;
+  language: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  updated_at: string;
+  fork: boolean;
+}
 
 const LANG_COLORS: Record<string, string> = {
   C: "#555555",
@@ -46,9 +56,9 @@ const LANG_COLORS: Record<string, string> = {
   CSS: "#563d7c",
   Rust: "#dea584",
   Go: "#00add8",
-  Lua: "#000080",
+  Kotlin: "#a97bff",
+  Roff: "#ecebe9",
   Shell: "#89e051",
-  Java: "#b07219",
 };
 
 const RemoteImage: React.FC<{
@@ -70,19 +80,97 @@ const RemoteImage: React.FC<{
   );
 };
 
+const StarIcon: React.FC = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12 2l2.9 6.3 6.9 1-5 4.9 1.2 6.9L12 17.9 5.9 21l1.2-6.9-5-4.9 6.9-1Z" />
+  </svg>
+);
+
+const ForkIcon: React.FC = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <circle cx="6" cy="5" r="2" />
+    <circle cx="18" cy="5" r="2" />
+    <circle cx="12" cy="19" r="2" />
+    <path d="M6 7 v3 a3 3 0 0 0 3 3 h6 a3 3 0 0 0 3 -3 V7 M12 13 v4" fill="none" stroke="currentColor" strokeWidth="1.4" />
+  </svg>
+);
+
+const TrophyIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+    <path d="M6 9a6 6 0 0 0 12 0" />
+    <rect x="4" y="2" width="16" height="4" rx="1" />
+    <path d="M9 22v-3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v3" />
+    <path d="M6 9V2h12v7" />
+  </svg>
+);
+
 const GitHubApp: React.FC = () => {
   const [search, setSearch] = useState("");
+  const [repos, setRepos] = useState<GitHubRepo[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [rank, setRank] = useState<CommitterRank | null>(null);
 
-  const repos = useMemo(() => {
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=updated`,
+        );
+        if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+        const data = (await res.json()) as GitHubRepo[];
+        if (!cancelled) setRepos(data);
+      } catch (err) {
+        if (!cancelled) {
+          console.error("[GitHub] repo fetch failed", err);
+          setError(err instanceof Error ? err.message : String(err));
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Fetch the committers.top rank badge (just the SVG text), parse out the
+  // rank number, and render our own custom badge in the OS theme.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(RANK_BADGE_URL);
+        if (!res.ok) return;
+        const svg = await res.text();
+        // aria-label="committers.top rank: Morocco #83 (public commits)"
+        const m = svg.match(
+          /rank:\s*([^#]+?)\s*#([\d,]+)\s*\(([^)]+)\)/i,
+        );
+        if (m && !cancelled)
+          setRank({ area: m[1].trim(), rank: m[2].trim(), metric: m[3].trim() });
+      } catch {
+        // Network/CORS error — badge is decorative, ignore
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return REPOS;
-    return REPOS.filter(
+    if (!repos) return [];
+    const list = repos.filter((r) => !r.fork);
+    if (!q) return list;
+    return list.filter(
       (r) =>
-        r.slug.includes(q) ||
-        r.repo.name.toLowerCase().includes(q) ||
-        (r.repo.description ?? "").toLowerCase().includes(q),
+        r.name.toLowerCase().includes(q) ||
+        (r.description ?? "").toLowerCase().includes(q) ||
+        (r.language ?? "").toLowerCase().includes(q),
     );
-  }, [search]);
+  }, [repos, search]);
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -128,7 +216,9 @@ const GitHubApp: React.FC = () => {
               {profile.location}
             </span>
           )}
-          <span>{CURATED_REPOS.length} featured repos</span>
+          {repos && (
+            <span>{repos.filter((r) => !r.fork).length} public repos</span>
+          )}
         </div>
         <a
           href={`https://github.com/${githubUsername}`}
@@ -140,6 +230,31 @@ const GitHubApp: React.FC = () => {
           <AppIcon name="github" size={13} /> Open Profile
         </a>
       </div>
+
+      {rank && (
+        <a
+          href={`https://committers.top/${RANK_AREA}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 border-y border-os-green/30 bg-os-green/5 px-3 py-2 hover:bg-os-green/10"
+        >
+          <TrophyIcon className="shrink-0 text-os-green" />
+          <div className="min-w-0 flex-1">
+            <p className="text-[0.55rem] uppercase tracking-[0.18em] text-os-dim">
+              {rank.area} · {rank.metric}
+            </p>
+            <p className="flex items-baseline gap-2">
+              <span className="font-arcade text-xl leading-none text-os-green">
+                #{rank.rank}
+              </span>
+              <span className="text-[0.62rem] text-os-text">committers.top</span>
+            </p>
+          </div>
+          <span className="shrink-0 text-[0.62rem] text-os-green" aria-hidden="true">
+            ↗
+          </span>
+        </a>
+      )}
 
       <div className="flex flex-wrap items-center gap-2 border-b border-os-border bg-os-surface2/30 px-3 py-2">
         <RemoteImage src={FOLLOWERS_BADGE} alt="GitHub followers" className="h-6" loading="lazy" />
@@ -173,52 +288,69 @@ const GitHubApp: React.FC = () => {
         </div>
 
         <div className="mt-3 border-t border-os-border pt-3">
-          {repos.length === 0 && (
-            <p className="pb-6 text-center text-[0.68rem] text-os-dim">
-              No repositories match &ldquo;{search}&rdquo;
+          <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
+            Repositories
+          </p>
+
+          {loading && (
+            <p className="flex items-center gap-2 py-6 text-center text-[0.68rem] text-os-dim">
+              <span className="inline-block h-3 w-3 animate-spin rounded-full border border-os-border2 border-t-os-accent" />
+              loading repositories from the GitHub API...
             </p>
           )}
+
+          {!loading && error && (
+            <p className="py-6 text-center text-[0.68rem] text-os-dim">
+              Couldn&rsquo;t reach the GitHub API ({error}). Open the profile
+              directly to browse the repos.
+            </p>
+          )}
+
+          {!loading && !error && filtered.length === 0 && (
+            <p className="py-6 text-center text-[0.68rem] text-os-dim">
+              {repos?.length
+                ? `No repositories match "${search}"`
+                : "No public repositories."}
+            </p>
+          )}
+
           <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-            {repos.map(({ repo, slug, url }) => (
+            {filtered.map((repo) => (
               <div
-                key={slug}
+                key={repo.id}
                 className="flex flex-col border border-os-border bg-os-surface2/40 p-3"
               >
                 <div className="flex items-center gap-1.5">
                   <AppIcon name="folder" size={13} />
                   <a
-                    href={url}
+                    href={repo.html_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="truncate text-[0.7rem] font-bold text-os-accent hover:text-os-green"
                   >
-                    {githubUsername}/{slug}
+                    {repo.full_name}
                   </a>
                 </div>
-                <div className="mt-1.5 flex gap-1.5 overflow-hidden">
-                  {repo.languages?.map((l) => (
-                    <span key={l} className="flex items-center gap-1 text-[0.55rem] text-os-dim">
+                <p className="mt-1.5 line-clamp-2 text-[0.62rem] leading-relaxed text-os-dim">
+                  {repo.description ?? "No description provided."}
+                </p>
+                <div className="mt-auto flex items-center gap-3 pt-2 text-[0.55rem] text-os-dim">
+                  {repo.language && (
+                    <span className="flex items-center gap-1">
                       <span
                         className="h-1.5 w-1.5"
-                        style={{ backgroundColor: LANG_COLORS[l] ?? "#bb9af7" }}
+                        style={{ backgroundColor: LANG_COLORS[repo.language] ?? "#bb9af7" }}
                         aria-hidden="true"
                       />
-                      {l}
+                      {repo.language}
                     </span>
-                  ))}
-                </div>
-                <p className="mt-1.5 line-clamp-2 text-[0.62rem] leading-relaxed text-os-dim">
-                  {repo.description}
-                </p>
-                <div className="mt-2 aspect-video overflow-hidden border border-os-border bg-os-bg">
-                  <img
-                    src={repo.screenshot}
-                    alt={`${repo.name} screenshot`}
-                    loading="lazy"
-                    className="h-full w-full object-contain transition-transform hover:scale-105"
-                  />
-                </div>
-                <div className="mt-auto flex items-center gap-3 pt-2 text-[0.55rem] text-os-dim">
+                  )}
+                  <span className="flex items-center gap-0.5" title="Stars">
+                    <StarIcon /> {repo.stargazers_count}
+                  </span>
+                  <span className="flex items-center gap-0.5" title="Forks">
+                    <ForkIcon /> {repo.forks_count}
+                  </span>
                   <span className="ml-auto">open on github</span>
                 </div>
               </div>

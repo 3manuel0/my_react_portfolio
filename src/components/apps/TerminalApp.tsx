@@ -220,7 +220,7 @@ const TerminalApp: React.FC = () => {
           if (!target) {
             return (
               <p className="text-os-red">
-                usage: open &lt;about|projects|skills|experience|education|contact|github|terminal|system|game&gt;
+                usage: open &lt;about|projects|skills|experience|education|contact|github|terminal|system|game|files&gt;
               </p>
             );
           }
@@ -237,6 +237,8 @@ const TerminalApp: React.FC = () => {
             sysinfo: "system",
             game: "game",
             platformer: "game",
+            files: "files",
+            explorer: "files",
           };
           const appId = map[target.toLowerCase()];
           if (!appId) {
