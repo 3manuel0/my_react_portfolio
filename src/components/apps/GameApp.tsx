@@ -5,8 +5,6 @@ import { useOsMode } from "../../context/OsModeContext";
 const GAME_ASPECT_RATIO = 16 / 9;
 const GAME_ORIGIN = "https://3manuel0.github.io/2dPlatformerGame/";
 
-const SAVE_KEYS = ["playerX", "playerY", "cameraX", "hp"] as const;
-
 interface WorkerMessage {
   type: string;
   message?: string;
@@ -14,7 +12,6 @@ interface WorkerMessage {
   src?: string;
   volume?: number;
   loop?: boolean;
-  data?: Record<string, string>;
 }
 
 // Module-level state that survives React StrictMode mount/unmount cycles.
@@ -26,12 +23,51 @@ let _onMessage: ((e: MessageEvent<WorkerMessage>) => void) | null = null;
 let _onError: ((e: ErrorEvent) => void) | null = null;
 let _audio: HTMLAudioElement | null = null;
 let _gestureArmed = false;
-let _gestureBound = false;
 let _gameSession = false;
 let _pendingKillTimer: number | null = null;
+let _watchdog: MutationObserver | null = null;
 // The canvas DOM element that was last transferred. StrictMode reuses the same
 // element across mount→cleanup→remount, so we can detect it by identity.
 let _transferredCanvas: HTMLCanvasElement | null = null;
+
+// Hard teardown — the definitive "game is really gone" path. Called when the
+// canvas leaves the document or an old worker is replaced. Terminates the
+// worker (so the game C code can no longer resurrect music via new
+// LoadMusicStream calls) and fully silences the audio element.
+function _killGameSession() {
+  _gameSession = false;
+  _watchdog?.disconnect();
+  _watchdog = null;
+  if (_pendingKillTimer != null) {
+    window.clearTimeout(_pendingKillTimer);
+    _pendingKillTimer = null;
+  }
+  if (_audio) {
+    _audio.pause();
+    _audio.removeAttribute("src");
+    _audio.load();
+    _audio.volume = 0;
+  }
+  if (_worker) {
+    _worker.terminate();
+    _worker = null;
+    _onMessage = null;
+    _onError = null;
+  }
+  _transferredCanvas = null;
+}
+
+// Observe the DOM so a real window close is detected WITHOUT relying on React
+// effect-cleanup timing. React StrictMode fake-remounts never remove DOM nodes,
+// so the observer stays silent there; a genuine close removes the window
+// subtree synchronously and the observer fires → full teardown.
+function _armWatchdog(canvas: HTMLCanvasElement) {
+  _watchdog?.disconnect();
+  _watchdog = new MutationObserver(() => {
+    if (!document.body.contains(canvas)) _killGameSession();
+  });
+  _watchdog.observe(document.body, { childList: true, subtree: true });
+}
 
 const GameApp: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,28 +101,21 @@ const GameApp: React.FC = () => {
     // StrictMode remount: same canvas, worker still alive → skip.
     // React runs mount→cleanup→remount SYNCHRONOUSLY, so the pending kill
     // timer (set in cleanup) hasn't fired yet — cancel it and keep the session.
+    // Re-arm the watchdog because the fake-unmount's cleanup disconnected it.
     if (canvas === _transferredCanvas && _worker) {
       if (_pendingKillTimer != null) {
         window.clearTimeout(_pendingKillTimer);
         _pendingKillTimer = null;
       }
       _gameSession = true;
+      _armWatchdog(canvas);
       // Audio was paused by cleanup — re-arm so next gesture resumes playback.
       if (_audio && _audio.paused) _gestureArmed = true;
       return;
     }
 
     // Real reopen: clean up any stale worker/timer from the previous session.
-    if (_pendingKillTimer != null) {
-      window.clearTimeout(_pendingKillTimer);
-      _pendingKillTimer = null;
-    }
-    if (_worker) {
-      _worker.terminate();
-      _worker = null;
-      _onMessage = null;
-      _onError = null;
-    }
+    _killGameSession();
 
     let offscreen: OffscreenCanvas;
     try {
@@ -97,10 +126,11 @@ const GameApp: React.FC = () => {
       return;
     }
     _transferredCanvas = canvas;
+    _armWatchdog(canvas);
 
     let worker: Worker;
     try {
-      worker = new Worker("/game-worker.js?v=5");
+      worker = new Worker("/game-worker.js?v=6");
     } catch {
       console.error("[GameApp] could not create game worker");
       setStatus("error");
@@ -121,12 +151,6 @@ const GameApp: React.FC = () => {
       if (!d) return;
       if (d.type === "ready") {
         setStatus("ready");
-        const saved: Record<string, string> = {};
-        for (const key of SAVE_KEYS) {
-          const v = window.localStorage?.getItem(key);
-          if (v != null) saved[key] = v;
-        }
-        _worker?.postMessage({ type: "save-data", data: saved });
         return;
       }
       if (d.type === "error") {
@@ -149,7 +173,10 @@ const GameApp: React.FC = () => {
             if (d.src) _audio.src = absoluteSrc(d.src);
             break;
           case "play":
-            if (_audio.src) {
+            // Only actually start sound while the game window is on screen.
+            // The worker keeps the game running when minimized/backgrounded
+            // and re-posts play on death/restart — that must never un-mute it.
+            if (_audio.src && activeRef.current) {
               _audio.play().catch((err) => {
                 _gestureArmed = true;
                 if (err?.name !== "NotAllowedError")
@@ -172,16 +199,6 @@ const GameApp: React.FC = () => {
         }
         return;
       }
-      if (d.type === "save" && d.data) {
-        try {
-          for (const key of SAVE_KEYS) {
-            const v = d.data[key];
-            if (v != null) window.localStorage?.setItem(key, v);
-          }
-        } catch (err) {
-          console.warn("[GameApp] could not save game data:", err);
-        }
-      }
     };
     _onError = (ev: ErrorEvent) => {
       console.error("[GameApp] worker error:", ev.message, ev.filename, ev.lineno);
@@ -200,27 +217,20 @@ const GameApp: React.FC = () => {
       // StrictMode's remount needs the element alive so the message
       // handler can still reach it.
       if (_audio) _audio.pause();
-      // Terminate the worker AFTER the current task so React StrictMode's
-      // synchronous remount can cancel it (see the remount branch above).
-      // On a real close no remount happens, the timer fires, the worker
-      // dies, and the background game can no longer resurrect the music via
-      // new LoadMusicStream calls. A real reopen boots a fresh worker.
+      // The DOM watchdog (above) is the primary close detector — it fires as
+      // soon as the window's subtree leaves the document and fully tears the
+      // session down. This timer is a just-in-case fallback for any path that
+      // removes the component without first removing the DOM. It runs after
+      // React StrictMode's synchronous remount, which cancels it (see above).
       _pendingKillTimer = window.setTimeout(() => {
-        if (_worker) {
-          _worker.terminate();
-          _worker = null;
-          _onMessage = null;
-          _onError = null;
-        }
-        _pendingKillTimer = null;
+        _killGameSession();
       }, 0);
     };
   }, [supported]);
 
   // Unblock audio on the first real user gesture (mobile autoplay policy).
   useEffect(() => {
-    if (_gestureBound || typeof window === "undefined") return;
-    _gestureBound = true;
+    if (typeof window === "undefined") return;
     const resume = () => {
       // Only resume while the game window is actually open.
       if (_gameSession && _gestureArmed && _audio) {
@@ -323,9 +333,10 @@ const GameApp: React.FC = () => {
 
   // Drive the worker's game loop from the main thread's real
   // requestAnimationFrame — vsync-aligned, matching the monitor's refresh
-  // rate with no setTimeout jitter. One tick = one game frame.
+  // rate with no setTimeout jitter. One tick = one game frame. Stops while
+  // the game window is minimized or another app is focused.
   useEffect(() => {
-    if (!supported || status !== "ready") return;
+    if (!supported || status !== "ready" || !gameActive) return;
     let raf: number;
     const tick = (t: number) => {
       _worker?.postMessage({ type: "tick", timestamp: t });
@@ -333,7 +344,25 @@ const GameApp: React.FC = () => {
     };
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [supported, status]);
+  }, [supported, status, gameActive]);
+
+  // Pause the music whenever the game window ceases to be the focused/visible
+  // window (minimized from the taskbar, another app focused) and resume it on
+  // the next interaction once it's back.
+  useEffect(() => {
+    if (typeof window === "undefined" || !_gameSession) return;
+    if (gameActive) {
+      if (_audio?.src) {
+        _audio.play().catch(() => {
+          _gestureArmed = true;
+        });
+      } else {
+        _gestureArmed = true;
+      }
+    } else {
+      _audio?.pause();
+    }
+  }, [gameActive]);
 
   return (
     <div
