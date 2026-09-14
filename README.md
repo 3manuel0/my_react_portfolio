@@ -2,6 +2,8 @@
 
 A retro-themed "operating system" portfolio built with **React + TypeScript + Vite + Tailwind CSS**. Your resume runs as a fully functional desktop environment in the browser.
 
+> This project was built with the assistance of AI (code generated and reviewed by an AI assistant).
+
 ## Features
 
 - **Window manager** — drag, resize, minimize, maximize and focus windows
