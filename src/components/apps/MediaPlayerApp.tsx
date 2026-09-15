@@ -52,81 +52,6 @@ function rep<T>(arr: T[], n: number): T[] {
   return out;
 }
 
-// ---- Astronomia (Tony Igy / Vicetone) - Coffin Dance meme. G minor.
-// Pitches from the standard transcription; rolling gallop rhythm (2,1 pairs)
-// to match the original 8th/16th drive instead of flat 16ths.
-const coffinP1: Array<[number, number]> = [
-  [72, 2],
-  [70, 1],
-  [69, 2],
-  [65, 1],
-  [67, 4],
-  [67, 2],
-];
-const coffinP2: Array<[number, number]> = [
-  [74, 2],
-  [70, 1],
-  [69, 2],
-  [69, 2],
-];
-const coffinP3: Array<[number, number]> = [
-  [72, 2],
-  [70, 1],
-  [69, 2],
-  [67, 4],
-  [67, 2],
-];
-const coffinP4: Array<[number, number]> = [
-  [70, 2],
-  [69, 1],
-  [70, 2],
-  [69, 1],
-  [70, 2],
-  [67, 2],
-  [67, 2],
-];
-const coffinP6: Array<[number, number]> = [
-  [74, 2],
-  [72, 2],
-  [70, 1],
-  [69, 2],
-  [69, 2],
-  [69, 2],
-];
-const coffinEnd: Array<[number, number]> = [[74, 2], [70, 1], [69, 2], [69, 4]];
-
-const coffinMel = notes([
-  ...coffinP1,
-  ...coffinP2,
-  ...coffinP3,
-  ...coffinP4,
-  ...coffinP4,
-  ...coffinP6,
-  ...coffinP3,
-  ...coffinP4,
-  ...coffinP4,
-  ...Array(12).fill([67, 2]),
-  ...coffinP1,
-  ...coffinEnd,
-]);
-
-// G minor drive: G G F G Eb G D G … pedal under the riff.
-const coffinBass = notes(
-  rep(
-    [
-      [43, 2],
-      [43, 2],
-      [41, 2],
-      [43, 2],
-      [39, 2],
-      [43, 2],
-      [41, 2],
-      [38, 2],
-    ],
-    11,
-  ),
-);
-
 // ---- Korobeiniki (Tetris Theme A). A minor. Transcription from the
 // canonical folk melody: e4. gis8 b4 gis8 e8 | a4. c8 e4 d8 c8 |
 // b4. c8 d4 e4 | c4 a4 a2 || f4. g8 a4 g8 f8 | e4. f8 e4 d8 c8 |
@@ -294,16 +219,6 @@ const canonBass = notes([
 ]);
 
 const TRACKS: TrackDef[] = [
-  {
-    id: "coffin",
-    name: "astronomia_coffin_8bit.ch8",
-    meta: "G minor · 126 BPM · Tony Igy",
-    bpm: 126,
-    bars: 11,
-    melody: coffinMel,
-    bass: coffinBass,
-    percEvery: 1,
-  },
   {
     id: "tetris",
     name: "korobeiniki_tetris_a.ch8",
