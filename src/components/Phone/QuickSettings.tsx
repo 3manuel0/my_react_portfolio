@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useOsMode } from "../../context/OsModeContext";
+import { useOsSettings } from "../../context/OsSettingsContext";
 
 interface QuickSettingsProps {
   onClose: () => void;
-  invert: boolean;
-  onInvert: (v: boolean) => void;
 }
 
 interface TileState {
@@ -43,8 +42,9 @@ const Tile: React.FC<{
   </button>
 );
 
-const QuickSettings: React.FC<QuickSettingsProps> = ({ onClose, invert, onInvert }) => {
+const QuickSettings: React.FC<QuickSettingsProps> = ({ onClose }) => {
   const { setOverride } = useOsMode();
+  const { invert, setInvert } = useOsSettings();
   const [tiles, setTiles] = useState<QuickSettingsState["tiles"]>({
     wifi: true,
     bluetooth: false,
@@ -109,7 +109,7 @@ const QuickSettings: React.FC<QuickSettingsProps> = ({ onClose, invert, onInvert
           </svg>
         </Tile>
 
-        <Tile label="Invert" active={invert} onClick={() => onInvert(!invert)}>
+        <Tile label="Invert" active={invert} onClick={() => setInvert(!invert)}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
             <circle cx="12" cy="12" r="8.5" />
             <path d="M12 3.5 v17" />

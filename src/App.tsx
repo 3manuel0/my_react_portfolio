@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import BootScreen from "./components/Boot/BootScreen";
 import Desktop from "./components/Desktop/Desktop";
-import { WALLPAPER_IDS, type WallpaperId } from "./components/Desktop/Wallpaper";
 import OsChrome from "./components/OS/ContextMenu";
 import PhoneShell from "./components/Phone/PhoneShell";
 import Taskbar from "./components/Taskbar/Taskbar";
@@ -12,32 +11,14 @@ import {
 } from "./context/WindowManagerContext";
 import { OsModeProvider, useOsMode } from "./context/OsModeContext";
 import { OsSoundProvider, useOsSound } from "./context/OsSoundContext";
+import {
+  OsSettingsProvider,
+  useOsSettings,
+} from "./context/OsSettingsContext";
 
-const WALLPAPER_KEY = "3manuelos.wallpaper";
-
-function loadWallpaper(): WallpaperId {
-  const stored = globalThis.localStorage?.getItem(WALLPAPER_KEY);
-  return (WALLPAPER_IDS as string[]).includes(stored ?? "")
-    ? (stored as WallpaperId)
-    : "tron";
-}
-
-interface DesktopEnvProps {
-  booting: boolean;
-  invert: boolean;
-  onInvert: (v: boolean) => void;
-  wallpaper: WallpaperId;
-  onWallpaper: (id: WallpaperId) => void;
-}
-
-function DesktopEnvironment({
-  booting,
-  invert,
-  onInvert,
-  wallpaper,
-  onWallpaper,
-}: DesktopEnvProps) {
+function DesktopEnvironment({ booting }: { booting: boolean }) {
   const { windows, openApp } = useWindowManager();
+  const { invert, wallpaper, scanlines } = useOsSettings();
   const openedAbout = useRef(false);
 
   useEffect(() => {
@@ -49,9 +30,9 @@ function DesktopEnvironment({
 
   return (
     <div
-      className={`scanlines relative h-full w-full overflow-hidden bg-os-bg text-os-text ${
+      className={`relative h-full w-full overflow-hidden bg-os-bg text-os-text ${
         invert ? "os-invert" : ""
-      }`}
+      } ${scanlines ? "scanlines" : ""}`}
     >
       <Desktop wallpaper={wallpaper} />
 
@@ -64,12 +45,7 @@ function DesktopEnvironment({
 
       <Taskbar />
 
-      <OsChrome
-        invert={invert}
-        onInvert={onInvert}
-        wallpaper={wallpaper}
-        onWallpaper={onWallpaper}
-      />
+      <OsChrome />
     </div>
   );
 }
@@ -78,30 +54,13 @@ function Root() {
   const { mode } = useOsMode();
   const { play } = useOsSound();
   const [booting, setBooting] = useState(true);
-  const [invert, setInvert] = useState(false);
-  const [wallpaper, setWallpaper] = useState<WallpaperId>(loadWallpaper);
-
-  const changeWallpaper = (next: WallpaperId) => {
-    setWallpaper(next);
-    globalThis.localStorage?.setItem(WALLPAPER_KEY, next);
-  };
 
   return (
     <>
       {mode === "phone" ? (
-        <PhoneShell
-          wallpaper={wallpaper}
-          invert={invert}
-          onInvert={setInvert}
-        />
+        <PhoneShell />
       ) : (
-        <DesktopEnvironment
-          booting={booting}
-          invert={invert}
-          onInvert={setInvert}
-          wallpaper={wallpaper}
-          onWallpaper={changeWallpaper}
-        />
+        <DesktopEnvironment booting={booting} />
       )}
 
       {booting && (
@@ -120,9 +79,11 @@ function App() {
   return (
     <OsModeProvider>
       <OsSoundProvider>
-        <WindowManagerProvider>
-          <Root />
-        </WindowManagerProvider>
+        <OsSettingsProvider>
+          <WindowManagerProvider>
+            <Root />
+          </WindowManagerProvider>
+        </OsSettingsProvider>
       </OsSoundProvider>
     </OsModeProvider>
   );

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import { useOsMode, type OsModeOverride } from "../../context/OsModeContext";
+import { useOsSettings } from "../../context/OsSettingsContext";
 import { AppIcon } from "../AppIcons";
 import {
   WALLPAPER_IDS,
   wallpaperLabel,
-  type WallpaperId,
 } from "../Desktop/Wallpaper";
 import RmFakeTerminal from "./RmFakeTerminal";
 
@@ -21,21 +21,15 @@ interface Item {
   onPick: () => void;
 }
 
-interface OsChromeProps {
-  invert: boolean;
-  onInvert: (v: boolean) => void;
-  wallpaper: WallpaperId;
-  onWallpaper: (id: WallpaperId) => void;
-}
-
 const MENU_W = 250;
 const MENU_H = 620;
 
 type RmStage = "off" | "running" | "bsod";
 
-const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWallpaper }) => {
+const OsChrome: React.FC = () => {
   const { openApp } = useWindowManager();
   const { mode, override, setOverride } = useOsMode();
+  const { invert, setInvert, wallpaper, setWallpaper } = useOsSettings();
   const [pos, setPos] = useState<MenuPos | null>(null);
   const [rm, setRm] = useState<RmStage>("off");
   const [restarting, setRestarting] = useState(false);
@@ -111,7 +105,7 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
   };
 
   const toggleInvert = () => {
-    onInvert(!invert);
+    setInvert(!invert);
     close();
   };
 
@@ -161,7 +155,7 @@ const OsChrome: React.FC<OsChromeProps> = ({ invert, onInvert, wallpaper, onWall
           label: `Wallpaper: ${wallpaperLabel(id)}`,
           active: wallpaper === id,
           onPick: () => {
-            onWallpaper(id);
+            setWallpaper(id);
             close();
           },
         })),

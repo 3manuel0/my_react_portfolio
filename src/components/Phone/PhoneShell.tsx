@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
+import { useOsSettings } from "../../context/OsSettingsContext";
 import type { AppId } from "../../data/appRegistry";
 import { APPS } from "../../data/appRegistry";
-import type { WallpaperId } from "../Desktop/Wallpaper";
 import StatusBar from "./StatusBar";
 import NavBar from "./NavBar";
 import LockScreen from "./LockScreen";
@@ -10,15 +10,10 @@ import HomeScreen from "./HomeScreen";
 import RecentsScreen from "./RecentsScreen";
 import QuickSettings from "./QuickSettings";
 
-interface PhoneShellProps {
-  wallpaper: WallpaperId;
-  invert: boolean;
-  onInvert: (v: boolean) => void;
-}
-
-const PhoneShell: React.FC<PhoneShellProps> = ({ wallpaper, invert, onInvert }) => {
+const PhoneShell: React.FC = () => {
   const { windows, activeWindowId, openApp, closeWindow } =
     useWindowManager();
+  const { invert, wallpaper, scanlines } = useOsSettings();
   const [locked, setLocked] = useState(true);
   const [homeView, setHomeView] = useState(true);
   const [shadeOpen, setShadeOpen] = useState(false);
@@ -66,9 +61,9 @@ const PhoneShell: React.FC<PhoneShellProps> = ({ wallpaper, invert, onInvert }) 
 
   return (
     <div
-      className={`scanlines relative h-full w-full overflow-hidden bg-black text-os-text ${
+      className={`relative h-full w-full overflow-hidden bg-black text-os-text ${
         invert ? "os-invert" : ""
-      }`}
+      } ${scanlines ? "scanlines" : ""}`}
       data-testid="phone-shell"
     >
       {/* Background for app view (behind everything, above wallpaper) */}
@@ -99,13 +94,7 @@ const PhoneShell: React.FC<PhoneShellProps> = ({ wallpaper, invert, onInvert }) 
 
       <NavBar onBack={goBack} onHome={goHome} onRecents={() => setRecentsOpen(true)} />
 
-      {shadeOpen && (
-        <QuickSettings
-          onClose={() => setShadeOpen(false)}
-          invert={invert}
-          onInvert={onInvert}
-        />
-      )}
+      {shadeOpen && <QuickSettings onClose={() => setShadeOpen(false)} />}
 
       {recentsOpen && <RecentsScreen onClose={() => setRecentsOpen(false)} />}
 

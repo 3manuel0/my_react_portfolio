@@ -27,7 +27,7 @@ const MENU_STRUCTURE: MenuCategory[] = [
   },
   {
     label: "System",
-    apps: ["files", "contact", "system"],
+    apps: ["files", "contact", "system", "settings"],
   },
 ];
 
