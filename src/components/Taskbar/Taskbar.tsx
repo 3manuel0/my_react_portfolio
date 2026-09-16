@@ -93,11 +93,11 @@ const Taskbar: React.FC = () => {
 
       {/* System tray */}
       <div className="flex shrink-0 items-center gap-2 border-l border-os-border px-2">
-        <span className="hidden text-os-dim sm:block" title="Network: connected">
-          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" style={{ shapeRendering: "crispEdges" }}>
-            <path d="M1 11 L4 11 4 12 1 12 Z M10 11 L13 11 13 12 10 12 Z" fill="#9ece6a" opacity="0.5" />
-            <path d="M4 9 L7 9 7 10 4 10 Z M7 9 L10 9 10 10 7 10 Z" fill="#9ece6a" opacity="0.7" />
-            <path d="M5 7 L7 7 7 8 5 8 Z M7 7 L9 7 9 8 7 8 Z" fill="#9ece6a" />
+        <span className="hidden text-os-green sm:block" title="Network: connected">
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" style={{ shapeRendering: "crispEdges", fill: "currentColor" }}>
+            <path d="M1 11 L4 11 4 12 1 12 Z M10 11 L13 11 13 12 10 12 Z" opacity="0.5" />
+            <path d="M4 9 L7 9 7 10 4 10 Z M7 9 L10 9 10 10 7 10 Z" opacity="0.7" />
+            <path d="M5 7 L7 7 7 8 5 8 Z M7 7 L9 7 9 8 7 8 Z" />
           </svg>
         </span>
         <div ref={volRef} className="relative hidden sm:block">
@@ -109,12 +109,12 @@ const Taskbar: React.FC = () => {
             className="flex items-center text-os-dim hover:text-os-accent"
             title={muted ? "Volume: muted" : `Volume: ${Math.round(volume * 100)}%`}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" style={{ shapeRendering: "crispEdges" }}>
-              <path d="M1 5 L4 5 8 2 8 12 L4 9 1 9 Z" fill="#7dcfff" />
-              {volLevel >= 2 && <path d="M10 4 L11 4 11 10 10 10 Z" fill="#7dcfff" opacity="0.7" />}
-              {volLevel >= 3 && <path d="M12 2 L13 2 13 12 12 12 Z" fill="#7dcfff" opacity="0.6" />}
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" style={{ shapeRendering: "crispEdges", fill: "currentColor" }}>
+              <path d="M1 5 L4 5 8 2 8 12 L4 9 1 9 Z" />
+              {volLevel >= 2 && <path d="M10 4 L11 4 11 10 10 10 Z" opacity="0.7" />}
+              {volLevel >= 3 && <path d="M12 2 L13 2 13 12 12 12 Z" opacity="0.6" />}
               {volLevel === 0 && (
-                <path d="M10 4 L13 10 M13 4 L10 10" stroke="#7dcfff" strokeWidth="1" fill="none" />
+                <path d="M10 4 L13 10 M13 4 L10 10" stroke="currentColor" strokeWidth="1" fill="none" />
               )}
             </svg>
           </button>

@@ -61,13 +61,19 @@ const PhoneShell: React.FC = () => {
 
   return (
     <div
-      className={`relative h-full w-full overflow-hidden bg-black text-os-text ${
-        invert ? "os-invert" : ""
+      className={`relative h-full w-full overflow-hidden bg-os-bg text-os-text ${
+        invert ? "os-light" : ""
       } ${scanlines ? "scanlines" : ""}`}
       data-testid="phone-shell"
     >
       {/* Background for app view (behind everything, above wallpaper) */}
       <div className="absolute inset-0 bg-os-bg" aria-hidden="true" />
+      {invert && (
+        <div
+          className="pointer-events-none absolute inset-0 bg-white/40"
+          aria-hidden="true"
+        />
+      )}
 
       {/* Content area between the phone bars */}
       <div className="absolute inset-x-0 top-8 bottom-12">

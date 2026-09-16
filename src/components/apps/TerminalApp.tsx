@@ -516,7 +516,7 @@ const TerminalApp: React.FC = () => {
 
   return (
     <div
-      className="flex h-full min-h-0 cursor-text flex-col bg-[#0d1219] font-mono"
+      className="flex h-full min-h-0 cursor-text flex-col bg-os-bg font-mono"
       onClick={() => inputRef.current?.focus()}
       role="log"
       aria-label="Terminal output"

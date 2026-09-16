@@ -23,6 +23,43 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* 3manuelOS palette (dark) — consumed by the tailwind os-* color tokens */
+  --os-bg: 11 14 20;
+  --os-surface: 17 21 31;
+  --os-surface2: 22 27 39;
+  --os-border: 42 49 66;
+  --os-border2: 58 66 86;
+  --os-text: 200 209 224;
+  --os-dim: 120 130 154;
+  --os-accent: 94 234 212;
+  --os-accent2: 77 208 184;
+  --os-blue: 122 162 247;
+  --os-green: 158 206 106;
+  --os-yellow: 224 175 104;
+  --os-red: 247 118 142;
+  --os-purple: 187 154 247;
+  --os-cyan: 125 207 255;
+}
+
+/* Light mode: a proper light palette (not a filter) so images keep their colors. */
+.os-light {
+  color-scheme: light;
+  --os-bg: 230 233 239;
+  --os-surface: 248 249 252;
+  --os-surface2: 238 241 247;
+  --os-border: 205 211 224;
+  --os-border2: 174 183 202;
+  --os-text: 55 64 96;
+  --os-dim: 122 131 155;
+  --os-accent: 16 148 134;
+  --os-accent2: 12 132 119;
+  --os-blue: 64 105 210;
+  --os-green: 111 158 46;
+  --os-yellow: 194 129 36;
+  --os-red: 200 67 88;
+  --os-purple: 128 92 205;
+  --os-cyan: 34 132 184;
 }
 
 * {
@@ -44,11 +81,11 @@ body {
 }
 
 a {
-  color: #7aa2f7;
+  color: rgb(var(--os-blue));
   text-decoration: none;
 }
 a:hover {
-  color: #9ece6a;
+  color: rgb(var(--os-green));
 }
 
 button {
@@ -83,20 +120,20 @@ img.pixelated {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0e1219;
+  background: rgb(var(--os-bg));
 }
 ::-webkit-scrollbar-thumb {
-  background: #3a4256;
-  border: 1px solid #55607a;
+  background: rgb(var(--os-border2));
+  border: 1px solid rgb(var(--os-border2));
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #55607a;
+  background: rgb(var(--os-border2));
 }
 
 /* Focus visible for keyboard navigation */
 :focus-visible {
-  outline: 2px solid #7dcfff;
+  outline: 2px solid rgb(var(--os-cyan));
   outline-offset: 1px;
 }
 
@@ -104,7 +141,11 @@ img.pixelated {
 @keyframes window-in {
   from {
     opacity: 0;
-    transform: scale(0.94) translateY(10px);
+    transform: scale(0.92) translateY(16px);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-2px);
   }
   to {
     opacity: 1;
@@ -119,15 +160,15 @@ img.pixelated {
   }
   to {
     opacity: 0;
-    transform: scale(0.94) translateY(10px);
+    transform: scale(0.94) translateY(12px);
   }
 }
 
 .window-enter {
-  animation: window-in 140ms ease-out;
+  animation: window-in 240ms cubic-bezier(0.22, 0.82, 0.3, 1.08);
 }
 .window-leave {
-  animation: window-out 120ms ease-in forwards;
+  animation: window-out 130ms ease-in forwards;
 }
 
 @keyframes menu-in {
@@ -192,9 +233,7 @@ img.pixelated {
 }
 
 /* Inverted "dope" theme mode (right-click fun) */
-.os-invert {
-  filter: invert(1) hue-rotate(180deg) contrast(0.9);
-}
+/* ===== replaced by `.os-light` (a real light palette) above ===== */
 
 /* Drag ghost suppression */
 .no-select {

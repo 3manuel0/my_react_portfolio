@@ -134,7 +134,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
       {/* Title bar */}
       <div
         className={`no-select flex h-9 shrink-0 items-center gap-2 border-b px-2 ${
-          isFocused ? "cursor-grab border-os-border2 bg-os-surface2" : "border-os-border bg-[#131826]"
+          isFocused ? "cursor-grab border-os-border2 bg-os-surface2" : "border-os-border bg-os-surface2/60"
         } active:cursor-grabbing`}
         style={{ touchAction: "none" }}
         onPointerDown={onTitlePointerDown}

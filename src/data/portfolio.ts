@@ -37,6 +37,11 @@ export interface ContactLink {
 
 export const contactLinks: ContactLink[] = [
   {
+    name: "Email",
+    url: "mailto:saiddimension@gmail.com",
+    handle: "saiddimension@gmail.com",
+  },
+  {
     name: "GitHub",
     url: "https://github.com/3manuel0",
     handle: "@3manuel0",

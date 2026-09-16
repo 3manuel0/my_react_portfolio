@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, type FormEvent } from "react";
 import { profile } from "../../data/portfolio";
+import { useOsSound } from "../../context/OsSoundContext";
+import type { IconName } from "../AppIcons";
 import { AppIcon } from "../AppIcons";
+
+const EMAIL = "saiddimension@gmail.com";
+const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${EMAIL}`;
 
 interface MailItem {
   id: number;
@@ -8,8 +13,8 @@ interface MailItem {
   subject: string;
   url?: string;
   copy?: string;
-  body: string[];
-  type: "github" | "linkedin" | "x" | "discord";
+  body?: string[];
+  type: "github" | "linkedin" | "x" | "discord" | "form";
 }
 
 const MAILS: MailItem[] = [
@@ -26,6 +31,12 @@ const MAILS: MailItem[] = [
   },
   {
     id: 2,
+    from: "Direct Email",
+    subject: "Compose a message",
+    type: "form",
+  },
+  {
+    id: 3,
     from: "LinkedIn",
     subject: "Let's connect professionally",
     url: "https://www.linkedin.com/in/said-bennaji/",
@@ -35,7 +46,7 @@ const MAILS: MailItem[] = [
     type: "linkedin",
   },
   {
-    id: 3,
+    id: 4,
     from: "X / Twitter",
     subject: "Follow my timeline",
     url: "https://x.com/3manuel_s",
@@ -45,7 +56,7 @@ const MAILS: MailItem[] = [
     type: "x",
   },
   {
-    id: 4,
+    id: 5,
     from: "Discord",
     subject: "Message me on Discord",
     copy: "3manuel",
@@ -57,11 +68,12 @@ const MAILS: MailItem[] = [
   },
 ];
 
-const TYPE_ICON: Record<MailItem["type"], string> = {
+const TYPE_ICON: Record<MailItem["type"], IconName> = {
   github: "github",
   linkedin: "linkedin",
   x: "x",
   discord: "discord",
+  form: "contact",
 };
 
 const ContactApp: React.FC = () => {
@@ -90,7 +102,7 @@ const ContactApp: React.FC = () => {
                     : "text-os-text hover:bg-os-blue/10"
                 }`}
               >
-                <AppIcon name={TYPE_ICON[m.type] as never} size={15} />
+                <AppIcon name={TYPE_ICON[m.type]} size={15} />
                 <span className="min-w-0">
                   <span className="block truncate text-[0.68rem] font-bold">
                     {m.from}
@@ -125,7 +137,7 @@ const ContactApp: React.FC = () => {
                   : "border-transparent text-os-dim hover:text-os-text"
               }`}
             >
-              <AppIcon name={TYPE_ICON[m.type] as never} size={14} />
+              <AppIcon name={TYPE_ICON[m.type]} size={14} />
               <span className="whitespace-nowrap">{m.from}</span>
             </button>
           ))}
@@ -148,13 +160,17 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
     window.setTimeout(() => setCopied(false), 1500);
   };
 
+  if (active.type === "form") {
+    return <ComposeForm />;
+  }
+
   return (
     <div>
       <p className="text-[0.6rem] text-os-dim">From: {active.from}</p>
       <h2 className="mt-0.5 text-sm font-bold text-os-text">{active.subject}</h2>
 
       <div className="my-3 border border-os-border bg-os-surface2/50 p-3">
-        {active.body.map((line) => (
+        {active.body?.map((line) => (
           <p key={line} className="mb-2 text-[0.7rem] leading-relaxed text-os-text">
             {line}
           </p>
@@ -169,7 +185,7 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
             aria-label={`Copy ${active.from} username`}
             className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"
           >
-            <AppIcon name={TYPE_ICON[active.type] as never} size={14} />
+            <AppIcon name={TYPE_ICON[active.type]} size={14} />
             {copied ? "Copied!" : "Copy username"}
           </button>
         ) : (
@@ -180,7 +196,7 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
             aria-label={`Open ${active.from} contact`}
             className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"
           >
-            <AppIcon name={TYPE_ICON[active.type] as never} size={14} />
+            <AppIcon name={TYPE_ICON[active.type]} size={14} />
             Open {active.from}
           </a>
         )}
@@ -195,6 +211,143 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
           &#8212; {profile.website}
         </p>
       </div>
+    </div>
+  );
+};
+
+type FormStatus = "idle" | "sending" | "sent" | "error";
+
+const INPUT_CLS =
+  "w-full border border-solid border-os-border bg-os-surface2/60 px-2.5 py-2 text-[0.72rem] text-os-text placeholder:text-os-dim/70 focus:border-os-accent";
+
+const ComposeForm: React.FC = () => {
+  const { play } = useOsSound();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<FormStatus>("idle");
+
+  const canSend = name.trim().length > 0 && email.trim().length > 0 && message.trim().length > 0;
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!canSend || status === "sending") return;
+    setStatus("sending");
+    try {
+      const res = await fetch(FORMSUBMIT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          _subject: `[3manuel.dev] message from ${name.trim()}`,
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+      const data = (await res.json()) as { success?: boolean };
+      if (res.ok && data.success) {
+        setStatus("sent");
+        play("notify");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  return (
+    <div>
+      <p className="text-[0.6rem] text-os-dim">To: {EMAIL}</p>
+      <h2 className="mt-0.5 text-sm font-bold text-os-text">
+        Send me a message
+      </h2>
+      <p className="mt-1 text-[0.62rem] leading-relaxed text-os-dim">
+        Landed here from the terminal of the internet &#8212; drop a hello, a job
+        offer, or a bug report. Replies land in my inbox.
+      </p>
+
+      <form onSubmit={submit} className="mt-4 flex flex-col gap-2.5">
+        <label className="flex flex-col gap-1">
+          <span className="text-[0.58rem] uppercase tracking-widest text-os-dim">
+            your name <span className="text-os-red">*</span>
+          </span>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Ada Lovelace"
+            className={INPUT_CLS}
+          />
+        </label>
+
+        <label className="flex flex-col gap-1">
+          <span className="text-[0.58rem] uppercase tracking-widest text-os-dim">
+            your email <span className="text-os-red">*</span>
+          </span>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="ada@example.com"
+            className={INPUT_CLS}
+          />
+        </label>
+
+        <label className="flex flex-col gap-1">
+          <span className="text-[0.58rem] uppercase tracking-widest text-os-dim">
+            message <span className="text-os-red">*</span>
+          </span>
+          <textarea
+            required
+            rows={5}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Your message goes here..."
+            className={`${INPUT_CLS} resize-y leading-relaxed`}
+          />
+        </label>
+
+        {status === "sent" && (
+          <div className="border border-os-green bg-os-green/10 px-3 py-2 text-[0.68rem] text-os-green">
+            &#10003; message sent &#8212; thanks! I'll get back to you.
+          </div>
+        )}
+
+        {status === "error" && (
+          <div className="border border-os-red bg-os-red/10 px-3 py-2 text-[0.68rem] text-os-red">
+            &#9888; relay didn't pick up. Use the mail client link below instead.
+          </div>
+        )}
+
+        <div className="mt-1 flex flex-wrap items-center gap-2">
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            onClick={() => status === "idle" && play("click")}
+            className="border border-os-accent bg-os-accent/10 px-3 py-2 text-[0.65rem] text-os-accent transition-colors hover:bg-os-accent hover:text-black disabled:cursor-wait disabled:opacity-60"
+          >
+            {status === "sending"
+              ? "sending..."
+              : status === "sent"
+                ? "send another"
+                : "\u25b6 send message"}
+          </button>
+          <a
+            href={`mailto:${EMAIL}?subject=${encodeURIComponent("[3manuel.dev] hi")}`}
+            className="border border-os-border bg-os-surface2/60 px-3 py-2 text-[0.65rem] text-os-dim transition-colors hover:text-os-accent"
+          >
+            open mail client
+          </a>
+        </div>
+      </form>
     </div>
   );
 };

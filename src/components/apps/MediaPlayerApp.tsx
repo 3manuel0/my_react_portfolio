@@ -464,7 +464,7 @@ const MediaPlayerApp: React.FC = () => {
   const durationSec = (track.bars * 4 * 60) / track.bpm;
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#0d1219]">
+    <div className="flex h-full min-h-0 flex-col bg-os-bg">
       <div className="flex items-center gap-2 border-b border-os-border px-3 py-2">
         <AppIcon name="music" size={15} />
         <p className="font-mono text-[0.66rem] font-bold text-os-text">
