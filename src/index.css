@@ -42,25 +42,7 @@
   --os-cyan: 125 207 255;
 }
 
-/* Light mode: a proper light palette (not a filter) so images keep their colors. */
-.os-light {
-  color-scheme: light;
-  --os-bg: 230 233 239;
-  --os-surface: 248 249 252;
-  --os-surface2: 238 241 247;
-  --os-border: 205 211 224;
-  --os-border2: 174 183 202;
-  --os-text: 55 64 96;
-  --os-dim: 122 131 155;
-  --os-accent: 16 148 134;
-  --os-accent2: 12 132 119;
-  --os-blue: 64 105 210;
-  --os-green: 111 158 46;
-  --os-yellow: 194 129 36;
-  --os-red: 200 67 88;
-  --os-purple: 128 92 205;
-  --os-cyan: 34 132 184;
-}
+/* Light mode: (removed — using invert filter + image counter-invert instead) */
 
 * {
   box-sizing: border-box;
@@ -233,7 +215,13 @@ img.pixelated {
 }
 
 /* Inverted "dope" theme mode (right-click fun) */
-/* ===== replaced by `.os-light` (a real light palette) above ===== */
+.os-invert {
+  filter: invert(1) hue-rotate(180deg) contrast(0.9);
+}
+/* Counter-invert raster images so they look normal inside the inverted theme */
+.os-invert img {
+  filter: invert(1) hue-rotate(180deg);
+}
 
 /* Drag ghost suppression */
 .no-select {

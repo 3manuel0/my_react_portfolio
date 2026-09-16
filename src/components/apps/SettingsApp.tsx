@@ -167,8 +167,8 @@ const SettingsApp: React.FC = () => {
           </div>
         </div>
 
-        <Row label="Light Mode" desc={invert ? "light colors active" : "dark colors active"}>
-          <Toggle checked={invert} onChange={() => { setInvert(!invert); play("click"); }} label="Light mode" />
+        <Row label="Invert Colors" desc={invert ? "inverted mode active" : "normal colors"}>
+          <Toggle checked={invert} onChange={() => { setInvert(!invert); play("click"); }} label="Invert colors" />
         </Row>
 
         <Row label="CRT Scanlines" desc="retro screen overlay">

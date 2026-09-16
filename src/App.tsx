@@ -31,18 +31,10 @@ function DesktopEnvironment({ booting }: { booting: boolean }) {
   return (
     <div
       className={`relative h-full w-full overflow-hidden bg-os-bg text-os-text ${
-        invert ? "os-light" : ""
+        invert ? "os-invert" : ""
       } ${scanlines ? "scanlines" : ""}`}
     >
       <Desktop wallpaper={wallpaper} />
-
-      {/* Light mode: wash the (dark) wallpaper so the light UI reads clearly */}
-      {invert && (
-        <div
-          className="pointer-events-none absolute inset-0 bg-white/40"
-          aria-hidden="true"
-        />
-      )}
 
       {/* Windows layer */}
       <div className="pointer-events-none absolute inset-0 isolate" data-testid="windows-layer">

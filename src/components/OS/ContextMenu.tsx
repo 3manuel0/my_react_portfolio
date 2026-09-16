@@ -164,7 +164,7 @@ const OsChrome: React.FC = () => {
     {
       label: "Fun",
       items: [
-        { label: "Light Mode", active: invert, onPick: toggleInvert },
+        { label: "Invert Colors", active: invert, onPick: toggleInvert },
         { label: "sudo rm -rf /", danger: true, onPick: sudoRm },
       ],
     },
