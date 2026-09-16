@@ -24,7 +24,8 @@ export type IconName =
   | "location"
   | "star"
   | "fork"
-  | "music";
+  | "music"
+  | "notes";
 
 interface IconProps {
   name: IconName;
@@ -93,6 +94,11 @@ const PIXELS: Record<IconName, string | PixelIcon> = {
     accent: "M3,3 h1 v1 h-1 Z M2,4 h1 v1 h-1 Z M3,4 h1 v1 h-1 Z M4,4 h1 v1 h-1 Z M3,5 h1 v1 h-1 Z M6,3 h1 v1 h-1 Z M7,4 h1 v1 h-1 Z M6,5 h1 v1 h-1 Z",
   },
   music: "M3,1 h1 v6 h-1 Z M3,6 h2 v2 h-1 Z M6,1 h1 v6 h-1 Z M6,6 h2 v2 h-1 Z",
+  notes: {
+    main: "M1,0 h7 v1 h-7 Z M1,0 h1 v9 h-1 Z M8,0 h1 v9 h-1 Z M1,8 h7 v1 h-7 Z",
+    accent:
+      "M3,2 h3 v1 h-3 Z M3,4 h4 v1 h-4 Z M3,6 h3 v1 h-3 Z M8,6 h1 v1 h-1 Z M7,7 h2 v1 h-2 Z",
+  },
 };
 
 const COLORS: Record<string, string> = {
@@ -120,6 +126,7 @@ const COLORS: Record<string, string> = {
   star: "#e0af68",
   fork: "#78829a",
   game: "#f7768e",
+  notes: "#7dcfff",
 };
 
 const ACCENTS: Partial<Record<IconName, string>> = {
@@ -127,6 +134,7 @@ const ACCENTS: Partial<Record<IconName, string>> = {
   projects: "#9cc0fb",
   skills: "#d6c9fb",
   game: "#ffb3c1",
+  notes: "#e6f8ff",
 };
 
 const BRANDS: Partial<Record<IconName, string>> = {

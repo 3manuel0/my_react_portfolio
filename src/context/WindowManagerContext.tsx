@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { APPS, type AppId } from "../data/appRegistry";
+import { useOsSound } from "./OsSoundContext";
 
 export const TASKBAR_HEIGHT = 44;
 export const WINDOW_MARGIN = 12;
@@ -79,6 +80,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
   const windowsRef = useRef<WindowInstance[]>([]);
   const zCounter = useRef(2);
   const openCount = useRef(0);
+  const { play } = useOsSound();
 
   useEffect(() => {
     windowsRef.current = windows;
@@ -107,6 +109,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
         focusWindow(existing.id);
         return;
       }
+      play("open");
       const geo = getOpenGeometry(appId, openCount.current);
       openCount.current += 1;
       zCounter.current += 1;
@@ -129,7 +132,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
         globalThis.history?.replaceState(null, "", `#/${appId}`);
       }
     },
-    [focusWindow],
+    [focusWindow, play],
   );
 
   const openAppRef = useRef(openApp);
@@ -137,46 +140,57 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
     openAppRef.current = openApp;
   }, [openApp]);
 
-  const closeWindow = useCallback((id: string) => {
-    const closed = windowsRef.current.find((w) => w.id === id);
-    setWindows((ws) => ws.filter((w) => w.id !== id));
-    if (closed && window.location.hash === `#/${closed.appId}`) {
-      globalThis.history?.replaceState(
-        null,
-        "",
-        `${window.location.pathname}${window.location.search}`,
-      );
-    }
-    setActiveWindowId((cur) => {
-      if (cur !== id) return cur;
-      const next = windowsRef.current.find(
-        (w) => w.id !== id && !w.minimized,
-      );
-      return next ? next.id : null;
-    });
-  }, []);
+  const closeWindow = useCallback(
+    (id: string) => {
+      play("close");
+      const closed = windowsRef.current.find((w) => w.id === id);
+      setWindows((ws) => ws.filter((w) => w.id !== id));
+      if (closed && window.location.hash === `#/${closed.appId}`) {
+        globalThis.history?.replaceState(
+          null,
+          "",
+          `${window.location.pathname}${window.location.search}`,
+        );
+      }
+      setActiveWindowId((cur) => {
+        if (cur !== id) return cur;
+        const next = windowsRef.current.find(
+          (w) => w.id !== id && !w.minimized,
+        );
+        return next ? next.id : null;
+      });
+    },
+    [play],
+  );
 
-  const minimizeWindow = useCallback((id: string) => {
-    setWindows((ws) =>
-      ws.map((w) => (w.id === id ? { ...w, minimized: true } : w)),
-    );
-    setActiveWindowId((cur) => {
-      if (cur !== id) return cur;
-      const next = windowsRef.current.find(
-        (w) => w.id !== id && !w.minimized,
+  const minimizeWindow = useCallback(
+    (id: string) => {
+      play("minimize");
+      setWindows((ws) =>
+        ws.map((w) => (w.id === id ? { ...w, minimized: true } : w)),
       );
-      return next ? next.id : null;
-    });
-  }, []);
+      setActiveWindowId((cur) => {
+        if (cur !== id) return cur;
+        const next = windowsRef.current.find(
+          (w) => w.id !== id && !w.minimized,
+        );
+        return next ? next.id : null;
+      });
+    },
+    [play],
+  );
 
   const toggleMaximize = useCallback(
     (id: string) => {
+      const target = windowsRef.current.find((w) => w.id === id);
+      if (target && !target.maximized) play("maximize");
+      else if (target) play("restore");
       setWindows((ws) =>
         ws.map((w) => (w.id === id ? { ...w, maximized: !w.maximized } : w)),
       );
       focusWindow(id);
     },
-    [focusWindow],
+    [focusWindow, play],
   );
 
   const moveWindow = useCallback((id: string, x: number, y: number) => {

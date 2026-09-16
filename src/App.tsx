@@ -11,7 +11,7 @@ import {
   useWindowManager,
 } from "./context/WindowManagerContext";
 import { OsModeProvider, useOsMode } from "./context/OsModeContext";
-import { OsSoundProvider } from "./context/OsSoundContext";
+import { OsSoundProvider, useOsSound } from "./context/OsSoundContext";
 
 const WALLPAPER_KEY = "3manuelos.wallpaper";
 
@@ -76,6 +76,7 @@ function DesktopEnvironment({
 
 function Root() {
   const { mode } = useOsMode();
+  const { play } = useOsSound();
   const [booting, setBooting] = useState(true);
   const [invert, setInvert] = useState(false);
   const [wallpaper, setWallpaper] = useState<WallpaperId>(loadWallpaper);
@@ -103,7 +104,14 @@ function Root() {
         />
       )}
 
-      {booting && <BootScreen onDone={() => setBooting(false)} />}
+      {booting && (
+        <BootScreen
+          onDone={() => {
+            play("startup");
+            setBooting(false);
+          }}
+        />
+      )}
     </>
   );
 }

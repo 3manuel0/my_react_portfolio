@@ -10,7 +10,9 @@ A retro-themed "operating system" portfolio built with **React + TypeScript + Vi
 - **Boot screen** — a short animated boot sequence before the desktop appears
 - **Taskbar + start menu** — click the `3manuel` button to launch apps; open windows appear with live status
 - **Desktop icons** — double-click (or single tap on touch) to open an app
-- **Apps** — About, Projects (personal & work), Skills, Experience, Education, GitHub, Contact, System Info, and a working **Terminal** shell (`help` to list commands / `neofetch` / `sudo` for a surprise)
+- **Apps** — About, Projects (personal & work), Skills, Experience, Education, GitHub, Contact, System Info, a **Notes** reader, and a working **Terminal** shell (`help` to list commands / `neofetch` / `sudo` for a surprise)
+- **Notes** — a lightweight blog/notes reader (`#/notes`) with a tiny markdown renderer, tag & search filtering, and plain-text exports available in the terminal's virtual `~/notes` directory
+- **Sound effects** — synthesized retro WebAudio blips (boot, window open/close, minimize/maximize, terminal errors). No audio files; they respect the taskbar's master volume slider and mute toggle
 - **Easter eggs** — right-click the desktop for the context menu: enter the Matrix, invert colors, change the **wallpaper**, lock the screen, `sudo rm -rf /` (a theatrical BSOD — nothing is deleted), restart, or shut down
 - **Hash routing** — deep-link to an app with `#/about`, `#/projects`, etc.
 - **Responsive** — works with one-handed phone use down to 320px wide
@@ -48,11 +50,15 @@ src/
 │   ├── Taskbar/     # taskbar, start menu, clock
 │   ├── Window/      # draggable/resizable window chrome
 │   └── apps/        # the actual portfolio content apps
+├── audio/           # WebAudio UI sound effects (no audio files)
 ├── context/
-│   └── WindowManagerContext.tsx   # window state, focus, hotkeys, routing
+│   ├── WindowManagerContext.tsx   # window state, focus, hotkeys, routing
+│   ├── OsSoundContext.tsx         # master volume/mute + sfx playback
+│   └── OsModeContext.tsx          # phone/desktop device mode
 ├── data/
 │   ├── appRegistry.ts             # app metadata (titles, sizes, icons)
-│   └── portfolio.ts               # all resume content + project data
+│   ├── portfolio.ts               # all resume content + project data
+│   └── notes.ts                   # blog/notes content (markdown-ish)
 └── index.css                      # CRT/retro theme, fonts, animations
 ```
 

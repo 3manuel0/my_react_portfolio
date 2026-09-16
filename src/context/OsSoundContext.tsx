@@ -3,10 +3,12 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import { sfx, type SfxName } from "../audio/sfx";
 
 const STORAGE_KEY = "3manuelos.volume";
 const DEFAULT_VOLUME = 0.75;
@@ -27,6 +29,8 @@ interface OsSoundValue {
   gain: number;
   setVolume: (v: number) => void;
   toggleMute: () => void;
+  /** Trigger a synthesized UI sound effect (respects volume/mute). */
+  play: (name: SfxName) => void;
 }
 
 const OsSoundContext = createContext<OsSoundValue | null>(null);
@@ -45,9 +49,27 @@ export function OsSoundProvider({ children }: { children: ReactNode }) {
 
   const gain = muted ? 0 : volume;
 
+  // Keep sfx master gain in sync with the current volume setting.
+  useEffect(() => {
+    sfx.setVolume(gain);
+  }, [gain]);
+
+  // Unlock audio on the first user gesture (browsers require this).
+  useEffect(() => {
+    const unlock = () => sfx.unlock();
+    window.addEventListener("pointerdown", unlock);
+    window.addEventListener("keydown", unlock);
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+  }, []);
+
+  const play = useCallback((name: SfxName) => sfx.play(name), []);
+
   const value = useMemo(
-    () => ({ volume, muted, gain, setVolume, toggleMute }),
-    [volume, muted, gain, setVolume, toggleMute],
+    () => ({ volume, muted, gain, setVolume, toggleMute, play }),
+    [volume, muted, gain, setVolume, toggleMute, play],
   );
 
   return (

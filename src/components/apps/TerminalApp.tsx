@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { profile } from "../../data/portfolio";
 import { KERNEL_VERSION } from "../../data/constants";
 import { useWindowManager } from "../../context/WindowManagerContext";
+import { useOsSound } from "../../context/OsSoundContext";
 import type { AppId } from "../../data/appRegistry";
 import {
   HOME,
@@ -78,6 +79,7 @@ const TerminalApp: React.FC = () => {
   cwdRef.current = cwd;
 
   const { windows, activeWindowId, openApp } = useWindowManager();
+  const { play } = useOsSound();
   const terminalWindow = windows.find((w) => w.appId === "terminal");
   const isActive = !!terminalWindow && activeWindowId === terminalWindow.id;
 
@@ -223,7 +225,7 @@ const TerminalApp: React.FC = () => {
           if (!target) {
             return (
               <p className="text-os-red">
-                usage: open &lt;about|projects|skills|experience|education|contact|github|terminal|system|game|files&gt;
+                usage: open &lt;about|projects|skills|experience|education|contact|github|terminal|system|game|files|notes&gt;
               </p>
             );
           }
@@ -242,6 +244,8 @@ const TerminalApp: React.FC = () => {
             platformer: "game",
             files: "files",
             explorer: "files",
+            notes: "notes",
+            blog: "notes",
           };
           const appId = map[target.toLowerCase()];
           if (!appId) {
@@ -303,6 +307,7 @@ const TerminalApp: React.FC = () => {
             </div>
           );
         case "sudo":
+          play("error");
           if (args[0] === "rm" && args.includes("-rf") && args.includes("/")) {
             return <p className="text-os-red">3manuel is not in the sudoers file. This incident will be reported.</p>;
           }
@@ -331,6 +336,7 @@ const TerminalApp: React.FC = () => {
         case "ll":
           return <p className="text-os-dim">aliases are still being written. try `ls`.</p>;
         default:
+          play("error");
           return (
             <p className="text-os-red">
               {name}: command not found. type <span className="text-os-yellow">help</span> for available commands.
@@ -338,7 +344,7 @@ const TerminalApp: React.FC = () => {
           );
       }
     },
-    [history, openApp],
+    [history, openApp, play],
   );
 
   const runCommand = useCallback(

@@ -12,6 +12,7 @@ import SystemInfoApp from "../components/apps/SystemInfoApp";
 import GameApp from "../components/apps/GameApp";
 import FilesApp from "../components/apps/FilesApp";
 import MediaPlayerApp from "../components/apps/MediaPlayerApp";
+import NotesApp from "../components/apps/NotesApp";
 
 export type AppId =
   | "about"
@@ -25,7 +26,8 @@ export type AppId =
   | "system"
   | "game"
   | "files"
-  | "media";
+  | "media"
+  | "notes";
 
 export interface AppDescriptor {
   id: AppId;
@@ -134,6 +136,14 @@ export const APPS: Record<AppId, AppDescriptor> = {
     defaultSize: { width: 480, height: 520 },
     component: MediaPlayerApp,
     category: "Apps",
+  },
+  notes: {
+    id: "notes",
+    title: "Notes",
+    icon: "notes",
+    defaultSize: { width: 800, height: 560 },
+    component: NotesApp,
+    category: "Portfolio",
   },
 };
 

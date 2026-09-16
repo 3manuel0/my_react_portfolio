@@ -8,6 +8,7 @@ import {
   profile,
   skills,
 } from "./portfolio";
+import { notes } from "./notes";
 
 export interface FSDir {
   type: "dir";
@@ -163,6 +164,33 @@ export function buildPortfolioFS(): FSDir {
             "  ~/projects/personal/c3sv.txt  (one file per project)",
             "  ~/projects/personal/less",
           ),
+        ),
+      }),
+      notes: dir({
+        "README.txt": file(
+          block(
+            "~/notes",
+            "plain-text exports of the notes/blog posts.",
+            `posts: ${notes.length}`,
+            "",
+            "cat any .markdown file to read it.",
+            "open notes   (opens the Notes app)",
+          ),
+        ),
+        ...Object.fromEntries(
+          notes.map((n) => [
+            `${n.slug}.markdown`,
+            file(
+              block(
+                <span className="font-bold text-os-accent">{n.title}</span>,
+                <span className="text-os-dim">
+                  {n.date} · {n.readMinutes} min · {n.tags.join(", ")}
+                </span>,
+                "",
+                n.content,
+              ),
+            ),
+          ]),
         ),
       }),
       ".bashrc": file(

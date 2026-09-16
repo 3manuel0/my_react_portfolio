@@ -11,7 +11,7 @@ const Taskbar: React.FC = () => {
     useWindowManager();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { volume, muted, setVolume, toggleMute } = useOsSound();
+  const { volume, muted, setVolume, toggleMute, play } = useOsSound();
   const [volumeOpen, setVolumeOpen] = useState(false);
   const volRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +48,10 @@ const Taskbar: React.FC = () => {
         data-start-button
         aria-label="Open application menu"
         aria-expanded={menuOpen}
-        onClick={() => setMenuOpen((v) => !v)}
+        onClick={() => {
+          play("click");
+          setMenuOpen((v) => !v);
+        }}
         className={`flex h-9 shrink-0 items-center gap-1.5 border px-2.5 font-arcade text-[0.8rem] transition-colors ${
           menuOpen
             ? "border-os-accent bg-os-accent text-black"

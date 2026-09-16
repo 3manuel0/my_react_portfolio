@@ -23,7 +23,7 @@ const MENU_STRUCTURE: MenuCategory[] = [
   },
   {
     label: "Portfolio",
-    apps: ["about", "projects", "experience", "education"],
+    apps: ["notes", "about", "projects", "experience", "education"],
   },
   {
     label: "System",
