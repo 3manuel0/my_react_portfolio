@@ -161,7 +161,7 @@ const TerminalApp: React.FC = () => {
         case "echo":
           return <p className="text-os-text">{args.join(" ")}</p>;
         case "ls": {
-          const target = args[0] ?? ".";
+          const target = args.find((a) => !a.startsWith("-")) ?? ".";
           const node = resolvePath(fs, cwdNow, target);
           if (!node) return noSuch(target);
           if (node.type === "file") {
@@ -334,7 +334,6 @@ const TerminalApp: React.FC = () => {
           return <p className="text-os-dim">opening github.com/3manuel0 in a new tab...</p>;
         case "exit":
           return <p className="text-os-dim">this is the portfolio shell -- there is no exit. try "help".</p>;
-        case "ls -l":
         case "ll":
           return <p className="text-os-dim">aliases are still being written. try `ls`.</p>;
         default:

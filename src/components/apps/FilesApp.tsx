@@ -21,7 +21,7 @@ const FilesApp: React.FC = () => {
 
   const navigateTo = (path: string) => {
     setOpenFile(null);
-    setCwd("/" + path);
+    setCwd(path === "/" ? "/" : "/" + path.replace(/^\//, ""));
   };
 
   const navigateInto = (name: string) => {

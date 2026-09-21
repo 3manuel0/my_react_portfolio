@@ -11,7 +11,6 @@ import TerminalApp from "../components/apps/TerminalApp";
 import SystemInfoApp from "../components/apps/SystemInfoApp";
 import GameApp from "../components/apps/GameApp";
 import FilesApp from "../components/apps/FilesApp";
-import MediaPlayerApp from "../components/apps/MediaPlayerApp";
 import NotesApp from "../components/apps/NotesApp";
 import SettingsApp from "../components/apps/SettingsApp";
 
@@ -27,7 +26,6 @@ export type AppId =
   | "system"
   | "game"
   | "files"
-  | "media"
   | "notes"
   | "settings";
 
@@ -130,14 +128,6 @@ export const APPS: Record<AppId, AppDescriptor> = {
     defaultSize: { width: 640, height: 480 },
     component: FilesApp,
     category: "System",
-  },
-  media: {
-    id: "media",
-    title: "Media Player",
-    icon: "music",
-    defaultSize: { width: 480, height: 520 },
-    component: MediaPlayerApp,
-    category: "Apps",
   },
   notes: {
     id: "notes",
