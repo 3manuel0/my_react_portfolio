@@ -27,6 +27,20 @@ const displayName = (t: string) => {
       return "MySQL";
     case "Sqlite":
       return "SQLite";
+    case "Csharp":
+      return "C#";
+    case "X86asm":
+      return "x86_64 Assembly (NASM)";
+    case "Express":
+      return "Express.js";
+    case "Github":
+      return "GitHub";
+    case "Arabic":
+      return "Arabic (Native)";
+    case "English":
+      return "English (C1)";
+    case "French":
+      return "French (A2)";
     default:
       return t;
   }

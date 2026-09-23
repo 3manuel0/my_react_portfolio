@@ -116,7 +116,7 @@ export function buildPortfolioFS(): FSDir {
               <span className="text-os-dim"> — {e.field}</span>
             </span>,
             <span key={`${e.degree}-s`} className="text-os-dim">
-              {"  "}{e.school} ({e.status})
+              {"  "}{e.school}{e.status ? ` (${e.status})` : ""}
             </span>,
             <span key={`${e.degree}-p`} className="text-os-dim">  {e.period}</span>,
             "",
@@ -161,8 +161,8 @@ export function buildPortfolioFS(): FSDir {
             "  personal/  — personal projects",
             "  work/      — internship & freelance work",
             "",
-            "  ~/projects/personal/c3sv.txt  (one file per project)",
-            "  ~/projects/personal/less",
+            "  ls ~/projects/personal   (one .txt file per project)",
+            "  cat ~/projects/personal/c3sv_(data_parser).txt",
           ),
         ),
       }),

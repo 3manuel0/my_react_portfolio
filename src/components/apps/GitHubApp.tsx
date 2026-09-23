@@ -247,7 +247,7 @@ const GitHubApp: React.FC = () => {
           <RemoteImage
             src={TOP_LANGS_URL}
             alt="Top languages from GitHub profile"
-            className="w-full"
+            className="mx-auto block h-auto w-full max-w-[520px]"
             loading="lazy"
           />
         </div>

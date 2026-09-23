@@ -1,18 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { gitContentBase } from "../../data/portfolio";
 
 export const TechIcon: React.FC<{ name: string; size?: number }> = ({
   name,
   size = 22,
 }) => {
+  const [missing, setMissing] = useState(false);
+  const src = missing
+    ? `/icons/skills/${name}.svg`
+    : gitContentBase + name + ".svg";
   return (
     <div className="group relative flex flex-col items-center justify-center">
       <img
         className="cursor-pointer"
         style={{ width: size, height: size }}
-        src={gitContentBase + name + ".svg"}
+        src={src}
         alt={name}
         loading="lazy"
+        onError={() => setMissing(true)}
       />
       <span className="text-outline pointer-events-none absolute -bottom-6 z-10 whitespace-nowrap text-[0.55rem] text-os-text opacity-0 transition-opacity group-hover:opacity-100">
         {name}

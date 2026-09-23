@@ -30,9 +30,11 @@ const EducationApp: React.FC = () => {
               </div>
               <div className="shrink-0 text-right">
                 <p className="font-mono text-[0.58rem] text-os-dim">{ed.period}</p>
-                <span className="mt-1 inline-block border border-os-green/40 px-2 py-0.5 text-[0.58rem] text-os-green">
-                  {ed.status}
-                </span>
+                {ed.status && (
+                  <span className="mt-1 inline-block border border-os-green/40 px-2 py-0.5 text-[0.58rem] text-os-green">
+                    {ed.status}
+                  </span>
+                )}
               </div>
             </div>
           </div>

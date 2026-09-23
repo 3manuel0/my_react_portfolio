@@ -25,308 +25,343 @@ export const notes: Note[] = [
   {
     slug: "implementing-a-csv-parser-in-c",
     title: "Implementing a CSV Parser in C, Memory-Safe and Fast",
-    date: "2025-12-18",
+    date: "2026-03-20",
     readMinutes: 6,
     tags: ["C", "Parsing", "Performance"],
     excerpt:
-      "Type-inferring CSV parsing without strtok: arena allocation, hand-rolled tokenizing and why a parser is the perfect first systems project.",
-    content: `Parsers are the perfect systems project: bounded input, defined grammar, and a million ways to get it wrong. My [C3SV](https://github.com/3manuel0/C3SV) library parses CSV with automatic type inference and JSON output.
+      "Reading a CSV without strtok: load the file into memory, scan it once with a quote state, hand every field to the arena, and let string views do the slicing.",
+    content: `[C3SV](https://github.com/3manuel0/C3SV) originally started without a solid foundation — I rewrote it once I had [Lib3man](https://github.com/3manuel0/Lib3man) to stand on. The goal is a CSV you load once into memory and treat as data structures, not text.
 
-# Why strtok loses
+# The plan
 
-The standard \`strtok\` approach mutates the input in place and collapses consecutive delimiters. CSV should keep empty fields — \`a,,c\` is *three* columns, not two.
+- parse a file into a CSV struct in memory
+- automatic type inference: string_view, int64, float64
+- write the struct back as a CSV or JSON file
 
-So the tokenizer walks the buffer once, tracking a quote state and a field start/end:
+# Reading the file once
+
+The whole file goes into one buffer, then it's scanned once to count columns and rows while tracking a quote state:
 
 \`\`\`c
-static size_t csv_field(const char *s, size_t n, int *quoted) {
-    size_t i = 0;
-    *quoted = 0;
-    if (i < n && s[i] == '"') {
-        *quoted = 1;
-        i++;
-        while (i < n && s[i] != '"') i++;
-        if (i < n) i++;              /* closing quote  */
-    }
-    while (i < n && s[i] != ',') i++; /* unquoted tail */
-    return i;
+u8 is_quotes = false;
+for (; mem[i] != '\n' && mem[i] != 0; i++) {
+    if (mem[i] == '"' && is_quotes) is_quotes = false;
+    else if (mem[i] == '"') is_quotes = true;
+    if (mem[i] == ',' && !is_quotes) { /* field boundary */ }
 }
 \`\`\`
 
-# Type inference, not guessing
+The \`"value, with comma"\` case is what kills naive \`strtok\` splitting — only a comma outside the quotes separates fields.
 
-Each token becomes a candidate. We try the strictest type first and accept the first parse that consumes the whole field:
+# Fields live in the arena
 
-- integers: no sign overflow, no leading zero surprises
-- floats: strtod with full-consumption check
-- booleans: **true** / **false** (case-insensitive)
-- fallback: string
+Every cell is a \`string_view\` allocated inside an [ArenaList](https://github.com/3manuel0/Lib3man) (\`MiB(250)\` at load time), so a field is a pointer + length and the whole table frees with one \`arenaList_free\`.
 
-The key is to be *strict permissive*: if it looks like a number but has a trailing \`.\`, it's still a string.
+# Type inference
 
-# The allocation story
+After the strings settle, each cell goes through \`get_type\`:
 
-Every field is sliced into a single arena. The parser never frees mid-stream; the arena is one \`free()\` at the end. For a few-MB parse that's an order of magnitude less malloc traffic than per-field allocation.
+- \`sv_to_int64\` — manual parse with length and overflow guards
+- \`sv_to_float64\` — digits, dot, then a hand-rolled \`e\` exponent so the parser never links \`-lm\`
+- fallback: \`string_view\`
 
-> A parser that never allocates per token is a parser you can call from a hot loop.
+# Status
+
+Working today: load to struct, quoted commas, int64/float64/string_view inference, JSON output, and writing the struct back to \`.csv\`. It's a learning project and not near complete — but it already feeds both [ml-from-scratch](https://github.com/3manuel0/ml-from-scratch) and the web version.
 
 # Lessons
 
-1. Write the tokenizer against a test corpus with gnarly inputs (quotes, newlines, trailing commas) *before* touching output.
-2. Keep the parser and the string type decoupled — my [Lib3man](https://github.com/3manuel0/Lib3man) String View makes slicing fields free.
-3. Measure. A naive byte-by-byte branch beats beautiful SIMD guesses 90% of the time.
+- Count rows/columns before allocating anything
+- Split with a quote state, not a delimiter check
+- An arena + string views turns parsing into slicing
 
-[source code](https://github.com/3manuel0/C3SV) · written in C99, zero dependencies.`,
+[source code](https://github.com/3manuel0/C3SV) · C99, zero dependencies beyond Lib3man.`,
   },
   {
     slug: "learning-ml-from-scratch-in-c",
     title: "Learning Machine Learning From the Ground Up in C",
-    date: "2025-11-30",
+    date: "2026-05-20",
     readMinutes: 7,
     tags: ["C", "Machine Learning"],
     excerpt:
-      "No numpy, no torch: implementing linear regression and a single-hidden-layer network with raw float arrays to actually learn the math.",
-    content: `Using a framework first teaches you the API, not the field. I learn better in the other direction: implement the math, then look at what libraries automate.
+      "No numpy, no torch: linear regression and matrix code in C99, reading training data with the CSV parser I wrote myself.",
+    content: `The rule of thumb that got me here: don't import what you haven't at least once written badly. The [ml-from-scratch](https://github.com/3manuel0/ml-from-scratch) project implements the math in plain C99 on top of Lib3man's Matrix and my own CSV parser.
 
-# The plan
+# Feeding the data
 
-- linear regression with closed-form and gradient descent
-- a single-hidden-layer MLP with backprop
-- a tiny leaky buffer for reading mnist-like data by hand
-
-# Linear regression in ~40 lines
+Training examples come from a CSV read by [C3SV](https://github.com/3manuel0/C3SV):
 
 \`\`\`c
-double predict(const Matrix *w, double x) {
-    return x * w->data[0] + w->data[1];
+CSV *csv = load_csv("test.csv");
+f64 *values  = malloc(csv->numrows * sizeof(f64));
+f64 *results = malloc(csv->numrows * sizeof(f64));
+for (size_t i = 0; i < csv->numrows; i++) {
+    values[i]  = (f64)csv_get_int_by_name(csv, i, sv_from_lit("x"));
+    results[i] = csv_get_float_by_name(csv, i, sv_from_lit("y"));
 }
-
-void train(Matrix *w, const double *xs, const double *ys,
-           size_t n, double lr, int epochs) {
-    for (int e = 0; e < epochs; e++) {
-        double dw0 = 0, dw1 = 0;
-        for (size_t i = 0; i < n; i++) {
-            double err = predict(w, xs[i]) - ys[i];
-            dw0 += err * xs[i];
-            dw1 += err;
-        }
-        w->data[0] -= lr * dw0 / (double)n;
-        w->data[1] -= lr * dw1 / (double)n;
-    }
-}
+linear_regressionLS(values, results, csv->numrows);
 \`\`\`
 
-# The part that actually hurts: backprop
+# First pass: least squares
 
-The chain rule is easy on paper. In code, with raw \`float\` buffers, you keep a separate array per layer for activations, pre-activations, deltas and weights, and the index arithmetic becomes the real bug source.
+The closed form first — means first, then slope, then intercept:
 
-Writing it bare makes you appreciate what every \`model.fit()\` hides: SGD, momentum, and just *how much* of it is bookkeeping.
+\`\`\`c
+f64 mean_x = calc_mean(values, count);
+f64 mean_y = calc_mean(results, count);
+f64 numerator = 0, denominator = 0;
+for (size_t i = 0; i < count; i++) {
+    numerator   += (values[i] - mean_x) * (results[i] - mean_y);
+    denominator += (values[i] - mean_x) * (values[i] - mean_x);
+}
+if (denominator == 0) return;
+f64 m = numerator / denominator;
+f64 b = mean_y - m * mean_x;
+\`\`\`
 
-# Why not just use Python?
+# Second pass: gradient descent
 
-Python is my default for tooling. But subtract the framework and run the same gradient loop and you'll realize the *model* is five loops and the *ecosystem* is the other ten thousand lines.
+The raw loop — no momentum, no batching, and a learning rate small enough to be honest about the scale of the data:
 
-Once the math runs in C, explaining it on [CodinGame-certified C](https://www.codingame.com/certification/Raf4-S25vVVg-APrkRpwsQ) and Python is almost free.
+\`\`\`c
+f64 a = 0, b = 0, lr = 0.0000001;
+for (size_t i = 0; i < iter; i++)
+    for (size_t j = 0; j < count; j++) {
+        f64 x = values[j], y = results[j];
+        f64 error = (a * x + b) - y;
+        a -= lr * error * x;
+        b -= lr * error;
+    }
+\`\`\`
 
-> Don't import what you haven't at least once written badly.
+# Matrix work
+
+Before a network step exists, the gadgets are exercised standalone: create, fill, copy, scale, add, sub, map, and \`matrix_randomize\` to seed weights. \`sigmoid\` and \`relu\` are used as map functions.
 
 # Next up
 
-A minimal MNIST-ish classifier with just enough matrix code to stop feeling like magic.`,
+A single-hidden-layer MLP with backprop — the bookkeeping (activations, deltas, pre-activations) is where the index arithmetic will hurt the most. That's the whole point.`,
   },
   {
     slug: "why-i-use-void-linux",
-    title: "Why I Use Void Linux (and Why runit > systemd)",
+    title: "Why I Use Void Linux",
     date: "2025-10-12",
     readMinutes: 4,
     tags: ["Linux", "Void"],
     excerpt:
-      "runit, static binaries, a package manager that stays out of the way — the operating system as a tool you can actually see through.",
-    content: `I drift toward tools I can see through. Void Linux is the package manager and init system I never have to *fight*.
+      "XBPS, runit, and a window manager setup small enough to see through — the OS as a tool, not an appliance.",
+    content: `I drift toward tools I can see through, and Void is that for me: XBPS for packages and runit as the init, both small enough to read.
 
-# runit over systemd
+# What's in my dotfiles
 
-runit is a supervision suite: a per-service directory, a run script that is literally a shell script, and logging as a symlink to \`svlogd\`.
+The [dotfiles](https://github.com/3manuel0/dotfiles) repo is the actual setup I run:
 
-\`\`\`sh
-# /etc/sv/myservice/run
-#!/bin/sh
-exec /usr/local/bin/myserver -c /etc/myserver.conf
-\`\`\`
+- **qtile** as the window manager, with a decorated bar and custom key bindings
+- **picom** as the compositor
+- **alacritty** as the terminal
+- **rofi** for launching, **dunst** for notifications
+- **feh** fed by a stored wallpaper path, **btop** for resource views
 
-Start it with \`ln -s /etc/sv/myservice /var/service/\`. A cgroup tree and five new languages are not required to run one daemon.
+The \`autostart.sh\` is the shape of an idle session: DPMS off, numlock fixed, nm-applet and a policykit agent running, picom and dunst up, and a couple of alacritty shells (htop + tty-clock) for the ambient desktop look.
 
-# The package manager
+# Why XBPS + runit
 
-\`xbps\` is fast, dependency-resolved at install time, and ships *static* binaries for the tools I rely on in recovery — \`xbps-static\` has pulled me out of more broken boots than I'm comfortable admitting.
+- \`xbps-install\` is fast and resolves dependencies at install time
+- runit services are a directory with a \`run\` script — no unit compiler between you and the daemon
+- \`xbps-static\` exists for booting into recovery when the main system breaks
 
-# What it costs
+For a student who wants to know what an init actually does, that's a feature.
 
-Less corporate polish, more you-checks-the-docs. For a student who wants to understand what \`apt\` is hiding, that's a feature.
+# The trade-off
 
-> An init system you can read in an afternoon is an init system you'll never fear debugging at 2am.
+Less corporate polish, more you-check-the-docs. The docs are good.
 
-# The workflow
-
-- terminal + [the C3SV suite](https://github.com/3manuel0/C3SV) for data hacking
-- \`sbcl\`, \`clang\`, \`gdb\` from the repos
-- Firefox and wayland just work once configured
-
-It's the distro that finally stopped being part of the stack and became part of the desk.`,
+> An init you can read is an init you'll never fear debugging at 2am.`,
   },
   {
     slug: "porting-raylib-to-the-browser-with-webassembly",
-    title: "Porting a Raylib Game to the Browser With WebAssembly",
-    date: "2025-09-03",
-    readMinutes: 5,
+    title: "Porting a Raylib Game to the Browser Without Emscripten",
+    date: "2026-04-12",
+    readMinutes: 6,
     tags: ["C", "WebAssembly", "Raylib"],
     excerpt:
-      "The secret is a tiny JavaScript bridge: keep the game loop in C, expose input via JS, and let the browser own the DOM while wasm owns the pixels.",
-    content: `Shipping a C/raylib game where people can play it without installing anything is 90% of the fun of web games. My [2d platformer](https://3manuel0.github.io/2dPlatformerGame/) does this with a tiny hand-rolled bridge on top of the Emscripten build.
+      "clang targets wasm32 directly and a hand-rolled JavaScript bridge links raylib's exported functions to the canvas — no emscripten in sight.",
+    content: `Most raylib-web examples reach for emscripten, which builds everything for you. I went the other way: compile with plain clang and write the browser half by hand. It's how I actually learned what a wasm import/export is.
 
-# The division of labor
-
-- **wasm owns the logic**: physics, level layout, the loop in C
-- **JS owns the DOM**: canvas, input events, resizing
-- **the bridge owns the seam**: an exported struct the JS can read each frame
-
-# Where input goes
-
-Raylib's \`IsKeyDown()\` becomes a lookup into an exported buffer:
-
-\`\`\`c
-/* game.h */
-typedef struct {
-    int left, right, jump;
-    int action;
-    float mouse_x, mouse_y;
-} InputFrame;
-
-extern InputFrame g_input; /* JS writes here before each step */
-\`\`\`
-
-The emscripten glue function calls a single exported \`step\`:
-
-\`\`\`c
-EMSCRIPTEN_KEEPALIVE void step(void) {
-    update(&g_input);
-    draw();
-}
-\`\`\`
-
-# The loop problem
-
-The browser drives the loop: \`requestAnimationFrame\` calls \`step()\`, so timing must be delta-based, not frame-based. I pass \`dt\` through the same exported struct — one source of truth, no global timestamp hacks.
-
-# Getting it running
+# The compile command
 
 \`\`\`sh
-emcc main.c -O3 -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 \
-  -s EXPORTED_FUNCTIONS="['_step','_free']" -o game.js
+clang --target=wasm32 --no-standard-libraries \
+  -I./include -Wl,--export-all -Wl,--no-entry \
+  -Wl,--allow-undefined -DPLATFORM_WEB -o game.wasm game.c
 \`\`\`
 
-Keep the memory growth flag on and never touch the heap size during gameplay.
+No libc, no startup. \`--allow-undefined\` is on because raylib's functions are provided by the browser side at instantiation time.
 
-[try the demo](https://3manuel0.github.io/2dPlatformerGame/) · [source](https://github.com/3manuel0/2dPlatformerGame)
+# The JS bridge
 
-> The browser is a scheduler, not a game loop. Give it \`step()\` and \`dt\`, and C just works.`,
+[gamelib](https://github.com/3manuel0/gamelib) is the reusable half: \`raylib.js\` binds raylib's exported functions to the canvas (input keys are mapped onto the raylib \`KeyboardKey\` enum) and \`wasmlib.js\` provides a \`printf\` plus string helpers. The game only exposes \`GameFrame()\`, so the same C file runs on desktop with a \`while (!WindowShouldClose())\` loop and in the browser with whatever the page drives.
+
+# Imports you didn't implement fail loudly
+
+\`\`\`js
+make_environment: (env) => new Proxy(env, {
+  get(target, prop) {
+    if (env[prop] !== undefined) return env[prop].bind(env);
+    return (...args) => {
+      throw new Error(\`NOT IMPLEMENTED: \${prop}\`);
+    };
+  }
+})
+\`\`\`
+
+The unhandled import is a discovery tool, not an error.
+
+# Reading strings out of wasm
+
+\`\`\`js
+const get_str = (str_ptr) => {
+  const buffer = wasm.instance.exports.memory.buffer;
+  const mem = new Uint8Array(buffer);
+  let len = 0;
+  while (mem[str_ptr + len] != 0) len++;
+  return new TextDecoder().decode(new Uint8Array(buffer, str_ptr, len));
+};
+\`\`\`
+
+# Credit
+
+The approach is inspired by [Tsoding's](https://www.youtube.com/@TsodingDaily) raylib-wasm stream — adapting it was my way in. The [2d platformer](https://3manuel0.github.io/2dPlatformerGame/) was the first real target of this bridge, and [FToP](https://github.com/3manuel0/FToP) uses the same idea for a file-to-PNG tool.
+
+[source: raylib_wasm](https://github.com/3manuel0/raylib_wasm) · [source: gamelib](https://github.com/3manuel0/gamelib)`,
   },
   {
     slug: "arenas-and-string-views-a-tiny-memory-toolkit",
     title: "Arenas and String Views: A Tiny Memory Toolkit",
-    date: "2025-08-21",
+    date: "2026-09-10",
     readMinutes: 5,
     tags: ["C", "Memory"],
     excerpt:
-      "Arena allocators and non-owning string views replace a surprising amount of malloc() cleanup without pulling in a GC or a framework.",
-    content: `The [Lib3man](https://github.com/3manuel0/Lib3man) utilities exist because I got tired of writing the same free-everything dance for every small tool.
+      "The Arena, ArenaList, string view and string buffer at the bottom of everything I ship in C — including the bugs I wrote while learning them.",
+    content: `[Lib3man](https://github.com/3manuel0/Lib3man) started as \`can I hand-roll this and learn it\` and became the base of every other C project here. Two ideas carry it: the arena and the length-based string.
 
-# Arena allocator
+# Arena
 
-All allocations come from an incrementing bump pointer into a big block. Freeing is one operation on the whole arena — no per-object ownership graphs.
+All allocations are bump-pointer slices out of one big block:
 
 \`\`\`c
 typedef struct {
-    char *data;
-    size_t used, cap;
-    Arena *next;   /* grow in slab links */
+  void *memory;    // the block we own
+  void *address;   // bump pointer
+  size_t capacity;
+  size_t cur_size;
 } Arena;
 \`\`\`
 
-Rules that keep it honest:
+\`arena_Alloc\` aligns the request (16 on 64-bit, selected via \`UINTPTR_MAX\`), hands back a pointer, and bumps. \`arena_reset\` just rewinds the cursor. \`arena_free\` is a single \`free\`.
 
-- allocations never outlive the arena
-- reset (\`arena_reset\`) frees nothing but rewinds the cursor
-- nested arenas are just parent pointers — handy for per-frame scratch
+# ArenaList
+
+Because one arena isn't always big enough, there's a linked list of arenas that doubles capacity when the head is full:
+
+\`\`\`c
+typedef struct ArenaList {
+  Arena arena;
+  struct ArenaList *prev;
+  struct ArenaList *next;
+} ArenaList;
+\`\`\`
+
+\`arenaList_free\` walks back through \`prev\` and frees everything in one pass.
 
 # String view
 
-A \`StrView\` is a pointer + length. Slicing is pointer arithmetic, never a copy:
+\`sv\` is a pointer + length. Slicing is pointer arithmetic, never a copy:
 
 \`\`\`c
-StrView sv_trim(StrView s) {
-    while (sv_len(s) && isspace(*sv_begin(s))) s = sv_slice(s, 1, sv_len(s) - 1);
-    while (sv_len(s) && isspace(*(sv_begin(s) + sv_len(s) - 1)))
-        s = sv_slice(s, 0, sv_len(s) - 1);
-    return s;
-}
+typedef struct {
+  char *str;
+  size_t len;
+} string_view;
+typedef string_view sv;
 \`\`\`
 
-# Where this shines
+The parsers lean on it hard — \`sv_to_int64\` and \`sv_to_float64\` parse and reject numbers by hand, and the float one implements \`1e-3\`-style exponents without \`pow\` because it refuses to link \`-lm\`.
 
-- parsers (see [C3SV](https://github.com/3manuel0/C3SV)) — fields are slices of the source buffer
-- servers: one arena per request, reset at the end, zero leaks by construction
-- demos and emulators where per-frame scratch is the norm
+\`\`\`c
+if (sv->str[i] != 'e' && sv->str[i] != 'E') return false;
+i++;
+u8 neg = 0; int exp = 0;
+if (sv->str[i] == '+') neg = 0;
+else if (sv->str[i] == '-') neg = 1;
+else return false;
+\`\`\`
 
-> Manual memory management isn't hard when you stop asking *"who owns this?"* for every byte and instead answer it once with *"this arena owns it all."*
+# String buffer
 
-# Tradeoffs
+\`sb\` is the owning, growable cousin (\`str\`/\`len\`/\`cap\`, realloc on growth), with arena-backed variants like \`create_sb_inside_arenaList\`.
 
-Arenas love when lifetimes line up and hate long-lived scatter. Know the shape of your program before you reach for the toolkit.`,
+# The honest part
+
+There's a \`BUGS.md\` for a reason: the \`arenaList_Realloc\` TODO, alignment edge cases, and "string view inside ArenaList" are all tracked there. The point of the project is the process, not polish.
+
+> Manual memory management is fine once you stop asking who owns each byte, and answer it once.`,
   },
   {
     slug: "building-a-gameboy-emulator-from-scratch",
     title: "Building a Game Boy Emulator From Scratch (Work In Progress)",
-    date: "2026-01-05",
-    readMinutes: 6,
+    date: "2025-09-20",
+    readMinutes: 5,
     tags: ["C", "Emulation", "GameBoy"],
     excerpt:
-      "A CPU in C, one opcode at a time: registers, flags, memory mapping, and the humbling difference between speculated and correct timing.",
-    content: `The [Game Boy emulator](https://github.com/3manuel0/gb_emu) is my slow burn project: it's the "C and manual memory management" thesis in its most honest form, because the hardware doesn't care about your abstractions.
+      "Honestly early: a cartridge loader, a switch-based CPU with a handful of opcodes, and raylib drawing VRAM tiles.",
+    content: `The [Game Boy emulator](https://github.com/3manuel0/gb_emu) is the "C and memory" thesis in its most honest form — and it's very early. The README says it up front: incomplete, just starting, mostly for fun and for learning about emulation.
 
-# The plan
+# What exists
 
-- a correct LR35902 CPU core (it's a SM83: a Z80-ish/8080-ish hybrid)
-- a 16-bit address space with bank switching carved out for cartridges
-- display: the 160×144 LCD with a scanline renderer
-- eventually audio via [raylib](https://www.raylib.com/) since I already have the wasm bridge
+- a cartridge loader that reads \`.gb\` ROMs
+- ROM copied into a 64 KB \`u8 memory[0x10000]\`
+- a switch-based \`run_inst\` covering a handful of instructions
+- a raylib window that draws tiles straight out of VRAM
 
-# Where the pain is
-
-Timing. Emulators aren't a list of instructions — they're a pipeline where *every memory access, every interrupt acknowledges latency* matters. A PC that reads \`OPCODE(AF)\` and doesn't consume the right cycles produces a Tetris ROM that plays like static.
-
-The current milestone is a CPU test suite that runs pure-logic instructions with zero PPU interference, and it already humbles you: getting \`LD (HL), n\`'s timing right is 30 seconds of reading and one wrong \`e.c_instr_cycles\` for the rest of the day.
-
-# Code sketch
+# The CPU is a switch
 
 \`\`\`c
-case 0x77: /* LD (HL), A */
-    wb(mmu, hl, a);
-    e.pc += 1;
-    e.instr_cycles += 2;
-    break;
+switch (memory[cpu_reg->PC]) {
+    case 0x01: // LD BC, n16
+        cpu_reg->BC = (memory[cpu_reg->PC + 1] | (memory[cpu_reg->PC + 2] << 8));
+        cpu_reg->PC += 3;
+        number_of_cycles(12);
+        break;
+    case 0xc3: // JP a16
+        cpu_reg->PC = (memory[cpu_reg->PC + 1] | (memory[cpu_reg->PC + 2] << 8));
+        number_of_cycles(16);
+        break;
+    default:
+        cpu_reg->PC++;
+        break;
+}
 \`\`\`
 
-Boring on purpose. The magic — and the bugs — live in the *order* you evaluate the operands.
+\`number_of_cycles\` only prints the cycle count for now — real timing is the big TODO.
+
+# First "boot"
+
+The main loop runs the first 100 instructions from \`PC = 0x0100\` and prints them, then flips to a raylib window to poke at the tile region around \`0x9800\`.
+
+# Resources that pull their weight
+
+- [Pandocs](https://gbdev.io/pandocs/) — the reference
+- [opcodes table](https://gbdev.io/gb-opcodes/optables/) — the cheat sheet
 
 # Status
 
-- [ ] CPU: most of the 8-bit opcodes with a conformance runner
-- [ ] MMU: 32 KB rom bank 0/1 + WRAM/HRAM
-- [ ] PPU: framebuffer skeleton
-- [ ] audio + input + cartridge header
+- ROM loading: yes
+- CPU: NOP, LD BC, LD [BC], A, INC BC, INC B, JP a16, CP n ...
+- PPU: tile-drawing stub
+- timing, interrupts, MBC banks, audio: not yet
 
-Follow along on [GitHub](https://github.com/3manuel0/gb_emu) — it's green-checkerboard progress, but real progress.`,
+Real progress — but it's an emulator in its early months.`,
   },
 ];
 

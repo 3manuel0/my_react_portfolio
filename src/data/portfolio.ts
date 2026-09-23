@@ -67,22 +67,29 @@ export const skills = {
   Languages: [
     "C",
     "C++",
+    "Csharp",
     "Python",
     "Javascript",
     "Typescript",
+    "Java",
     "Kotlin",
     "Php",
+    "X86asm",
   ],
   "Web Development": [
     "WebAssembly",
     "React",
     "Nodejs",
+    "Express",
     "Flask",
     "Vitejs",
     "Tailwindcss",
+    "Html",
+    "Css",
   ],
   Databases: ["Mysql", "Postgresql", "Mongodb", "Sqlite"],
-  Other: ["Git", "Linux", "Voidlinux", "Bash"],
+  Other: ["Git", "Linux", "Make", "Github", "Voidlinux", "Bash"],
+  "Spoken Languages": ["Arabic", "English", "French"],
 };
 
 export interface ProjectType {
@@ -100,7 +107,7 @@ export const personalProjects = [
   {
     name: "C3SV (Data Parser)",
     description:
-      "A high-performance CSV parser in C with automatic type inference and JSON serialization. Optimized for memory efficiency and data-heavy backend processing.",
+      "A high-performance CSV parser in C built from scratch, handling complex edge cases (quoted fields, escapes) with a minimal memory footprint. Automatic type inference maps columns to native C types (int64, float64) and string-view patterns optimize large-scale datasets, with JSON serialization for backend use.",
     languages: ["C"],
     githubSrcCode: "https://github.com/3manuel0/C3SV",
     screenshot: c3sv,
@@ -109,7 +116,7 @@ export const personalProjects = [
   {
     name: "Lib3man (Utility Library)",
     description:
-      "Low-level C utility library featuring custom Arena Allocators and String Views. Built to replace standard library overhead with manual, high-performance memory management.",
+      "Low-level C utility library featuring a custom Arena-based allocator that eliminates memory leaks and optimizes allocation performance, plus a String View / String Buffer system for dynamic strings. Includes a suite of cache-optimized data structures, replacing standard library overhead with manual, high-performance memory management.",
     languages: ["C"],
     githubSrcCode: "https://github.com/3manuel0/Lib3man",
     screenshot: lib3man,
@@ -118,7 +125,7 @@ export const personalProjects = [
   {
     name: "3bs_Downloader",
     description:
-      "A Python CLI tool for reconstructing BigBlueButton sessions. It automates the extraction and synchronization of split streams (Audio, Slides, Chat) into a single MP4, featuring duration clipping that automatically caps at the session's actual length.",
+      "A Python CLI tool for reconstructing BigBlueButton sessions. It automates the extraction and synchronization of split streams (Audio, Slides, Chat) into a single MP4, using XML parsing to sync SVG slides and advanced FFmpeg commands for storage-optimized encoding, with duration clipping that automatically caps at the session's actual length.",
     languages: ["Python", "FFmpeg", "PIL"],
     githubSrcCode: "https://github.com/3manuel0/3bs_Downloader",
     screenshot: bs3,
@@ -135,7 +142,7 @@ export const personalProjects = [
   {
     name: "2d Platformer Game",
     description:
-      "C/Raylib game demo. Developed a custom \"Gamelib\" JavaScript bridge to port high-performance Raylib logic to the web using WebAssembly.",
+      "Custom 2D game engine in C/Raylib featuring physics, collision detection, and hardware-accelerated rendering. A \"Gamelib\" JavaScript bridge and cross-compilation pipeline unify Web and Desktop builds by porting high-performance Raylib logic to the browser via WebAssembly.",
     languages: ["C", "Raylib", "WebAssembly"],
     githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
     demo: "https://3manuel0.github.io/2dPlatformerGame/",
@@ -162,9 +169,9 @@ export const personalProjects = [
     type: "personal",
   },
   {
-    name: "Sphia (Discord Bot)",
+    name: "Sophia (Discord Bot)",
     description:
-      "C++ Discord bot featuring image-to-ASCII processing and mini-games. Served as the testbed for my VPS deployment and infrastructure experiments.",
+      "High-performance C++ Discord bot built with the D++ library, featuring a custom engine for image-to-ASCII conversion and a guessing mini-game. Deployed on a Linux VPS with automated data persistence and uptime monitoring, serving as a testbed for infrastructure experiments.",
     languages: ["C++"],
     githubSrcCode: "https://github.com/3manuel0/Sophia_Cpp",
     screenshot: sophia,
@@ -220,7 +227,7 @@ export const professionalProjects = [
   },
   {
     name: "Balance Checker for Bank Clients",
-    context: "Internship @ MTDS",
+    context: "Internship @ Managtech",
     description:
       "Developed a Flask web app to compare names from uploaded PDF/XLS files against a general bank list. Used pytesseract for OCR-based text extraction and implemented error handling to improve matching accuracy.",
     languages: ["Python", "Flask", "Html", "Css", "Mysql"],
@@ -262,7 +269,7 @@ export interface EducationEntry {
   school: string;
   location: string;
   period: string;
-  status: string;
+  status?: string;
 }
 
 export const experience: ExperienceGroup[] = [
@@ -270,12 +277,12 @@ export const experience: ExperienceGroup[] = [
     year: "2025",
     entries: [
       {
-        role: "C Programming Tutor",
+        role: "C & Python Programming Tutor",
         company: "Freelance",
         period: "Aug 2025 - Present",
         location: "Remote",
         description:
-          "Provided one-on-one online tutoring in C programming, covering topics such as fundamentals, pointers, arrays, and memory management. Guided students through exercises and small projects to improve their problem-solving and low-level programming skills. Created personalized learning materials and practical examples tailored to each student's level and goals.",
+          "Provide one-on-one tutoring in Python fundamentals to young learners through project-based learning to develop algorithmic thinking early. Teach advanced C programming covering manual memory management, pointer arithmetic, and data structure optimization. Explain complex low-level computing concepts based on each student's level, using personalized exercises, materials, and small projects.",
       },
       {
         role: "Full-Stack Developer Intern",
@@ -296,7 +303,7 @@ export const experience: ExperienceGroup[] = [
         period: "Sept 2024 (1 month)",
         location: "Rabat, Morocco",
         description:
-          "Developed a Flask-based web application that compares client names extracted from uploaded PDF/XLS files with a master database of bank clients. Integrated OCR capabilities using pytesseract to extract and process data from scanned documents. Implemented robust error handling and a clean user interface using HTML, CSS, and JavaScript to improve accuracy and user experience.",
+          "Built a Flask application to automate the cross-referencing of critical client data by processing PDF and XLS files against a master bank client database. Integrated OCR with pytesseract to convert scanned documents into actionable data. Optimized the comparison algorithm to minimize false positives during sensitive identity verification, and designed a reporting interface for bank agents to quickly visualize and resolve detected discrepancies.",
       },
     ],
   },
@@ -309,7 +316,7 @@ export const experience: ExperienceGroup[] = [
         period: "Apr 2023 - Present",
         location: "Remote",
         description:
-          "Delivered full-stack web solutions for various international clients, focusing on both frontend and backend development. Built responsive websites and admin dashboards using PHP, React, JavaScript, HTML, and CSS, with data management in MySQL and SQLite. Developed Python automation scripts for web scraping, file extraction, and workflow optimization. Created small-scale games and interactive tools using Pygame and Python. Collaborated directly with clients to gather requirements, design features, and deliver maintainable, production-ready code.",
+          "Delivered full-stack web solutions for international clients, focusing on performance, scalability, and security. Built responsive websites and admin dashboards using PHP, React, JavaScript, HTML, and CSS, with data management in MySQL and SQLite. Developed Python automation scripts for web scraping, file extraction, and workflow optimization, plus interactive tools with Python (Pygame) and C compiled to WebAssembly. Managed the full project lifecycle, from technical requirement analysis to final production deployment.",
       },
     ],
   },
@@ -348,9 +355,16 @@ export const education: EducationEntry[] = [
     status: "Graduated",
   },
   {
+    degree: "University Studies",
+    field: "Economics & Law (Sciences Économiques / Droit Arabe)",
+    school: "Faculté Polydisciplinaire d'Errachidia",
+    location: "Errachidia, Morocco",
+    period: "2019 - 2023",
+  },
+  {
     degree: "Baccalauréat",
     field: "Physics & Chemistry",
-    school: "Si Jil Masa High School",
+    school: "Sijilmassa High School",
     location: "Errachidia, Morocco",
     period: "2018",
     status: "Graduated",
