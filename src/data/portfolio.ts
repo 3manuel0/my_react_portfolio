@@ -274,6 +274,19 @@ export interface EducationEntry {
 
 export const experience: ExperienceGroup[] = [
   {
+    year: "2026",
+    entries: [
+      {
+        role: "Full-Stack & Automation Intern",
+        company: "BIM Pioneers",
+        period: "Jun 2026 - Sept 2026 (3 months)",
+        location: "Casablanca, Morocco (Hybrid)",
+        description:
+          "Engineered an automated outbound lead pipeline with n8n, Docker, and PostgreSQL, integrating AI qualification (GPT-4o/Groq), CRM enrichment via Hunter, and multi-provider email verification before writing qualified leads to NocoDB. Built the BIMPioneers corporate website (bimpioneers.ma), including a React/TypeScript frontend, SEO (SSR, JSON-LD, Google Search Console), and a JWT-secured admin login. Developed a company-discovery workflow with Google CSE and self-hosted enrichment tools (theHarvester, Reacher), and gained hands-on exposure to Revit/AutoCAD plugin development using C# and the Autodesk APIs.",
+      },
+    ],
+  },
+  {
     year: "2025",
     entries: [
       {
