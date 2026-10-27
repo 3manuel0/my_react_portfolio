@@ -172,6 +172,27 @@ const ProjectsApp: React.FC = () => {
           <ProjectDetail project={selected} onBack={() => setSelected(null)} />
         ) : (
           <div className="flex h-full min-h-0 flex-col">
+            {/* Folder tabs (mobile only — desktop uses the sidebar) */}
+            <div className="flex shrink-0 border-b border-os-border bg-os-surface2/40 sm:hidden">
+              {(["personal", "professional"] as Folder[]).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => {
+                    setFolder(f);
+                    setSelected(null);
+                  }}
+                  className={`flex flex-1 items-center justify-center gap-1.5 border-b-2 px-2 py-2 text-[0.68rem] transition-colors ${
+                    folder === f
+                      ? "border-os-blue bg-os-blue/10 text-os-blue"
+                      : "border-transparent text-os-dim hover:text-os-text"
+                  }`}
+                >
+                  <AppIcon name="folder" size={14} />
+                  {f === "personal" ? "personal/" : "work/"}
+                </button>
+              ))}
+            </div>
             {/* Header bar */}
             <div className="flex items-center gap-2 border-b border-os-border bg-os-surface2/40 px-3 py-2">
               <span className="flex items-center gap-1 text-[0.62rem] text-os-dim sm:hidden">

@@ -9,8 +9,11 @@ import {
   buildPortfolioFS,
   completePath,
   formatLsChildren,
+  fsNodeToText,
   normalizePath,
+  renderTree,
   resolvePath,
+  walkDir,
   type FSNode,
 } from "../../data/terminalFs.tsx";
 
@@ -42,6 +45,10 @@ const COMMANDS = [
   "date",
   "uname",
   "history",
+  "grep",
+  "tree",
+  "man",
+  "uptime",
   "github",
   "exit",
   "rm",
@@ -54,6 +61,10 @@ const HELP: [string, string][] = [
   ["pwd", "print working directory"],
   ["cat <file>", "read a file"],
   ["echo <text>", "print text"],
+  ["grep <pat> [path]", "search file contents"],
+  ["tree [path]", "show a directory tree"],
+  ["man <cmd>", "read a command manual"],
+  ["uptime", "session + portfolio stats"],
   ["open <app>", "open an app window"],
   ["whoami", "who am I"],
   ["neofetch", "system info"],
@@ -63,11 +74,75 @@ const HELP: [string, string][] = [
   ["↑ ↓", "navigate history"],
 ];
 
+const MAN: Record<string, string> = {
+  help: `usage:  help\n\n  List the available commands with a one-line description.\n\n  e.g.  help`,
+  ls: `usage:  ls [path]\n\n  List directory contents. Directories get a trailing slash,\n  and files are colored by type (.md purple, .txt green).\n\n  e.g.  ls ~/projects`,
+  cd: `usage:  cd <path>\n\n  Change the working directory. Supports relative and absolute\n  paths, plus . and .. segments.\n\n  e.g.  cd ~/projects`,
+  pwd: `usage:  pwd\n\n  Print the current working directory.`,
+  cat: `usage:  cat <file>\n\n  Print a file's contents. The content keeps the styling it was\n  authored with.\n\n  e.g.  cat ~/README.markdown`,
+  echo: `usage:  echo <text>\n\n  Print text to the shell.\n\n  e.g.  echo hello world`,
+  grep: `usage:  grep <pattern> [path]\n\n  Recursively search file contents under the given path (default:\n  current directory) and print matching lines as path:line:text.\n  Uses a case-insensitive regular expression.\n\n  e.g.  grep react ~/projects`,
+  tree: `usage:  tree [path]\n\n  Print a tree of directories and files under the given path.\n\n  e.g.  tree ~`,
+  man: `usage:  man <command>\n\n  Read the manual for a command. Run man alone to list the\n  manuals available.\n\n  e.g.  man grep`,
+  open: `usage:  open <app>\n\n  Open an app window: about, projects, skills, experience,\n  education, contact, github, terminal, system, game, files,\n  notes, settings.\n\n  e.g.  open notes`,
+  whoami: `usage:  whoami\n\n  Print the user identity.`,
+  neofetch: `usage:  neofetch\n\n  Print system information.`,
+  history: `usage:  history\n\n  Print the command history (persisted in localStorage).`,
+  uptime: `usage:  uptime\n\n  Print how long this shell session has been running, plus how\n  much time you've spent in the portfolio since your first visit.`,
+  clear: `usage:  clear\n\n  Clear the terminal output. (Ctrl+L works too.)`,
+  github: `usage:  github\n\n  Open the GitHub profile in a new tab.`,
+  sudo: `usage:  sudo <command>\n\n  Elevate and fail anyway. This incident will be reported.`,
+  date: `usage:  date\n\n  Print the current date and time.`,
+  uname: `usage:  uname\n\n  Print system name and info.`,
+  rm: `usage:  rm <file>\n\n  Denied. Use the resumé, not the filesystem.`,
+  tab: `usage:  tab\n\n  Autocomplete commands and paths. Pressing Tab twice lists\n  the matches.`,
+  exit: `usage:  exit\n\n  There is no exit. There never was.`,
+};
+
+const HISTORY_KEY = "3manuelos.term.history";
+const ARRIVED_KEY = "3manuelos.arrived";
+const UPTIME_EPOCH = Date.now();
+
+function loadHistory(): string[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((x): x is string => typeof x === "string").slice(0, 200);
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return [];
+}
+
+function formatUptime(ms: number): string {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return `up ${h}h ${m}m ${sec}s`;
+  if (m > 0) return `up ${m} min ${sec} sec`;
+  return `up ${sec} sec`;
+}
+
+function formatDuration(ms: number): string {
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return "less than a minute";
+  if (mins < 60) return `about ${mins} minute${mins === 1 ? "" : "s"}`;
+  const h = Math.floor(mins / 60);
+  const rem = mins % 60;
+  if (rem === 0) return `about ${h} hour${h === 1 ? "" : "s"}`;
+  return `about ${h}h ${rem}m`;
+}
+
 const TerminalApp: React.FC = () => {
   const [lines, setLines] = useState<Line[]>([]);
   const [input, setInput] = useState("");
   const [cursor, setCursor] = useState(0);
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<string[]>(loadHistory);
   const [histIdx, setHistIdx] = useState(-1);
   const [cwd, setCwd] = useState(HOME);
   const endRef = useRef<HTMLDivElement>(null);
@@ -122,6 +197,15 @@ const TerminalApp: React.FC = () => {
     el.scrollTop = el.scrollHeight;
   }, [lines, input]);
 
+  // Persist command history across reloads.
+  useEffect(() => {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 200)));
+    } catch {
+      /* ignore */
+    }
+  }, [history]);
+
   const print = useCallback((raw: string, out: React.ReactNode) => {
     setLines((prev) => [...prev, { input: raw, output: out }]);
   }, []);
@@ -138,6 +222,22 @@ const TerminalApp: React.FC = () => {
           {name}: cannot access &lsquo;{target}&rsquo;: No such file or directory
         </p>
       );
+
+      const renderMan = (cmd: string) => (
+        <div>
+          <p className="font-bold text-os-yellow">{cmd}(1)</p>
+          <p className="whitespace-pre text-os-text">{MAN[cmd]}</p>
+        </div>
+      );
+
+      if (
+        (args.includes("-h") || args.includes("--help")) &&
+        name !== "echo" &&
+        MAN[name] &&
+        name !== "man"
+      ) {
+        return renderMan(name);
+      }
 
       switch (name) {
         case "":
@@ -169,17 +269,18 @@ const TerminalApp: React.FC = () => {
           }
           const listing = formatLsChildren(node);
           if (!listing) return <p className="text-os-dim">(empty)</p>;
+          const fileClass = (n: string) =>
+            n.endsWith("/")
+              ? "mr-3 text-os-blue"
+              : /\.(md|markdown)$/i.test(n)
+                ? "mr-3 text-os-accent"
+                : /\.(txt|log|cfg)$/i.test(n)
+                  ? "mr-3 text-os-green"
+                  : "mr-3 text-os-text";
           return (
             <p className="text-os-text">
               {listing.split("   ").map((n) => (
-                <span
-                  key={n}
-                  className={
-                    n.endsWith("/")
-                      ? "mr-3 text-os-blue"
-                      : "mr-3 text-os-text"
-                  }
-                >
+                <span key={n} className={fileClass(n)}>
                   {n}
                 </span>
               ))}
@@ -329,6 +430,153 @@ const TerminalApp: React.FC = () => {
               {history.length === 0 && <p className="text-os-dim">no history yet. type something.</p>}
             </div>
           );
+        case "grep": {
+          const patternArg = args.find((a) => !a.startsWith("-")) ?? "";
+          if (!patternArg) {
+            return (
+              <p className="text-os-red">
+                usage: grep &lt;pattern&gt; [path]
+              </p>
+            );
+          }
+          let pattern: RegExp | null = null;
+          try {
+            pattern = new RegExp(patternArg, "i");
+          } catch {
+            pattern = null;
+          }
+          if (!pattern) {
+            return (
+              <p className="text-os-red">
+                grep: invalid pattern: {patternArg}
+              </p>
+            );
+          }
+          const pathArg = args.filter((a) => !a.startsWith("-"))[1];
+          const base = pathArg
+            ? resolvePath(fs, cwdNow, pathArg)
+            : resolvePath(fs, cwdNow, cwdNow);
+          if (!base) return noSuch(pathArg ?? ".");
+          const rootLabel =
+            !pathArg || pathArg === "." ? shortCwd(cwdNow) : pathArg;
+          const entries: { path: string; node: FSNode }[] = [];
+          walkDir(base, rootLabel, entries);
+          const hits: { path: string; line: number; text: string }[] = [];
+          for (const { path, node } of entries) {
+            fsNodeToText(node)
+              .split("\n")
+              .forEach((text, i) => {
+                if (pattern!.test(text)) {
+                  hits.push({ path, line: i + 1, text });
+                }
+              });
+          }
+          if (hits.length === 0) {
+            return <p className="text-os-red">grep: no matches under {rootLabel}.</p>;
+          }
+          const highlightMatch = (text: string, re: RegExp): React.ReactNode => {
+            const parts: React.ReactNode[] = [];
+            const g = new RegExp(re.source, re.flags.replace("g", "") + "g");
+            let last = 0;
+            let m: RegExpExecArray | null;
+            let i = 0;
+            while ((m = g.exec(text)) && m[0]) {
+              parts.push(text.slice(last, m.index));
+              parts.push(
+                <span key={i++} className="bg-os-accent/25 text-os-text">
+                  {m[0]}
+                </span>,
+              );
+              last = m.index + m[0].length;
+              if (m.index === g.lastIndex) g.lastIndex++;
+            }
+            parts.push(text.slice(last));
+            return parts;
+          };
+          return (
+            <div>
+              {hits.map((h, i) => (
+                <p key={i} className="break-all">
+                  <span className="text-os-blue">{h.path}:</span>
+                  <span className="text-os-green">{h.line}:</span>
+                  <span className="text-os-dim">
+                    {highlightMatch(h.text, pattern!)}
+                  </span>
+                </p>
+              ))}
+            </div>
+          );
+        }
+        case "tree": {
+          const target = args.find((a) => !a.startsWith("-")) ?? ".";
+          const node = resolvePath(fs, cwdNow, target);
+          if (!node) return noSuch(target);
+          const treeLines: string[] = [];
+          renderTree(node, "", treeLines, target === "." ? shortCwd(cwdNow) : target);
+          if (treeLines.length === 0) {
+            return <p className="text-os-red">tree: no such path</p>;
+          }
+          return (
+            <div className="whitespace-pre leading-relaxed">
+              {treeLines.map((l, i) => (
+                <p
+                  key={i}
+                  className={
+                    l.trim().endsWith("/") ? "text-os-blue" : "text-os-text"
+                  }
+                >
+                  {l}
+                </p>
+              ))}
+            </div>
+          );
+        }
+        case "man": {
+          const target = args.find((a) => !a.startsWith("-"));
+          if (!target) {
+            const names = Object.keys(MAN).sort();
+            return (
+              <div>
+                <p className="text-os-yellow">manuals:</p>
+                {names.map((n) => (
+                  <p key={n}>
+                    <span className="w-16 text-os-green">{n}</span>
+                    <span className="text-os-dim">{MAN[n].split("\n")[0]}</span>
+                  </p>
+                ))}
+                <p className="mt-1 text-os-dim">usage: man &lt;command&gt;</p>
+              </div>
+            );
+          }
+          if (!MAN[target]) {
+            return (
+              <p className="text-os-red">
+                no manual entry for {target}. try <span className="text-os-yellow">man</span> alone.
+              </p>
+            );
+          }
+          return renderMan(target);
+        }
+        case "uptime": {
+          let firstVisit: number;
+          try {
+            const raw = localStorage.getItem(ARRIVED_KEY);
+            firstVisit = raw ? Number(raw) : Number.NaN;
+          } catch {
+            firstVisit = Number.NaN;
+          }
+          const spent = Number.isFinite(firstVisit)
+            ? Math.max(0, Date.now() - firstVisit)
+            : 0;
+          return (
+            <div>
+              <p className="text-os-text">{formatUptime(Date.now() - UPTIME_EPOCH)}</p>
+              <p className="text-os-dim">
+                total time in portfolio: {formatDuration(spent)} (since your first visit)
+              </p>
+            </div>
+          );
+        }
         case "github":
           window.open("https://github.com/3manuel0", "_blank", "noopener,noreferrer");
           return <p className="text-os-dim">opening github.com/3manuel0 in a new tab...</p>;
@@ -419,7 +667,7 @@ const TerminalApp: React.FC = () => {
       return;
     }
     const first = tokens[0].toLowerCase();
-    if (["cd", "cat", "ls", "open"].includes(first)) {
+    if (["cd", "cat", "ls", "open", "grep", "tree"].includes(first)) {
       const partial = tokens[tokens.length - 1];
       const matches = completePath(fsRef.current!, cwdRef.current, partial);
       if (matches.length === 1) {

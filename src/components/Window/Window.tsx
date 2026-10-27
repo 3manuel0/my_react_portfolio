@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { Suspense, useCallback, useRef, useState } from "react";
 import { type WindowInstance, TASKBAR_HEIGHT, useWindowManager } from "../../context/WindowManagerContext";
 import { APPS } from "../../data/appRegistry";
 import { AppIcon } from "../AppIcons";
@@ -22,6 +22,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
   const resize = useRef<{ startX: number; startY: number; origW: number; origH: number } | null>(null);
   const isFocused = activeWindowId === win.id;
   const [closing, setClosing] = useState(false);
+  const [snapping, setSnapping] = useState(false);
   const windowId = win.id;
 
   const requestClose = useCallback(() => {
@@ -44,14 +45,18 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
       };
       const onMove = (ev: PointerEvent) => {
         if (!drag.current) return;
+        const snapGrid = ev.shiftKey || ev.ctrlKey ? 8 : 0;
+        setSnapping(snapGrid > 0);
         moveWindow(
           win.id,
           drag.current.origX + (ev.clientX - drag.current.startX),
           drag.current.origY + (ev.clientY - drag.current.startY),
+          snapGrid,
         );
       };
       const onUp = () => {
         drag.current = null;
+        setSnapping(false);
         globalThis.removeEventListener("pointermove", onMove);
         globalThis.removeEventListener("pointerup", onUp);
       };
@@ -126,6 +131,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
         zIndex: win.zIndex,
         display: win.minimized ? "none" : "flex",
         pointerEvents: closing ? "none" : undefined,
+        outline: snapping ? "1px dashed rgb(var(--os-accent))" : undefined,
       }}
       onPointerDown={() => {
         if (!isFocused) focusWindow(win.id);
@@ -149,6 +155,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
             type="button"
             aria-label="Minimize"
             title="Minimize"
+            onDoubleClick={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               minimizeWindow(win.id);
@@ -161,6 +168,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
             type="button"
             aria-label={win.maximized ? "Restore" : "Maximize"}
             title={win.maximized ? "Restore" : "Maximize"}
+            onDoubleClick={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               toggleMaximize(win.id);
@@ -173,6 +181,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
             type="button"
             aria-label="Close"
             title="Close"
+            onDoubleClick={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               requestClose();
@@ -186,7 +195,17 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
 
       {/* Content */}
       <div className="min-h-0 flex-1 overflow-auto">
-        <AppComponent />
+        <Suspense
+          fallback={
+            <div className="flex h-full w-full items-center justify-center bg-os-bg">
+              <div className="flex items-center gap-2 font-mono text-[0.6rem] text-os-dim">
+                <span className="animate-pulse">[LOADING...]</span>
+              </div>
+            </div>
+          }
+        >
+          <AppComponent />
+        </Suspense>
       </div>
 
       {/* Resize handle */}

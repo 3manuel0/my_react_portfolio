@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import { useOsMode, type OsModeOverride } from "../../context/OsModeContext";
-import { useOsSettings } from "../../context/OsSettingsContext";
+import { useOsSettings, ACCENTS } from "../../context/OsSettingsContext";
 import { AppIcon } from "../AppIcons";
 import {
   WALLPAPER_IDS,
@@ -29,7 +29,8 @@ type RmStage = "off" | "running" | "bsod";
 const OsChrome: React.FC = () => {
   const { openApp } = useWindowManager();
   const { mode, override, setOverride } = useOsMode();
-  const { invert, setInvert, wallpaper, setWallpaper } = useOsSettings();
+  const { invert, setInvert, wallpaper, setWallpaper, accent, setAccent } =
+    useOsSettings();
   const [pos, setPos] = useState<MenuPos | null>(null);
   const [rm, setRm] = useState<RmStage>("off");
   const [restarting, setRestarting] = useState(false);
@@ -229,6 +230,34 @@ const OsChrome: React.FC = () => {
                   <span className="truncate">{item.label}</span>
                 </button>
               ))}
+              {g.label === "View" && (
+                <div className="mt-1 flex items-center gap-1.5 px-1.5 pb-0.5 pt-1">
+                  <span className="text-[0.55rem] uppercase tracking-widest text-os-dim">
+                    accent
+                  </span>
+                  <span className="ml-auto flex items-center gap-1">
+                    {ACCENTS.map((a) => (
+                      <button
+                        key={a.id}
+                        type="button"
+                        role="menuitem"
+                        aria-label={`Accent: ${a.label}`}
+                        title={a.label}
+                        onClick={() => {
+                          setAccent(a.id);
+                          close();
+                        }}
+                        className={`h-3.5 w-3.5 rounded-full border transition-transform ${
+                          accent === a.id
+                            ? "scale-110 border-os-text"
+                            : "border-os-border2 hover:scale-110"
+                        }`}
+                        style={{ backgroundColor: a.swatch }}
+                      />
+                    ))}
+                  </span>
+                </div>
+              )}
             </div>
           ))}
 

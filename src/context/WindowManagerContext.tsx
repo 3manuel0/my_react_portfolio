@@ -35,7 +35,7 @@ interface WindowManagerContextValue {
   minimizeWindow: (id: string) => void;
   toggleMaximize: (id: string) => void;
   focusWindow: (id: string) => void;
-  moveWindow: (id: string, x: number, y: number) => void;
+  moveWindow: (id: string, x: number, y: number, snap?: number) => void;
   resizeWindow: (id: string, width: number, height: number) => void;
   isAppOpen: (appId: AppId) => boolean;
 }
@@ -193,18 +193,23 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
     [focusWindow, play],
   );
 
-  const moveWindow = useCallback((id: string, x: number, y: number) => {
+  const moveWindow = useCallback((id: string, x: number, y: number, snap = 0) => {
+    if (snap !== 0 && (snap < 2 || snap > 128)) return;
     setWindows((ws) =>
       ws.map((w) => {
         if (w.id !== id || w.maximized) return w;
-        const clampedX = Math.min(
+        let clampedX = Math.min(
           Math.max(x, -w.width + 80),
           window.innerWidth - 80,
         );
-        const clampedY = Math.min(
+        let clampedY = Math.min(
           Math.max(y, 0),
           window.innerHeight - TASKBAR_HEIGHT - 40,
         );
+        if (snap > 0) {
+          clampedX = Math.round(clampedX / snap) * snap;
+          clampedY = Math.round(clampedY / snap) * snap;
+        }
         return { ...w, x: clampedX, y: clampedY };
       }),
     );

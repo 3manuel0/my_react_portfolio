@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Daily working-notes (never committed)
+CHANGES-*.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

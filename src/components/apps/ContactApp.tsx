@@ -246,7 +246,7 @@ const ComposeForm: React.FC = () => {
           message: message.trim(),
           _subject: `[3manuel.dev] message from ${name.trim()}`,
           _template: "table",
-          _captcha: "false",
+          _honeypot: "",
         }),
       });
       const data = (await res.json()) as { success?: boolean };
@@ -273,6 +273,7 @@ const ComposeForm: React.FC = () => {
       </p>
 
       <form onSubmit={submit} className="mt-4 flex flex-col gap-2.5">
+        <input type="text" name="_honey" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
         <label className="flex flex-col gap-1">
           <span className="text-[0.58rem] uppercase tracking-widest text-os-dim">
             your name <span className="text-os-red">*</span>

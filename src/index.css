@@ -243,7 +243,7 @@ img.pixelated {
   height: 1.1em;
   margin-left: 1px;
   vertical-align: text-bottom;
-  background-color: #5eead4;
+  background-color: rgb(var(--os-accent));
 }
 @keyframes terminal-blink {
   0%, 49% { opacity: 1; }

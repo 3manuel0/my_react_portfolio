@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import BootScreen from "./components/Boot/BootScreen";
 import Desktop from "./components/Desktop/Desktop";
 import OsChrome from "./components/OS/ContextMenu";
+import WelcomeTour from "./components/OS/WelcomeTour";
 import PhoneShell from "./components/Phone/PhoneShell";
 import Taskbar from "./components/Taskbar/Taskbar";
 import { Window } from "./components/Window/Window";
@@ -46,6 +47,8 @@ function DesktopEnvironment({ booting }: { booting: boolean }) {
       <Taskbar />
 
       <OsChrome />
+
+      {!booting && <WelcomeTour onOpenApp={openApp} />}
     </div>
   );
 }

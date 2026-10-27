@@ -265,3 +265,57 @@ export function formatLsChildren(node: FSNode): string {
     })
     .join("   ");
 }
+
+/** Extract plain text out of a ReactNode (used by grep / tree). */
+export function nodeToText(node: React.ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(nodeToText).join("");
+  if (React.isValidElement(node)) {
+    const props = (node as React.ReactElement<{ children?: React.ReactNode }>)
+      .props;
+    return nodeToText(props.children);
+  }
+  return "";
+}
+
+/** Plain-text body of a file node. */
+export function fsNodeToText(node: FSNode): string {
+  return node.type === "dir" ? "" : nodeToText(node.content);
+}
+
+/** Recursively collect every file under a dir (or the node itself). */
+export function walkDir(
+  node: FSNode,
+  base: string,
+  out: { path: string; node: FSNode }[],
+): void {
+  if (node.type !== "dir") {
+    out.push({ path: base, node });
+    return;
+  }
+  for (const [name, child] of Object.entries(node.children)) {
+    walkDir(child, base === "" ? name : `${base}/${name}`, out);
+  }
+}
+
+/** Render a directory tree into plain text lines (for the `tree` command). */
+export function renderTree(
+  node: FSNode,
+  prefix: string,
+  lines: string[],
+  rootName: string,
+): void {
+  if (node.type !== "dir") {
+    lines.push(`${prefix}${rootName}`);
+    return;
+  }
+  lines.push(`${prefix}${rootName}/`);
+  const names = Object.keys(node.children).sort();
+  names.forEach((name, i) => {
+    const last = i === names.length - 1;
+    const conn = last ? "└── " : "├── ";
+    const branch = last ? "    " : "│   ";
+    renderTree(node.children[name], `${prefix}${branch}`, lines, `${conn}${name}`);
+  });
+}

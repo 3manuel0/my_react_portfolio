@@ -21,9 +21,16 @@ const Desktop: React.FC<DesktopProps> = ({ wallpaper }) => {
   const { openApp } = useWindowManager();
 
   return (
-    <div className="absolute inset-0 select-none overflow-hidden" aria-label="Desktop">
+    <div
+      className="absolute inset-0 select-none overflow-hidden"
+      aria-label="Desktop"
+      data-tour="desktop"
+    >
       <Wallpaper variant={wallpaper} />
-      <div className="absolute inset-x-0 bottom-[52px] top-2 flex flex-col flex-wrap content-start gap-x-2 gap-y-1 px-3">
+      <div
+        className="absolute inset-x-0 bottom-[52px] top-2 flex flex-col flex-wrap content-start gap-x-2 gap-y-1 px-3"
+        data-tour="desktop-icons"
+      >
         {DESKTOP_ICONS.map(({ appId, label }) => (
           <DesktopIcon
             key={appId}

@@ -121,7 +121,7 @@ const AboutApp: React.FC = () => {
         <div>
           <p className="text-[0.6rem] text-os-dim">$ whoami</p>
           <h1 className="mt-1 text-xl font-bold text-os-text sm:text-2xl">
-            <span className="text-os-green">Said</span> AKA{" "}
+            <span className="text-os-green">Said BENNAJI</span> AKA{" "}
             <span className="text-os-accent">3manuel</span>
           </h1>
           <p className="mt-0.5 text-xs text-os-blue">{profile.title}</p>

@@ -1,6 +1,6 @@
 import React from "react";
 import { useOsMode, type OsModeOverride } from "../../context/OsModeContext";
-import { useOsSettings } from "../../context/OsSettingsContext";
+import { ACCENTS, useOsSettings } from "../../context/OsSettingsContext";
 import { useOsSound } from "../../context/OsSoundContext";
 import { WALLPAPER_IDS, wallpaperLabel } from "../Desktop/Wallpaper";
 
@@ -108,8 +108,16 @@ const WALLPAPER_THUMBS: Record<string, React.FC> = {
 /* ---------- the app ---------- */
 
 const SettingsApp: React.FC = () => {
-  const { invert, setInvert, wallpaper, setWallpaper, scanlines, setScanlines } =
-    useOsSettings();
+  const {
+    invert,
+    setInvert,
+    wallpaper,
+    setWallpaper,
+    scanlines,
+    setScanlines,
+    accent,
+    setAccent,
+  } = useOsSettings();
   const { volume, setVolume, muted, toggleMute, sfxEnabled, toggleSfx, play } =
     useOsSound();
   const { mode, override, setOverride } = useOsMode();
@@ -161,6 +169,47 @@ const SettingsApp: React.FC = () => {
                     {active ? "\u2713 " : ""}
                     {wallpaperLabel(id)}
                   </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-3">
+          <p className="mb-2 text-[0.75rem] text-os-text">Accent color</p>
+          <div className="flex flex-wrap gap-2">
+            {ACCENTS.map((a) => {
+              const active = accent === a.id;
+              return (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => {
+                    setAccent(a.id);
+                    play("click");
+                  }}
+                  aria-pressed={active}
+                  aria-label={`Accent: ${a.label}`}
+                  title={a.label}
+                  className={`grid h-7 w-7 place-items-center rounded-full border transition-transform ${
+                    active
+                      ? "scale-110 border-os-text"
+                      : "border-os-border2 hover:scale-105"
+                  }`}
+                  style={{ backgroundColor: a.swatch }}
+                >
+                  {active && (
+                    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                      <path
+                        d="M2 6.5 L4.5 9 L10 3.5"
+                        stroke="#000"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
                 </button>
               );
             })}

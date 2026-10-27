@@ -1,18 +1,19 @@
-import type React from "react";
+import { lazy, type ComponentType } from "react";
 import type { IconName } from "../components/AppIcons";
-import AboutApp from "../components/apps/AboutApp";
-import ProjectsApp from "../components/apps/ProjectsApp";
-import SkillsApp from "../components/apps/SkillsApp";
-import ExperienceApp from "../components/apps/ExperienceApp";
-import EducationApp from "../components/apps/EducationApp";
-import ContactApp from "../components/apps/ContactApp";
-import GitHubApp from "../components/apps/GitHubApp";
-import TerminalApp from "../components/apps/TerminalApp";
-import SystemInfoApp from "../components/apps/SystemInfoApp";
-import GameApp from "../components/apps/GameApp";
-import FilesApp from "../components/apps/FilesApp";
-import NotesApp from "../components/apps/NotesApp";
-import SettingsApp from "../components/apps/SettingsApp";
+
+const AboutApp = lazy(() => import("../components/apps/AboutApp"));
+const ProjectsApp = lazy(() => import("../components/apps/ProjectsApp"));
+const SkillsApp = lazy(() => import("../components/apps/SkillsApp"));
+const ExperienceApp = lazy(() => import("../components/apps/ExperienceApp"));
+const EducationApp = lazy(() => import("../components/apps/EducationApp"));
+const ContactApp = lazy(() => import("../components/apps/ContactApp"));
+const GitHubApp = lazy(() => import("../components/apps/GitHubApp"));
+const TerminalApp = lazy(() => import("../components/apps/TerminalApp"));
+const SystemInfoApp = lazy(() => import("../components/apps/SystemInfoApp"));
+const GameApp = lazy(() => import("../components/apps/GameApp"));
+const FilesApp = lazy(() => import("../components/apps/FilesApp"));
+const NotesApp = lazy(() => import("../components/apps/NotesApp"));
+const SettingsApp = lazy(() => import("../components/apps/SettingsApp"));
 
 export type AppId =
   | "about"
@@ -35,7 +36,7 @@ export interface AppDescriptor {
   icon: IconName;
   defaultSize: { width: number; height: number };
   minSize?: { width: number; height: number };
-  component: React.ComponentType;
+  component: ComponentType;
   category: "Development" | "Portfolio" | "System" | "Apps";
 }
 

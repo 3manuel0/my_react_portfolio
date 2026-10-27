@@ -18,7 +18,7 @@ export const gitContentBase =
   "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
 
 export const profile = {
-  name: "Said AKA 3manuel",
+  name: "Said BENNAJI AKA 3manuel",
   alias: "3manuel",
   githubUsername: "3manuel0",
   title: "Software Engineering Student / Full Stack Web Developer",
