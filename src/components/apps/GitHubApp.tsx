@@ -4,11 +4,6 @@ import { AppIcon } from "../AppIcons";
 
 const githubUsername = profile.githubUsername;
 
-const TOP_LANGS_URL =
-  `https://github-readme-stats-fast.vercel.app/api/top-langs/?username=${githubUsername}` +
-  `&layout=compact&theme=dark&title_color=5EEAD4&text_color=C8D1E0&bg_color=0D1219` +
-  `&border_color=3A4256&icon_color=7AA2F7&border_radius=4&langs_count=8&card_width=520&hide_progress=false`;
-
 // committers.top rank badge — the default SVG is a stock shields pill; we fetch
 // it just to parse the rank out, then render our own theme-styled badge.
 const RANK_AREA = "morocco";
@@ -36,6 +31,8 @@ interface GitHubRepo {
 const LANG_COLORS: Record<string, string> = {
   C: "#555555",
   "C++": "#f34b7d",
+  "C#": "#178600",
+  Csharp: "#178600",
   Python: "#3572a5",
   JavaScript: "#f1e05a",
   TypeScript: "#3178c6",
@@ -46,25 +43,15 @@ const LANG_COLORS: Record<string, string> = {
   Kotlin: "#a97bff",
   Roff: "#ecebe9",
   Shell: "#89e051",
-};
-
-const RemoteImage: React.FC<{
-  src: string;
-  alt: string;
-  className?: string;
-  loading?: "lazy" | "eager";
-}> = ({ src, alt, className, loading }) => {
-  const [failed, setFailed] = useState(false);
-  if (failed) return null;
-  return (
-    <img
-      src={src}
-      alt={alt}
-      className={className}
-      loading={loading}
-      onError={() => setFailed(true)}
-    />
-  );
+  PHP: "#4F5D95",
+  Php: "#4F5D95",
+  Java: "#b07219",
+  "X86asm": "#6E4C13",
+  Assembly: "#6E4C13",
+  Swift: "#ffac45",
+  Dart: "#00B4AB",
+  Vue: "#41b883",
+  Ruby: "#701516",
 };
 
 const StarIcon: React.FC = () => (
@@ -100,14 +87,44 @@ const GitHubApp: React.FC = () => {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    const CACHE_KEY = `github_repos_${githubUsername}`;
+    const CACHE_TTL = 1000 * 60 * 60 * 6; // 6 hours
+
+    const loadRepos = async () => {
       try {
+        // Try cache first
+        if (typeof window !== "undefined") {
+          try {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+              const parsed = JSON.parse(cached) as { data: GitHubRepo[]; ts: number };
+              if (Date.now() - parsed.ts < CACHE_TTL && Array.isArray(parsed.data)) {
+                if (!cancelled) {
+                  setRepos(parsed.data);
+                  setLoading(false);
+                }
+                // Still refresh in background after serving cache? Keep simple: serve cache, don't spam
+                return;
+              }
+            }
+          } catch {
+            // ignore cache errors
+          }
+        }
+
         const res = await fetch(
           `https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=updated`,
         );
         if (!res.ok) throw new Error(`GitHub API ${res.status}`);
         const data = (await res.json()) as GitHubRepo[];
         if (!cancelled) setRepos(data);
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+          } catch {
+            // ignore quota errors
+          }
+        }
       } catch (err) {
         if (!cancelled) {
           console.error("[GitHub] repo fetch failed", err);
@@ -116,11 +133,32 @@ const GitHubApp: React.FC = () => {
       } finally {
         if (!cancelled) setLoading(false);
       }
-    })();
+    };
+
+    loadRepos();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const topLanguages = useMemo(() => {
+    if (!repos) return [];
+    const counts = new Map<string, number>();
+    for (const repo of repos) {
+      if (repo.fork) continue;
+      if (!repo.language) continue;
+      counts.set(repo.language, (counts.get(repo.language) || 0) + 1);
+    }
+    const entries = Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8);
+    const total = entries.reduce((sum, [, count]) => sum + count, 0) || 1;
+    return entries.map(([name, count]) => ({
+      name,
+      count,
+      percent: (count / total) * 100,
+    }));
+  }, [repos]);
 
   // Fetch the committers.top rank badge (just the SVG text), parse out the
   // rank number, and render our own custom badge in the OS theme.
@@ -244,12 +282,42 @@ const GitHubApp: React.FC = () => {
         )}
 
         <div className="mb-3 w-full border border-os-border bg-os-surface2/40 p-3">
-          <RemoteImage
-            src={TOP_LANGS_URL}
-            alt="Top languages from GitHub profile"
-            className="mx-auto block h-auto w-full max-w-[520px]"
-            loading="lazy"
-          />
+          <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
+            Top Languages
+          </p>
+          {topLanguages.length === 0 ? (
+            <p className="py-4 text-center text-[0.62rem] text-os-dim">
+              {repos ? "No language data available." : "Loading..."}
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {topLanguages.map((lang) => (
+                <div key={lang.name} className="flex items-center gap-2">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-sm"
+                    style={{ backgroundColor: LANG_COLORS[lang.name] ?? "#bb9af7" }}
+                    aria-hidden="true"
+                  />
+                  <span className="w-24 truncate text-[0.62rem] text-os-text">
+                    {lang.name}
+                  </span>
+                  <div className="relative h-2 flex-1 overflow-hidden border border-os-border bg-os-surface">
+                    <div
+                      className="h-full"
+                      style={{
+                        width: `${lang.percent}%`,
+                        backgroundColor: LANG_COLORS[lang.name] ?? "#bb9af7",
+                        opacity: 0.8,
+                      }}
+                    />
+                  </div>
+                  <span className="w-10 text-right text-[0.58rem] text-os-dim">
+                    {lang.percent.toFixed(0)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="border-t border-os-border pt-3">
