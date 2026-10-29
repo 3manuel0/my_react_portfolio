@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { profile } from "../../data/portfolio";
 import { AppIcon } from "../AppIcons";
+import fallbackTopLangs from "../../data/github-top-langs.json";
 
 const githubUsername = profile.githubUsername;
 
@@ -140,8 +141,6 @@ const GitHubApp: React.FC = () => {
       cancelled = true;
     };
   }, []);
-
-  import fallbackTopLangs from "../../data/github-top-langs.json";
 
   const topLanguages = useMemo(() => {
     if (repos) {
