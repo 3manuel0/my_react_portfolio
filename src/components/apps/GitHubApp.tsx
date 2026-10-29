@@ -141,23 +141,37 @@ const GitHubApp: React.FC = () => {
     };
   }, []);
 
+  import fallbackTopLangs from "../../data/github-top-langs.json";
+
   const topLanguages = useMemo(() => {
-    if (!repos) return [];
-    const counts = new Map<string, number>();
-    for (const repo of repos) {
-      if (repo.fork) continue;
-      if (!repo.language) continue;
-      counts.set(repo.language, (counts.get(repo.language) || 0) + 1);
+    if (repos) {
+      const counts = new Map<string, number>();
+      for (const repo of repos) {
+        if (repo.fork) continue;
+        if (!repo.language) continue;
+        counts.set(repo.language, (counts.get(repo.language) || 0) + 1);
+      }
+      const entries = Array.from(counts.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8);
+      const total = entries.reduce((sum, [, count]) => sum + count, 0) || 1;
+      if (entries.length > 0) {
+        return entries.map(([name, count]) => ({
+          name,
+          count,
+          percent: (count / total) * 100,
+        }));
+      }
     }
-    const entries = Array.from(counts.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8);
-    const total = entries.reduce((sum, [, count]) => sum + count, 0) || 1;
-    return entries.map(([name, count]) => ({
-      name,
-      count,
-      percent: (count / total) * 100,
-    }));
+    // Fallback to bundled snapshot if no API data and no cache
+    if (Array.isArray(fallbackTopLangs.languages)) {
+      return fallbackTopLangs.languages.map((l: any) => ({
+        name: l.name,
+        count: l.count,
+        percent: typeof l.percent === "number" ? l.percent : 0,
+      }));
+    }
+    return [];
   }, [repos]);
 
   // Fetch the committers.top rank badge (just the SVG text), parse out the
