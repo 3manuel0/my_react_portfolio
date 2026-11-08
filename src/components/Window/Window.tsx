@@ -2,6 +2,7 @@ import React, { Suspense, useCallback, useRef, useState } from "react";
 import { type WindowInstance, TASKBAR_HEIGHT, useWindowManager } from "../../context/WindowManagerContext";
 import { APPS } from "../../data/appRegistry";
 import { AppIcon } from "../AppIcons";
+import { ErrorBoundary } from "../OS/ErrorBoundary";
 
 interface WindowProps {
   window: WindowInstance;
@@ -155,6 +156,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
             type="button"
             aria-label="Minimize"
             title="Minimize"
+            onPointerDown={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
@@ -168,6 +170,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
             type="button"
             aria-label={win.maximized ? "Restore" : "Maximize"}
             title={win.maximized ? "Restore" : "Maximize"}
+            onPointerDown={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
@@ -181,6 +184,7 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
             type="button"
             aria-label="Close"
             title="Close"
+            onPointerDown={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
@@ -195,17 +199,19 @@ export const Window: React.FC<WindowProps> = ({ window: win }) => {
 
       {/* Content */}
       <div className="min-h-0 flex-1 overflow-auto">
-        <Suspense
-          fallback={
-            <div className="flex h-full w-full items-center justify-center bg-os-bg">
-              <div className="flex items-center gap-2 font-mono text-[0.6rem] text-os-dim">
-                <span className="animate-pulse">[LOADING...]</span>
+        <ErrorBoundary key={win.id} label={`${win.title} crashed.`}>
+          <Suspense
+            fallback={
+              <div className="flex h-full w-full items-center justify-center bg-os-bg">
+                <div className="flex items-center gap-2 font-mono text-[0.6rem] text-os-dim">
+                  <span className="animate-pulse">[LOADING...]</span>
+                </div>
               </div>
-            </div>
-          }
-        >
-          <AppComponent />
-        </Suspense>
+            }
+          >
+            <AppComponent />
+          </Suspense>
+        </ErrorBoundary>
       </div>
 
       {/* Resize handle */}

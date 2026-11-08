@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useAppBack } from "../../context/appBack";
 import {
   buildPortfolioFS,
   normalizePath,
@@ -19,6 +20,19 @@ const FilesApp: React.FC = () => {
 
   const segments = cwd.split("/").filter(Boolean);
 
+  const goBack = (): boolean => {
+    if (openFile) {
+      setOpenFile(null);
+      return true;
+    }
+    if (segments.length === 0) return false;
+    const parent = "/" + segments.slice(0, -1).join("/");
+    setCwd(parent || "/");
+    return true;
+  };
+
+  useAppBack("files", goBack, openFile !== null || segments.length > 0);
+
   const navigateTo = (path: string) => {
     setOpenFile(null);
     setCwd(path === "/" ? "/" : "/" + path.replace(/^\//, ""));
@@ -36,16 +50,6 @@ const FilesApp: React.FC = () => {
     const node = resolvePath(fs, cwd, name);
     if (!node || node.type !== "file") return;
     setOpenFile({ name, parent: cwd, node });
-  };
-
-  const goBack = () => {
-    if (openFile) {
-      setOpenFile(null);
-      return;
-    }
-    if (segments.length === 0) return;
-    const parent = "/" + segments.slice(0, -1).join("/");
-    setCwd(parent || "/");
   };
 
   const current = resolvePath(fs, cwd, ".");

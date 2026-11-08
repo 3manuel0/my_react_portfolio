@@ -44,12 +44,12 @@ const StatusBar: React.FC<StatusBarProps> = ({ title, onOpenShade }) => {
   return (
     <button
       type="button"
-      role="status"
-      aria-label={`Phone status bar${title ? ` — ${title}` : ""}`}
+      aria-haspopup="dialog"
       onClick={onOpenShade}
       className="no-select pointer-events-auto absolute inset-x-0 top-0 z-50 flex items-center justify-between gap-2 px-3 pb-1 pt-[max(env(safe-area-inset-top),0.5rem)] text-[0.66rem] font-medium text-white/95"
       style={{ textShadow: "0 1px 2px rgba(0,0,0,0.6)" }}
     >
+      <span className="sr-only">Open quick settings</span>
       <span className="flex min-w-0 items-center gap-1.5">
         {title ? (
           <span className="truncate text-os-text/90">{title}</span>

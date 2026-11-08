@@ -1,34 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import { useOsMode } from "../../context/OsModeContext";
 import { useOsSettings } from "../../context/OsSettingsContext";
+import { useOsSound } from "../../context/OsSoundContext";
 
 interface QuickSettingsProps {
   onClose: () => void;
-}
-
-interface TileState {
-  wifi: boolean;
-  bluetooth: boolean;
-  airplane: boolean;
-  flashlight: boolean;
-  rotation: boolean;
-}
-
-interface QuickSettingsState {
-  tiles: TileState;
 }
 
 const Tile: React.FC<{
   label: string;
   active: boolean;
   onClick: () => void;
+  title?: string;
   children: React.ReactNode;
-}> = ({ label, active, onClick, children }) => (
+}> = ({ label, active, onClick, title, children }) => (
   <button
     type="button"
     role="switch"
     aria-checked={active}
     aria-label={label}
+    title={title}
     onClick={onClick}
     className={`phone-scale-enter flex h-[76px] w-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl text-[0.55rem] transition-colors ${
       active
@@ -44,18 +35,17 @@ const Tile: React.FC<{
 
 const QuickSettings: React.FC<QuickSettingsProps> = ({ onClose }) => {
   const { setOverride } = useOsMode();
-  const { invert, setInvert } = useOsSettings();
-  const [tiles, setTiles] = useState<QuickSettingsState["tiles"]>({
-    wifi: true,
-    bluetooth: false,
-    airplane: false,
-    flashlight: false,
-    rotation: true,
-  });
-  const [brightness, setBrightness] = useState(70);
+  const {
+    invert,
+    setInvert,
+    scanlines,
+    setScanlines,
+    wallpaper,
+    setWallpaper,
+  } = useOsSettings();
+  const { volume, setVolume, muted, toggleMute } = useOsSound();
 
-  const toggle = (key: keyof TileState) =>
-    setTiles((t) => ({ ...t, [key]: !t[key] }));
+  const nextWallpaper = wallpaper === "tron" ? "synthwave" : "tron";
 
   return (
     <div
@@ -75,37 +65,13 @@ const QuickSettings: React.FC<QuickSettingsProps> = ({ onClose }) => {
         className="grid grid-cols-4 justify-items-center gap-3 px-5 pt-1"
         onClick={(e) => e.stopPropagation()}
       >
-        <Tile label="WiFi" active={tiles.wifi} onClick={() => toggle("wifi")}>
-          <svg width="20" height="16" viewBox="0 0 14 10" fill="currentColor" aria-hidden="true">
-            <path d="M7 8.5 a1.3 1.3 0 1 1 0 0.001 Z" />
-            <path d="M4.2 6.4 a4 4 0 0 1 5.6 0 l-0.9 1 a2.6 2.6 0 0 0 -3.8 0 Z" />
-            <path d="M1.6 3.8 a7 7 0 0 1 10.8 0 l-0.9 1 a5.6 5.6 0 0 0 -9 0 Z" />
-          </svg>
-        </Tile>
-        <Tile label="Bluetooth" active={tiles.bluetooth} onClick={() => toggle("bluetooth")}>
-          <svg width="16" height="20" viewBox="0 0 16 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true">
-            <path d="M8 19 L14 13.5 L8 7.5 L2 13.5 Z" />
-            <path d="M2 6.5 L8 12.5 L14 6.5 L8 0.8 Z" />
-          </svg>
-        </Tile>
-        <Tile label="Airplane" active={tiles.airplane} onClick={() => toggle("airplane")}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M21 16 v-2 l-8 -5 V3 a1 1 0 0 0 -2 0 v6 l-8 5 v2 l8 -3 v5.2 L8 20 v2 l4 -1 4 1 v-2 l-3 -1.8 V13 Z" />
-          </svg>
-        </Tile>
-        <Tile label="Flashlight" active={tiles.flashlight} onClick={() => toggle("flashlight")}>
-          <svg width="18" height="20" viewBox="0 0 22 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
-            <path d="M5 9 h12 l-2.5 -6 a1 1 0 0 0 -0.9 -0.6 h-5.2 a1 1 0 0 0 -0.9 0.6 Z" />
-            <path d="M5 9 v10 a2 2 0 0 0 2 2 h8 a2 2 0 0 0 2 -2 V9" />
-            <rect x="9" y="12" width="4" height="6" fill="currentColor" stroke="none" />
-          </svg>
-        </Tile>
-
-        <Tile label="Rotation" active={tiles.rotation} onClick={() => toggle("rotation")}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-            <rect x="3" y="7" width="14" height="12" rx="1.5" />
-            <path d="M17 11 h4 v1 a5 5 0 0 1 -4 4.9" />
-            <path d="M17 8 a3.2 3.2 0 0 0 0 6" />
+        <Tile
+          label="Scanlines"
+          active={scanlines}
+          onClick={() => setScanlines(!scanlines)}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" />
           </svg>
         </Tile>
 
@@ -116,6 +82,30 @@ const QuickSettings: React.FC<QuickSettingsProps> = ({ onClose }) => {
             <path d="M12 12 l5 -5" />
           </svg>
         </Tile>
+
+        <Tile label="Sound" active={!muted} onClick={toggleMute}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 9h4l5-4v14l-5-4H4z" />
+            {muted ? (
+              <path d="M17 9l4 6M21 9l-4 6" />
+            ) : (
+              <path d="M16 8.5a5 5 0 0 1 0 7M19 6a8 8 0 0 1 0 12" />
+            )}
+          </svg>
+        </Tile>
+
+        <Tile
+          label="Theme"
+          active={wallpaper === "synthwave"}
+          title={`Current wallpaper: ${wallpaper === "tron" ? "Neon Tron" : "Synthwave"}. Tap for ${nextWallpaper === "tron" ? "Neon Tron" : "Synthwave"}.`}
+          onClick={() => setWallpaper(nextWallpaper)}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="1.5" />
+            <circle cx="8.5" cy="9" r="1.5" />
+            <path d="M4 18l5-5 4 4 2.5-2.5L20 19" />
+          </svg>
+        </Tile>
       </div>
 
       <div
@@ -123,21 +113,29 @@ const QuickSettings: React.FC<QuickSettingsProps> = ({ onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-1 text-[0.55rem] uppercase tracking-widest text-white/60">
-          Brightness
+          Volume
         </div>
         <label className="flex items-center gap-2">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="text-white/60">
-            <circle cx="12" cy="12" r="5" />
-            <path d="M12 2 v3 M12 19 v3 M2 12 h3 M19 12 h3 M4.9 4.9 l2.1 2.1 M17 17 l2.1 2.1 M19.1 4.9 L17 7 M7 17 l-2.1 2.1" />
+            <path d="M4 9h4l5-4v14l-5-4H4z" />
+            {muted ? (
+              <path d="M17 9l4 6M21 9l-4 6" />
+            ) : (
+              <path d="M16 8.5a5 5 0 0 1 0 7" />
+            )}
           </svg>
           <input
             type="range"
-            min="10"
+            min="0"
             max="100"
-            value={brightness}
-            aria-label="Brightness"
+            value={muted ? 0 : Math.round(volume * 100)}
+            aria-label="Volume"
             className="w-full"
-            onChange={(e) => setBrightness(Number(e.target.value))}
+            onChange={(e) => {
+              const next = Number(e.target.value) / 100;
+              setVolume(next);
+              if (muted && next > 0) toggleMute();
+            }}
           />
         </label>
       </div>

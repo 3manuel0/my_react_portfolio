@@ -145,26 +145,27 @@ const GitHubApp: React.FC = () => {
   const topLanguages = useMemo(() => {
     if (repos) {
       const counts = new Map<string, number>();
+      let total = 0;
       for (const repo of repos) {
         if (repo.fork) continue;
         if (!repo.language) continue;
         counts.set(repo.language, (counts.get(repo.language) || 0) + 1);
+        total += 1;
       }
       const entries = Array.from(counts.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 8);
-      const total = entries.reduce((sum, [, count]) => sum + count, 0) || 1;
       if (entries.length > 0) {
         return entries.map(([name, count]) => ({
           name,
           count,
-          percent: (count / total) * 100,
+          percent: (count / Math.max(total, 1)) * 100,
         }));
       }
     }
     // Fallback to bundled snapshot if no API data and no cache
     if (Array.isArray(fallbackTopLangs.languages)) {
-      return fallbackTopLangs.languages.map((l: any) => ({
+      return fallbackTopLangs.languages.map((l) => ({
         name: l.name,
         count: l.count,
         percent: typeof l.percent === "number" ? l.percent : 0,
@@ -228,7 +229,7 @@ const GitHubApp: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search repositories"
             placeholder="Find a repo..."
-            className="w-32 border border-os-border bg-os-surface px-2 py-1 text-[0.62rem] text-os-text placeholder:text-os-dim focus:border-os-accent sm:w-44"
+            className="w-32 border border-os-border bg-os-surface px-2 py-1 text-base text-os-text placeholder:text-os-dim focus:border-os-accent sm:w-44 sm:text-[0.62rem]"
           />
         </div>
       </div>

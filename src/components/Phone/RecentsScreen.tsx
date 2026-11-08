@@ -47,30 +47,30 @@ const RecentsScreen: React.FC<RecentsScreenProps> = ({ onClose }) => {
                   ? "border-os-accent/60"
                   : "border-white/10"
               }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                openApp(w.appId);
-              }}
               style={{ animationDelay: `${Math.min(i, 6) * 24}ms` }}
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-os-surface2 ring-1 ring-white/10">
-                <AppIcon name={desc.icon} size={26} />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[0.7rem] text-os-text">
-                  {desc.title}
+              <button
+                type="button"
+                aria-label={`Open ${desc.title}`}
+                onClick={() => openApp(w.appId)}
+                className="flex min-w-0 flex-1 items-center gap-3 text-left"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-os-surface2 ring-1 ring-white/10">
+                  <AppIcon name={desc.icon} size={26} />
                 </span>
-                <span className="block text-[0.55rem] text-os-dim">
-                  {isActive ? "active" : "tap to open"}
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[0.7rem] text-os-text">
+                    {desc.title}
+                  </span>
+                  <span className="block text-[0.55rem] text-os-dim">
+                    {isActive ? "active" : "tap to open"}
+                  </span>
                 </span>
-              </span>
+              </button>
               <button
                 type="button"
                 aria-label={`Close ${desc.title}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closeWindow(w.id);
-                }}
+                onClick={() => closeWindow(w.id)}
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-os-dim transition-colors hover:bg-os-red/20 hover:text-os-red"
                 style={{ touchAction: "manipulation" }}
               >

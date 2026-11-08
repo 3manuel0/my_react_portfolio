@@ -46,7 +46,7 @@ const Taskbar: React.FC = () => {
       <button
         type="button"
         data-start-button
-        aria-label="Open application menu"
+        aria-label="3manuel — open application menu"
         aria-expanded={menuOpen}
         onClick={() => {
           play("click");

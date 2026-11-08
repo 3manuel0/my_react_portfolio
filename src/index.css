@@ -5,11 +5,13 @@
 @font-face {
   font-family: arcade-bold;
   src: url("./assets/fonts/Acme-9-Regular-Bold.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: robotMono;
   src: url("./assets/fonts/RobotoMono-Medium.ttf");
+  font-display: swap;
 }
 
 :root {
@@ -81,21 +83,24 @@ button {
   font-family: inherit;
 }
 
-/* Native inputs must never look like form fields inside the terminal/OS */
+/* Native inputs must never look like form fields inside the terminal/OS.
+   Keep the border-style solid so Tailwind's `border` utility still works. */
 input,
 textarea {
-  border: none;
-  outline: none;
+  border-width: 0;
+  border-style: solid;
+  border-color: transparent;
   background: transparent;
   box-shadow: none;
 }
-input:focus,
-input:focus-visible,
-textarea:focus,
-textarea:focus-visible {
-  outline: none;
-  box-shadow: none;
-  border-color: transparent;
+
+/* Prevent iOS Safari from zooming the whole page when a tiny input is focused. */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 }
 
 /* Pixelated image rendering for retro icons */

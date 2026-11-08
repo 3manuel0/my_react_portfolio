@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { KERNEL_VERSION } from "../../data/constants";
 
 const BOOT_LINES = [
@@ -11,6 +11,13 @@ const BOOT_LINES = [
 const BootScreen: React.FC<{ onDone: () => void }> = ({ onDone }) => {
   const [visibleLines, setVisibleLines] = useState(0);
   const [fade, setFade] = useState(false);
+  const finished = useRef(false);
+
+  const finish = useCallback(() => {
+    if (finished.current) return;
+    finished.current = true;
+    onDone();
+  }, [onDone]);
 
   useEffect(() => {
     if (visibleLines < BOOT_LINES.length) {
@@ -18,20 +25,28 @@ const BootScreen: React.FC<{ onDone: () => void }> = ({ onDone }) => {
       return () => clearTimeout(t);
     }
     const t1 = setTimeout(() => setFade(true), 250);
-    const t2 = setTimeout(onDone, 550);
+    const t2 = setTimeout(finish, 550);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, [visibleLines, onDone]);
+  }, [visibleLines, finish]);
+
+  // Let an impatient visitor skip the intro with any key.
+  useEffect(() => {
+    const onKey = () => finish();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [finish]);
 
   return (
     <div
-      className={`absolute inset-0 z-[100] flex items-center justify-center bg-[#070a12] transition-opacity duration-300 ${
+      className={`absolute inset-0 z-[100] flex cursor-pointer items-center justify-center bg-[#070a12] transition-opacity duration-300 ${
         fade ? "opacity-0" : "opacity-100"
       }`}
       role="status"
       aria-label="Booting 3manuel OS"
+      onClick={finish}
     >
       <div className="scanlines pointer-events-none absolute inset-0" />
       <div className="w-[320px] sm:w-[400px] font-mono text-[0.72rem] leading-relaxed">
@@ -62,6 +77,17 @@ const BootScreen: React.FC<{ onDone: () => void }> = ({ onDone }) => {
           </span>
         </p>
       </div>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          finish();
+        }}
+        className="absolute bottom-4 right-4 border border-os-border px-2.5 py-1 text-[0.6rem] text-os-dim transition-colors hover:border-os-accent hover:text-os-accent"
+      >
+        skip intro
+      </button>
     </div>
   );
 };

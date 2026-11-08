@@ -817,7 +817,7 @@ const TerminalApp: React.FC = () => {
               autoComplete="off"
               autoCapitalize="off"
               spellCheck={false}
-              className="absolute inset-0 h-full w-full bg-transparent text-transparent caret-transparent outline-none"
+              className="absolute inset-0 h-full w-full bg-transparent text-base text-transparent caret-transparent outline-none sm:text-[0.68rem]"
             />
             <span className="pointer-events-none select-none whitespace-pre-wrap break-all">
               <span className="text-os-text">{input.slice(0, cursor)}</span>

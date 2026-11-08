@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useOsSound } from "../../context/OsSoundContext";
 import type { AppId } from "../../data/appRegistry";
+import { hasInitialAppHash } from "../../data/hash";
 
 const TOUR_KEY = "3manuelos.tour.seen";
 const ARRIVED_KEY = "3manuelos.arrived";
@@ -67,6 +68,8 @@ const WelcomeTour: React.FC<WelcomeTourProps> = ({ onOpenApp }) => {
         localStorage.setItem(ARRIVED_KEY, String(Date.now()));
       }
       if (localStorage.getItem(TOUR_KEY) === "1") return;
+      // Deep links should land on the requested app, not behind a tour modal.
+      if (hasInitialAppHash()) return;
     } catch {
       /* ignore */
     }
@@ -137,6 +140,16 @@ const WelcomeTour: React.FC<WelcomeTourProps> = ({ onOpenApp }) => {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
+      const target = e.target;
+      const interactive =
+        target instanceof Element &&
+        target.closest(
+          "button, a, input, textarea, select, [contenteditable='true']",
+        );
+      if (interactive) {
+        if (e.key === "Escape") finish();
+        return;
+      }
       if (e.key === "Escape") finish();
       else if (e.key === "Enter" || e.key === "ArrowRight") next();
       else if (e.key === "ArrowLeft") back();

@@ -26,14 +26,23 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="phone-enter absolute inset-0 z-[90] flex cursor-pointer flex-col items-center justify-between select-none bg-[#070a12]/85 pt-14 text-white"
       onClick={onUnlock}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onUnlock();
+        }
+      }}
       onContextMenu={(e) => {
         e.preventDefault();
         onUnlock();
       }}
       style={{ backdropFilter: "blur(10px)", touchAction: "manipulation" }}
     >
+      <span className="sr-only">Unlock phone</span>
       <div className="flex flex-col items-center gap-1 pt-8">
         <p className="text-7xl font-light tracking-tight" style={{ textShadow: "0 2px 18px rgba(0,0,0,0.8)" }}>
           {time}

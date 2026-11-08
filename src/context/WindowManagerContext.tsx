@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { APPS, type AppId } from "../data/appRegistry";
+import { getHashAppId } from "../data/hash";
 import { useOsSound } from "./OsSoundContext";
 
 export const TASKBAR_HEIGHT = 44;
@@ -30,7 +31,7 @@ export interface WindowInstance {
 interface WindowManagerContextValue {
   windows: WindowInstance[];
   activeWindowId: string | null;
-  openApp: (appId: AppId) => void;
+  openApp: (appId: AppId, options?: { updateHash?: boolean }) => void;
   closeWindow: (id: string) => void;
   minimizeWindow: (id: string) => void;
   toggleMaximize: (id: string) => void;
@@ -72,8 +73,6 @@ function getOpenGeometry(appId: AppId, index: number) {
   };
 }
 
-const APPS_BY_ID = Object.keys(APPS) as AppId[];
-
 export function WindowManagerProvider({ children }: { children: ReactNode }) {
   const [windows, setWindows] = useState<WindowInstance[]>([]);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
@@ -98,7 +97,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const openApp = useCallback(
-    (appId: AppId) => {
+    (appId: AppId, options?: { updateHash?: boolean }) => {
       const existing = windowsRef.current.find((w) => w.appId === appId);
       if (existing) {
         setWindows((ws) =>
@@ -129,7 +128,9 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       if (!windowsRef.current.some((w) => w.appId === appId)) {
         windowsRef.current = [...windowsRef.current, newWindow];
         setActiveWindowId(id);
-        globalThis.history?.replaceState(null, "", `#/${appId}`);
+        if (options?.updateHash !== false) {
+          globalThis.history?.replaceState(null, "", `#/${appId}`);
+        }
       }
     },
     [focusWindow, play],
@@ -279,9 +280,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
   // Hash routing: open apps from URL (#/about, #/projects, ...)
   useEffect(() => {
     const applyHash = () => {
-      const raw = window.location.hash.replace(/^#\/?/, "").trim();
-      if (!raw) return;
-      const appId = APPS_BY_ID.find((a) => a === raw);
+      const appId = getHashAppId();
       if (appId) openAppRef.current(appId);
     };
     applyHash();

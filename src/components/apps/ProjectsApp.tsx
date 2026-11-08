@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAppBack } from "../../context/appBack";
 import {
   professionalProjects,
   personalProjects,
@@ -116,6 +117,15 @@ const ProjectDetail: React.FC<{
 const ProjectsApp: React.FC = () => {
   const [folder, setFolder] = useState<Folder>("personal");
   const [selected, setSelected] = useState<ProjectType | null>(null);
+
+  useAppBack(
+    "projects",
+    () => {
+      setSelected(null);
+      return true;
+    },
+    selected !== null,
+  );
 
   const projects =
     folder === "personal" ? personalProjects : professionalProjects;

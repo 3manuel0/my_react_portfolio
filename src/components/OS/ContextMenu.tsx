@@ -47,6 +47,15 @@ const OsChrome: React.FC = () => {
 
   const onContextMenu = useCallback(
     (e: MouseEvent) => {
+      // Leave native menus alone inside fields and on links, so copy/paste and
+      // "open in new tab" keep working.
+      const target = e.target;
+      if (
+        target instanceof Element &&
+        target.closest("input, textarea, select, a, [contenteditable]")
+      ) {
+        return;
+      }
       e.preventDefault();
       if (rmRef.current !== "off") return;
       const x = Math.min(e.clientX, window.innerWidth - MENU_W - 6);
@@ -347,7 +356,7 @@ const OsChrome: React.FC = () => {
             It is now safe to turn off your computer.
             <br />
             <span className="text-os-dim">
-              (or click anywhere to power it back on)
+              (or press the power button below)
             </span>
           </p>
           <button

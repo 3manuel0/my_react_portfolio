@@ -218,7 +218,7 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
 const INPUT_CLS =
-  "w-full border border-solid border-os-border bg-os-surface2/60 px-2.5 py-2 text-[0.72rem] text-os-text placeholder:text-os-dim/70 focus:border-os-accent";
+  "w-full border border-solid border-os-border bg-os-surface2/60 px-2.5 py-2 text-base text-os-text placeholder:text-os-dim/70 focus:border-os-accent sm:text-[0.72rem]";
 
 const ComposeForm: React.FC = () => {
   const { play } = useOsSound();
@@ -280,6 +280,8 @@ const ComposeForm: React.FC = () => {
           </span>
           <input
             type="text"
+            name="name"
+            autoComplete="name"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -294,6 +296,8 @@ const ComposeForm: React.FC = () => {
           </span>
           <input
             type="email"
+            name="email"
+            autoComplete="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -307,6 +311,7 @@ const ComposeForm: React.FC = () => {
             message <span className="text-os-red">*</span>
           </span>
           <textarea
+            name="message"
             required
             rows={5}
             value={message}

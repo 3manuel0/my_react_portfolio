@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useAppBack } from "../../context/appBack";
 import { allNoteTags, notes, type Note } from "../../data/notes";
 import { AppIcon } from "../AppIcons";
 import { NoteBody } from "./notesRenderer";
@@ -7,6 +8,15 @@ const NotesApp: React.FC = () => {
   const [selected, setSelected] = useState<string | null>(notes[0]?.slug ?? null);
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
+
+  useAppBack(
+    "notes",
+    () => {
+      setSelected(null);
+      return true;
+    },
+    selected !== null,
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -70,7 +80,7 @@ const NotesApp: React.FC = () => {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="filter notes..."
               aria-label="Filter notes"
-              className="w-full bg-transparent text-[0.65rem] text-os-text placeholder:text-os-dim/70"
+              className="w-full bg-transparent text-base text-os-text placeholder:text-os-dim/70 sm:text-[0.65rem]"
             />
           </label>
 

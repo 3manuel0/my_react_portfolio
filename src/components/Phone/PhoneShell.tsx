@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
+import { runAppBack } from "../../context/appBack";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import { useOsSettings } from "../../context/OsSettingsContext";
 import type { AppId } from "../../data/appRegistry";
 import { APPS } from "../../data/appRegistry";
+import { ErrorBoundary } from "../OS/ErrorBoundary";
 import StatusBar from "./StatusBar";
 import NavBar from "./NavBar";
 import LockScreen from "./LockScreen";
@@ -49,6 +51,8 @@ const PhoneShell: React.FC = () => {
       return;
     }
     if (focused) {
+      // Let the app consume back first (project detail, note article, folder).
+      if (runAppBack(focused.appId)) return;
       closeWindow(focused.id);
       const rest = openWindows.filter((w) => w.id !== focused.id);
       if (rest.length === 0) setHomeView(true);
@@ -79,10 +83,25 @@ const PhoneShell: React.FC = () => {
             className="phone-app-enter h-full w-full overflow-auto"
             aria-label={APPS[focused!.appId].title}
           >
-            {(() => {
-              const AppComponent = APPS[focused!.appId].component;
-              return <AppComponent />;
-            })()}
+            <ErrorBoundary
+              key={focused!.id}
+              label={`${APPS[focused!.appId].title} crashed.`}
+            >
+              <Suspense
+                fallback={
+                  <div className="flex h-full w-full items-center justify-center bg-os-bg">
+                    <span className="animate-pulse font-mono text-[0.65rem] text-os-dim">
+                      [LOADING...]
+                    </span>
+                  </div>
+                }
+              >
+                {(() => {
+                  const AppComponent = APPS[focused!.appId].component;
+                  return <AppComponent />;
+                })()}
+              </Suspense>
+            </ErrorBoundary>
           </div>
         )}
       </div>
