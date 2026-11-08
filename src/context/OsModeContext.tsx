@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { getLocal, setLocal } from "../lib/storage";
 
 export type OsModeOverride = "auto" | "phone" | "desktop";
 export type OsMode = "phone" | "desktop";
@@ -17,7 +18,7 @@ const STORAGE_KEY = "3manuelos.mode";
 const PHONE_QUERY = "(max-width: 820px)";
 
 function readOverride(): OsModeOverride {
-  const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
+  const raw = getLocal(STORAGE_KEY);
   return raw === "phone" || raw === "desktop" ? raw : "auto";
 }
 
@@ -56,7 +57,7 @@ export function OsModeProvider({ children }: { children: ReactNode }) {
 
   const setOverride = useCallback((next: OsModeOverride) => {
     setOverrideState(next);
-    globalThis.localStorage?.setItem(STORAGE_KEY, next);
+    setLocal(STORAGE_KEY, next);
   }, []);
 
   const mode: OsMode = override === "auto" ? auto : override;

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { useOsSound } from "../../context/OsSoundContext";
 import type { AppId } from "../../data/appRegistry";
 import { hasInitialAppHash } from "../../data/hash";
+import { getLocal, setLocal } from "../../lib/storage";
 
 const TOUR_KEY = "3manuelos.tour.seen";
 const ARRIVED_KEY = "3manuelos.arrived";
@@ -63,26 +64,18 @@ const WelcomeTour: React.FC<WelcomeTourProps> = ({ onOpenApp }) => {
 
   // Show once, and record the first-visit timestamp for the uptime easter egg.
   useEffect(() => {
-    try {
-      if (!localStorage.getItem(ARRIVED_KEY)) {
-        localStorage.setItem(ARRIVED_KEY, String(Date.now()));
-      }
-      if (localStorage.getItem(TOUR_KEY) === "1") return;
-      // Deep links should land on the requested app, not behind a tour modal.
-      if (hasInitialAppHash()) return;
-    } catch {
-      /* ignore */
+    if (!getLocal(ARRIVED_KEY)) {
+      setLocal(ARRIVED_KEY, String(Date.now()));
     }
+    if (getLocal(TOUR_KEY) === "1") return;
+    // Deep links should land on the requested app, not behind a tour modal.
+    if (hasInitialAppHash()) return;
     const t = window.setTimeout(() => setOpen(true), 900);
     return () => window.clearTimeout(t);
   }, []);
 
   const finish = useCallback(() => {
-    try {
-      localStorage.setItem(TOUR_KEY, "1");
-    } catch {
-      /* ignore */
-    }
+    setLocal(TOUR_KEY, "1");
     setOpen(false);
   }, []);
 

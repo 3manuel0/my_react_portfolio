@@ -4,13 +4,13 @@
 
 @font-face {
   font-family: arcade-bold;
-  src: url("./assets/fonts/Acme-9-Regular-Bold.ttf");
+  src: url("./assets/fonts/Acme-9-Regular-Bold.woff2") format("woff2");
   font-display: swap;
 }
 
 @font-face {
   font-family: robotMono;
-  src: url("./assets/fonts/RobotoMono-Medium.ttf");
+  src: url("./assets/fonts/RobotoMono-Medium.woff2") format("woff2");
   font-display: swap;
 }
 
@@ -33,7 +33,7 @@
   --os-border: 42 49 66;
   --os-border2: 58 66 86;
   --os-text: 200 209 224;
-  --os-dim: 120 130 154;
+  --os-dim: 148 158 180;
   --os-accent: 94 234 212;
   --os-accent2: 77 208 184;
   --os-blue: 122 162 247;

@@ -57,7 +57,7 @@ const NotesApp: React.FC = () => {
           <p className="font-mono text-[0.66rem] font-bold text-os-text">
             notes://3manuel
           </p>
-          <span className="ml-auto font-mono text-[0.55rem] text-os-dim">
+          <span className="ml-auto font-mono text-[0.74rem] text-os-dim">
             {filtered.length}/{notes.length}
           </span>
         </div>
@@ -80,7 +80,7 @@ const NotesApp: React.FC = () => {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="filter notes..."
               aria-label="Filter notes"
-              className="w-full bg-transparent text-base text-os-text placeholder:text-os-dim/70 sm:text-[0.65rem]"
+              className="w-full bg-transparent text-base text-os-text placeholder:text-os-dim/70 sm:text-[0.76rem]"
             />
           </label>
 
@@ -88,7 +88,7 @@ const NotesApp: React.FC = () => {
             <button
               type="button"
               onClick={() => toggleTag(null)}
-              className={`border px-1.5 py-0.5 text-[0.55rem] transition-colors ${
+              className={`border px-1.5 py-0.5 text-[0.74rem] transition-colors ${
                 activeTag === null
                   ? "border-os-accent bg-os-accent/15 text-os-accent"
                   : "border-os-border text-os-dim hover:border-os-accent hover:text-os-accent"
@@ -101,7 +101,7 @@ const NotesApp: React.FC = () => {
                 key={tag}
                 type="button"
                 onClick={() => toggleTag(tag)}
-                className={`border px-1.5 py-0.5 text-[0.55rem] transition-colors ${
+                className={`border px-1.5 py-0.5 text-[0.74rem] transition-colors ${
                   activeTag === tag
                     ? "border-os-accent bg-os-accent/15 text-os-accent"
                     : "border-os-border text-os-dim hover:border-os-accent hover:text-os-accent"
@@ -115,7 +115,7 @@ const NotesApp: React.FC = () => {
 
         <div className="min-h-0 flex-1 overflow-y-auto">
           {filtered.length === 0 && (
-            <p className="p-4 text-center text-[0.62rem] text-os-dim">
+            <p className="p-4 text-center text-[0.74rem] text-os-dim">
               no notes match
               {query.trim() !== "" || activeTag !== null ? " those filters" : ""}.
             </p>
@@ -132,13 +132,13 @@ const NotesApp: React.FC = () => {
                 }`}
               >
                 <span className="flex items-center gap-1.5">
-                  <span className="font-mono text-[0.55rem] text-os-dim">{n.date}</span>
-                  <span className="ml-auto font-mono text-[0.55rem] text-os-dim">
+                  <span className="font-mono text-[0.74rem] text-os-dim">{n.date}</span>
+                  <span className="ml-auto font-mono text-[0.74rem] text-os-dim">
                     {n.readMinutes} min
                   </span>
                 </span>
                 <span
-                  className={`mt-0.5 block text-[0.7rem] font-bold leading-snug ${
+                  className={`mt-0.5 block text-[0.76rem] font-bold leading-snug ${
                     active ? "text-os-accent" : "text-os-text"
                   }`}
                 >
@@ -174,7 +174,7 @@ const NotesApp: React.FC = () => {
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
             <AppIcon name="notes" size={34} />
-            <p className="text-[0.7rem] text-os-dim">
+            <p className="text-[0.76rem] text-os-dim">
               {filtered.length === 0
                 ? "no notes match those filters."
                 : "pick a note on the left."}
@@ -206,17 +206,17 @@ const NoteArticle: React.FC<{
         >
           &#8592;
         </button>
-        <p className="font-mono text-[0.55rem] uppercase tracking-widest text-os-dim">
+        <p className="font-mono text-[0.74rem] uppercase tracking-widest text-os-dim">
           reading&nbsp;/&nbsp;{note.slug}.md
         </p>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 sm:px-5">
-        <p className="font-mono text-[0.6rem] text-os-dim">{note.date}</p>
+        <p className="font-mono text-[0.66rem] text-os-dim">{note.date}</p>
         <h1 className="mt-1 text-lg font-bold leading-snug text-os-text">
           {note.title}
         </h1>
-        <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[0.58rem] text-os-dim">
+        <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[0.64rem] text-os-dim">
           <span>{note.readMinutes} min read</span>
           <span aria-hidden="true">&#183;</span>
           {note.tags.map((t) => (
@@ -230,7 +230,7 @@ const NoteArticle: React.FC<{
           <NoteBody content={note.content} />
         </div>
 
-        <p className="mt-4 border-t border-os-border pt-3 text-[0.55rem] leading-relaxed text-os-dim">
+        <p className="mt-4 border-t border-os-border pt-3 text-[0.74rem] leading-relaxed text-os-dim">
           <span className="text-os-green">$</span> man 3manuel &#8212; rendered by the
           same tiny markdown engine that powers{" "}
           <span className="text-os-yellow">~/notes</span> in the terminal. Written with no
@@ -269,7 +269,7 @@ const NavButton: React.FC<{
     <span className="block font-mono text-[0.5rem] text-os-dim">
       {dir === "prev" ? "&#8592; prev" : "next &#8594;"}
     </span>
-    <span className="block truncate text-[0.62rem] text-os-text">{note.title}</span>
+    <span className="block truncate text-[0.74rem] text-os-text">{note.title}</span>
   </button>
 );
 

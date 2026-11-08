@@ -76,7 +76,7 @@ const FilesApp: React.FC = () => {
           ←
         </button>
 
-        <nav className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto text-[0.62rem]">
+        <nav className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto text-[0.74rem]">
           <button
             type="button"
             onClick={() => navigateTo("/")}
@@ -106,10 +106,10 @@ const FilesApp: React.FC = () => {
       {openFile && (
         <div className="flex min-h-0 flex-1 flex-col">
           <div className="flex items-center gap-2 border-b border-os-border bg-os-surface2/40 px-3 py-1.5">
-            <span className="text-[0.62rem] text-os-accent">{openFile.name}</span>
-            <span className="text-[0.55rem] text-os-dim">— {openFile.parent}</span>
+            <span className="text-[0.74rem] text-os-accent">{openFile.name}</span>
+            <span className="text-[0.74rem] text-os-dim">— {openFile.parent}</span>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto p-3 text-[0.65rem] leading-relaxed text-os-text">
+          <div className="min-h-0 flex-1 overflow-y-auto p-3 text-[0.76rem] leading-relaxed text-os-text">
             {openFile.node.content}
           </div>
         </div>
@@ -119,7 +119,7 @@ const FilesApp: React.FC = () => {
       {!openFile && (
         <div className="min-h-0 flex-1 overflow-y-auto">
           {entries.length === 0 && (
-            <p className="p-4 text-center text-[0.62rem] text-os-dim">
+            <p className="p-4 text-center text-[0.74rem] text-os-dim">
               empty directory
             </p>
           )}
@@ -134,18 +134,18 @@ const FilesApp: React.FC = () => {
                 }
                 className="flex w-full items-center gap-2 border-b border-os-border/50 px-3 py-2 text-left hover:bg-os-surface2/40"
               >
-                <span className="w-4 shrink-0 text-center text-[0.7rem]">
+                <span className="w-4 shrink-0 text-center text-[0.76rem]">
                   {isDir ? "📁" : "📄"}
                 </span>
                 <span
-                  className={`min-w-0 truncate text-[0.65rem] ${
+                  className={`min-w-0 truncate text-[0.76rem] ${
                     isDir ? "text-os-accent" : "text-os-text"
                   }`}
                 >
                   {name}
                 </span>
                 {isDir && (
-                  <span className="ml-auto shrink-0 text-[0.55rem] text-os-dim">
+                  <span className="ml-auto shrink-0 text-[0.74rem] text-os-dim">
                     {Object.keys(node.children).length} items
                   </span>
                 )}

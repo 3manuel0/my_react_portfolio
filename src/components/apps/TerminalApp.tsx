@@ -3,6 +3,7 @@ import { profile } from "../../data/portfolio";
 import { KERNEL_VERSION } from "../../data/constants";
 import { useWindowManager } from "../../context/WindowManagerContext";
 import { useOsSound } from "../../context/OsSoundContext";
+import { getLocal, setLocal } from "../../lib/storage";
 import type { AppId } from "../../data/appRegistry";
 import {
   HOME,
@@ -104,16 +105,16 @@ const ARRIVED_KEY = "3manuelos.arrived";
 const UPTIME_EPOCH = Date.now();
 
 function loadHistory(): string[] {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    if (raw) {
+  const raw = getLocal(HISTORY_KEY);
+  if (raw) {
+    try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         return parsed.filter((x): x is string => typeof x === "string").slice(0, 200);
       }
+    } catch {
+      /* ignore */
     }
-  } catch {
-    /* ignore */
   }
   return [];
 }
@@ -199,11 +200,7 @@ const TerminalApp: React.FC = () => {
 
   // Persist command history across reloads.
   useEffect(() => {
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 200)));
-    } catch {
-      /* ignore */
-    }
+    setLocal(HISTORY_KEY, JSON.stringify(history.slice(0, 200)));
   }, [history]);
 
   const print = useCallback((raw: string, out: React.ReactNode) => {
@@ -370,10 +367,10 @@ const TerminalApp: React.FC = () => {
         case "neofetch":
           return (
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-              <pre className="shrink-0 whitespace-pre text-os-green text-[0.6rem] leading-tight">
+              <pre className="shrink-0 whitespace-pre text-os-green text-[0.66rem] leading-tight">
                 {NEOFETCH_ART}
               </pre>
-              <div className="text-[0.62rem] leading-5">
+              <div className="text-[0.74rem] leading-5">
                 <p>
                   <span className="text-os-accent">{profile.alias}@localhost</span>
                   <span className="text-os-text">---------------</span>
@@ -560,7 +557,7 @@ const TerminalApp: React.FC = () => {
         case "uptime": {
           let firstVisit: number;
           try {
-            const raw = localStorage.getItem(ARRIVED_KEY);
+            const raw = getLocal(ARRIVED_KEY);
             firstVisit = raw ? Number(raw) : Number.NaN;
           } catch {
             firstVisit = Number.NaN;
@@ -770,7 +767,7 @@ const TerminalApp: React.FC = () => {
     >
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto overscroll-contain px-3 py-2 text-[0.68rem] leading-relaxed"
+        className="flex-1 overflow-y-auto overscroll-contain px-3 py-2 text-[0.74rem] leading-relaxed"
         style={{ overscrollBehavior: "contain" }}
       >
         {lines.map((l, i) => (
@@ -817,7 +814,7 @@ const TerminalApp: React.FC = () => {
               autoComplete="off"
               autoCapitalize="off"
               spellCheck={false}
-              className="absolute inset-0 h-full w-full bg-transparent text-base text-transparent caret-transparent outline-none sm:text-[0.68rem]"
+              className="absolute inset-0 h-full w-full bg-transparent text-base text-transparent caret-transparent outline-none sm:text-[0.74rem]"
             />
             <span className="pointer-events-none select-none whitespace-pre-wrap break-all">
               <span className="text-os-text">{input.slice(0, cursor)}</span>

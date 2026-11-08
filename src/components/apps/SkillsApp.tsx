@@ -49,7 +49,7 @@ const displayName = (t: string) => {
 const SkillsApp: React.FC = () => {
   return (
     <div className="p-4 sm:p-5">
-      <div className="mb-4 border border-os-border bg-os-surface2/60 p-3 font-mono text-[0.68rem] leading-relaxed">
+      <div className="mb-4 border border-os-border bg-os-surface2/60 p-3 font-mono text-[0.74rem] leading-relaxed">
         <p className="text-os-dim">$ cat /proc/3manuel/skills.kernel</p>
         <p className="text-os-accent">3manuel@localhost:~$ </p>
         <p className="text-os-text">
@@ -70,10 +70,10 @@ const SkillsApp: React.FC = () => {
             className={`border ${CATEGORY_COLORS[cat] ?? "border-os-border"} bg-os-surface2/30 p-3`}
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-[0.7rem] font-bold uppercase tracking-widest">
+              <h2 className="text-[0.76rem] font-bold uppercase tracking-widest">
                 {cat}
               </h2>
-              <span className="text-[0.55rem] text-os-dim">
+              <span className="text-[0.74rem] text-os-dim">
                 {skills[cat as keyof typeof skills].length}
               </span>
             </div>
@@ -84,7 +84,7 @@ const SkillsApp: React.FC = () => {
                   className="flex items-center gap-2 border border-transparent px-1 py-0.5 transition-colors hover:border-os-border"
                 >
                   <TechIcon name={t} size={24} />
-                  <span className="text-[0.68rem] text-os-text">{displayName(t)}</span>
+                  <span className="text-[0.74rem] text-os-text">{displayName(t)}</span>
                 </div>
               ))}
             </div>

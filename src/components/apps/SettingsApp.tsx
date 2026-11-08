@@ -23,8 +23,8 @@ const Row: React.FC<{ label: string; desc: string; children: React.ReactNode }> 
 }) => (
   <div className="flex items-center justify-between gap-4">
     <div className="min-w-0">
-      <p className="text-[0.75rem] text-os-text">{label}</p>
-      <p className="text-[0.62rem] text-os-dim">{desc}</p>
+      <p className="text-[0.84rem] text-os-text">{label}</p>
+      <p className="text-[0.74rem] text-os-dim">{desc}</p>
     </div>
     <div className="shrink-0">{children}</div>
   </div>
@@ -125,15 +125,15 @@ const SettingsApp: React.FC = () => {
   return (
     <div className="h-full w-full overflow-y-auto bg-os-bg font-mono">
       <div className="flex items-center gap-3 border-b border-os-border bg-os-surface/60 px-4 py-2.5">
-        <span className="grid h-8 w-8 place-items-center border border-os-border2 bg-os-bg text-[0.6rem] text-os-dim">
+        <span className="grid h-8 w-8 place-items-center border border-os-border2 bg-os-bg text-[0.66rem] text-os-dim">
           {"{ }"}
         </span>
         <div>
-          <p className="text-[0.8rem] leading-tight">
+          <p className="text-[0.84rem] leading-tight">
             Control Panel
             <span className="text-os-dim">.exe</span>
           </p>
-          <p className="text-[0.6rem] text-os-dim">
+          <p className="text-[0.66rem] text-os-dim">
             tune your 3manuelOS experience
           </p>
         </div>
@@ -141,7 +141,7 @@ const SettingsApp: React.FC = () => {
 
       <Section title="Appearance">
         <div>
-          <p className="mb-2 text-[0.75rem] text-os-text">Wallpaper</p>
+          <p className="mb-2 text-[0.84rem] text-os-text">Wallpaper</p>
           <div className="flex gap-2.5">
             {WALLPAPER_IDS.map((id) => {
               const Thumb = WALLPAPER_THUMBS[id];
@@ -164,7 +164,7 @@ const SettingsApp: React.FC = () => {
                 >
                   <Thumb />
                   <span
-                    className={`text-[0.6rem] ${active ? "text-os-accent" : "text-os-dim"}`}
+                    className={`text-[0.66rem] ${active ? "text-os-accent" : "text-os-dim"}`}
                   >
                     {active ? "\u2713 " : ""}
                     {wallpaperLabel(id)}
@@ -176,7 +176,7 @@ const SettingsApp: React.FC = () => {
         </div>
 
         <div className="mt-3">
-          <p className="mb-2 text-[0.75rem] text-os-text">Accent color</p>
+          <p className="mb-2 text-[0.84rem] text-os-text">Accent color</p>
           <div className="flex flex-wrap gap-2">
             {ACCENTS.map((a) => {
               const active = accent === a.id;
@@ -258,7 +258,7 @@ const SettingsApp: React.FC = () => {
                   play("click");
                 }}
                 aria-pressed={active}
-                className={`flex items-center gap-2.5 rounded border px-3 py-2 text-left text-[0.7rem] transition-colors ${
+                className={`flex items-center gap-2.5 rounded border px-3 py-2 text-left text-[0.76rem] transition-colors ${
                   active
                     ? "border-os-green bg-os-green/10 text-os-green"
                     : "border-os-border2 bg-os-bg text-os-text hover:bg-os-surface"
@@ -275,14 +275,14 @@ const SettingsApp: React.FC = () => {
                     ? "Phone (Android)"
                     : "Desktop (PC)"}
                 {m === "auto" && (
-                  <span className="ml-auto text-[0.58rem] text-os-dim">
+                  <span className="ml-auto text-[0.64rem] text-os-dim">
                     ({mode})
                   </span>
                 )}
               </button>
             );
           })}
-          <p className="mt-1 text-[0.6rem] text-os-dim">
+          <p className="mt-1 text-[0.66rem] text-os-dim">
             currently rendering:{" "}
             <span className="text-os-accent">
               {mode === "phone" ? "phone shell" : "desktop shell"}
@@ -291,7 +291,7 @@ const SettingsApp: React.FC = () => {
         </div>
       </Section>
 
-      <div className="px-4 py-2 text-center text-[0.58rem] uppercase tracking-[0.25em] text-os-dim">
+      <div className="px-4 py-2 text-center text-[0.64rem] uppercase tracking-[0.25em] text-os-dim">
         3manuelOS settings v1.0 &middot; saved to localStorage
       </div>
     </div>

@@ -2,8 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { profile } from "../../data/portfolio";
 import { AppIcon } from "../AppIcons";
 import fallbackTopLangs from "../../data/github-top-langs.json";
+import fallbackReposData from "../../data/github-repos.json";
+import { getLocal, setLocal } from "../../lib/storage";
 
 const githubUsername = profile.githubUsername;
+const fallbackRepos = fallbackReposData as GitHubRepo[];
 
 // committers.top rank badge — the default SVG is a stock shields pill; we fetch
 // it just to parse the rank out, then render our own theme-styled badge.
@@ -85,6 +88,7 @@ const GitHubApp: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [rank, setRank] = useState<CommitterRank | null>(null);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,19 +98,18 @@ const GitHubApp: React.FC = () => {
     const loadRepos = async () => {
       try {
         // Try cache first
-        if (typeof window !== "undefined") {
+        const cached = getLocal(CACHE_KEY);
+        if (cached) {
           try {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (cached) {
-              const parsed = JSON.parse(cached) as { data: GitHubRepo[]; ts: number };
-              if (Date.now() - parsed.ts < CACHE_TTL && Array.isArray(parsed.data)) {
-                if (!cancelled) {
-                  setRepos(parsed.data);
-                  setLoading(false);
-                }
-                // Still refresh in background after serving cache? Keep simple: serve cache, don't spam
-                return;
+            const parsed = JSON.parse(cached) as { data: GitHubRepo[]; ts: number };
+            if (Date.now() - parsed.ts < CACHE_TTL && Array.isArray(parsed.data)) {
+              if (!cancelled) {
+                setRepos(parsed.data);
+                setUsingFallback(false);
+                setLoading(false);
               }
+              // Still refresh in background after serving cache? Keep simple: serve cache, don't spam
+              return;
             }
           } catch {
             // ignore cache errors
@@ -118,18 +121,19 @@ const GitHubApp: React.FC = () => {
         );
         if (!res.ok) throw new Error(`GitHub API ${res.status}`);
         const data = (await res.json()) as GitHubRepo[];
-        if (!cancelled) setRepos(data);
-        if (typeof window !== "undefined") {
-          try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
-          } catch {
-            // ignore quota errors
-          }
+        if (!cancelled) {
+          setRepos(data);
+          setUsingFallback(false);
         }
+        setLocal(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
       } catch (err) {
         if (!cancelled) {
           console.error("[GitHub] repo fetch failed", err);
           setError(err instanceof Error ? err.message : String(err));
+          if (fallbackRepos.length > 0) {
+            setRepos(fallbackRepos);
+            setUsingFallback(true);
+          }
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -215,7 +219,7 @@ const GitHubApp: React.FC = () => {
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-center gap-2 border-b border-os-border bg-os-surface2/40 px-3 py-2">
         <AppIcon name="github" size={16} />
-        <p className="truncate text-[0.68rem] text-os-text">
+        <p className="truncate text-[0.74rem] text-os-text">
           github.com/
           <span className="font-bold text-os-green">{githubUsername}</span>
         </p>
@@ -229,7 +233,7 @@ const GitHubApp: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search repositories"
             placeholder="Find a repo..."
-            className="w-32 border border-os-border bg-os-surface px-2 py-1 text-base text-os-text placeholder:text-os-dim focus:border-os-accent sm:w-44 sm:text-[0.62rem]"
+            className="w-32 border border-os-border bg-os-surface px-2 py-1 text-base text-os-text placeholder:text-os-dim focus:border-os-accent sm:w-44 sm:text-[0.74rem]"
           />
         </div>
       </div>
@@ -243,12 +247,12 @@ const GitHubApp: React.FC = () => {
           />
           <div className="min-w-0">
             <p className="truncate text-sm font-bold text-os-text">{profile.name}</p>
-            <p className="text-[0.62rem] text-os-dim">@{githubUsername}</p>
-            <p className="mt-0.5 max-w-xs truncate text-[0.62rem] text-os-text/90">
+            <p className="text-[0.74rem] text-os-dim">@{githubUsername}</p>
+            <p className="mt-0.5 max-w-xs truncate text-[0.74rem] text-os-text/90">
               {profile.title}
             </p>
           </div>
-          <div className="ml-auto flex items-center gap-2 text-[0.6rem] text-os-dim">
+          <div className="ml-auto flex items-center gap-2 text-[0.66rem] text-os-dim">
             {profile.location && (
               <span className="hidden items-center gap-1 sm:flex" title="Location">
                 <AppIcon name="location" size={12} />
@@ -264,7 +268,7 @@ const GitHubApp: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Open GitHub profile in new tab"
-            className="flex shrink-0 items-center gap-1.5 border border-os-border px-2.5 py-1.5 text-[0.62rem] text-os-text hover:border-os-green hover:text-os-green"
+            className="flex shrink-0 items-center gap-1.5 border border-os-border px-2.5 py-1.5 text-[0.74rem] text-os-text hover:border-os-green hover:text-os-green"
           >
             <AppIcon name="github" size={13} /> Open Profile
           </a>
@@ -279,28 +283,28 @@ const GitHubApp: React.FC = () => {
           >
             <TrophyIcon className="shrink-0 text-os-green" />
             <div className="min-w-0 flex-1">
-              <p className="text-[0.55rem] uppercase tracking-[0.18em] text-os-dim">
+              <p className="text-[0.74rem] uppercase tracking-[0.18em] text-os-dim">
                 {rank.area} · {rank.metric}
               </p>
               <p className="flex items-baseline gap-2">
                 <span className="font-arcade text-xl leading-none text-os-green">
                   #{rank.rank}
                 </span>
-                <span className="text-[0.62rem] text-os-text">committers.top</span>
+                <span className="text-[0.74rem] text-os-text">committers.top</span>
               </p>
             </div>
-            <span className="shrink-0 text-[0.62rem] text-os-green" aria-hidden="true">
+            <span className="shrink-0 text-[0.74rem] text-os-green" aria-hidden="true">
               ↗
             </span>
           </a>
         )}
 
         <div className="mb-3 w-full border border-os-border bg-os-surface2/40 p-3">
-          <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
+          <p className="mb-2 text-[0.66rem] uppercase tracking-widest text-os-dim">
             Top Languages
           </p>
           {topLanguages.length === 0 ? (
-            <p className="py-4 text-center text-[0.62rem] text-os-dim">
+            <p className="py-4 text-center text-[0.74rem] text-os-dim">
               {repos ? "No language data available." : "Loading..."}
             </p>
           ) : (
@@ -312,7 +316,7 @@ const GitHubApp: React.FC = () => {
                     style={{ backgroundColor: LANG_COLORS[lang.name] ?? "#bb9af7" }}
                     aria-hidden="true"
                   />
-                  <span className="w-24 truncate text-[0.62rem] text-os-text">
+                  <span className="w-24 truncate text-[0.74rem] text-os-text">
                     {lang.name}
                   </span>
                   <div className="relative h-2 flex-1 overflow-hidden border border-os-border bg-os-surface">
@@ -325,7 +329,7 @@ const GitHubApp: React.FC = () => {
                       }}
                     />
                   </div>
-                  <span className="w-10 text-right text-[0.58rem] text-os-dim">
+                  <span className="w-10 text-right text-[0.64rem] text-os-dim">
                     {lang.percent.toFixed(0)}%
                   </span>
                 </div>
@@ -335,26 +339,27 @@ const GitHubApp: React.FC = () => {
         </div>
 
         <div className="border-t border-os-border pt-3">
-          <p className="mb-2 text-[0.6rem] uppercase tracking-widest text-os-dim">
+          <p className="mb-2 text-[0.66rem] uppercase tracking-widest text-os-dim">
             Repositories
           </p>
 
           {loading && (
-            <p className="flex items-center gap-2 py-6 text-center text-[0.68rem] text-os-dim">
+            <p className="flex items-center gap-2 py-6 text-center text-[0.74rem] text-os-dim">
               <span className="inline-block h-3 w-3 animate-spin rounded-full border border-os-border2 border-t-os-accent" />
               loading repositories from the GitHub API...
             </p>
           )}
 
           {!loading && error && (
-            <p className="py-6 text-center text-[0.68rem] text-os-dim">
-              Couldn&rsquo;t reach the GitHub API ({error}). Open the profile
-              directly to browse the repos.
+            <p className="py-6 text-center text-[0.74rem] text-os-dim">
+              {usingFallback
+                ? `GitHub API unavailable (${error}) — showing a bundled snapshot.`
+                : `Couldn’t reach the GitHub API (${error}). Open the profile directly to browse the repos.`}
             </p>
           )}
 
           {!loading && !error && filtered.length === 0 && (
-            <p className="py-6 text-center text-[0.68rem] text-os-dim">
+            <p className="py-6 text-center text-[0.74rem] text-os-dim">
               {repos?.length
                 ? `No repositories match "${search}"`
                 : "No public repositories."}
@@ -373,15 +378,15 @@ const GitHubApp: React.FC = () => {
                     href={repo.html_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="truncate text-[0.7rem] font-bold text-os-accent hover:text-os-green"
+                    className="truncate text-[0.76rem] font-bold text-os-accent hover:text-os-green"
                   >
                     {repo.full_name}
                   </a>
                 </div>
-                <p className="mt-1.5 line-clamp-2 text-[0.62rem] leading-relaxed text-os-dim">
+                <p className="mt-1.5 line-clamp-2 text-[0.74rem] leading-relaxed text-os-dim">
                   {repo.description ?? "No description provided."}
                 </p>
-                <div className="mt-auto flex items-center gap-3 pt-2 text-[0.55rem] text-os-dim">
+                <div className="mt-auto flex items-center gap-3 pt-2 text-[0.74rem] text-os-dim">
                   {repo.language && (
                     <span className="flex items-center gap-1">
                       <span

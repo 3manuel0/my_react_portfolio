@@ -88,7 +88,7 @@ const ContactApp: React.FC = () => {
       <div className="hidden h-full min-h-0 sm:flex">
         <div className="w-56 shrink-0 flex-col border-r border-os-border bg-os-surface/60">
           <div className="border-b border-os-border px-3 py-2">
-            <p className="font-mono text-[0.6rem] text-os-dim">/var/mail/3manuel</p>
+            <p className="font-mono text-[0.66rem] text-os-dim">/var/mail/3manuel</p>
           </div>
           <div className="flex-1 overflow-y-auto p-1.5">
             {MAILS.map((m, i) => (
@@ -104,10 +104,10 @@ const ContactApp: React.FC = () => {
               >
                 <AppIcon name={TYPE_ICON[m.type]} size={15} />
                 <span className="min-w-0">
-                  <span className="block truncate text-[0.68rem] font-bold">
+                  <span className="block truncate text-[0.74rem] font-bold">
                     {m.from}
                   </span>
-                  <span className="block truncate text-[0.58rem] text-os-dim">
+                  <span className="block truncate text-[0.64rem] text-os-dim">
                     {m.subject}
                   </span>
                 </span>
@@ -131,7 +131,7 @@ const ContactApp: React.FC = () => {
               key={m.id}
               type="button"
               onClick={() => setSelected(i)}
-              className={`flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2 text-[0.62rem] transition-colors ${
+              className={`flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2 text-[0.74rem] transition-colors ${
                 activeIdx === i
                   ? "border-os-blue text-os-blue"
                   : "border-transparent text-os-dim hover:text-os-text"
@@ -166,12 +166,12 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
 
   return (
     <div>
-      <p className="text-[0.6rem] text-os-dim">From: {active.from}</p>
+      <p className="text-[0.66rem] text-os-dim">From: {active.from}</p>
       <h2 className="mt-0.5 text-sm font-bold text-os-text">{active.subject}</h2>
 
       <div className="my-3 border border-os-border bg-os-surface2/50 p-3">
         {active.body?.map((line) => (
-          <p key={line} className="mb-2 text-[0.7rem] leading-relaxed text-os-text">
+          <p key={line} className="mb-2 text-[0.76rem] leading-relaxed text-os-text">
             {line}
           </p>
         ))}
@@ -183,7 +183,7 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
             type="button"
             onClick={copy}
             aria-label={`Copy ${active.from} username`}
-            className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"
+            className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.76rem] text-os-accent hover:bg-os-accent hover:text-black"
           >
             <AppIcon name={TYPE_ICON[active.type]} size={14} />
             {copied ? "Copied!" : "Copy username"}
@@ -194,18 +194,18 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open ${active.from} contact`}
-            className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.65rem] text-os-accent hover:bg-os-accent hover:text-black"
+            className="flex items-center gap-1.5 border border-os-accent bg-os-accent/10 px-3 py-1.5 text-[0.76rem] text-os-accent hover:bg-os-accent hover:text-black"
           >
             <AppIcon name={TYPE_ICON[active.type]} size={14} />
             Open {active.from}
           </a>
         )}
-        <span className="min-w-0 truncate text-[0.58rem] text-os-dim">
+        <span className="min-w-0 truncate text-[0.64rem] text-os-dim">
           {active.copy ?? active.url}
         </span>
       </div>
 
-    <div className="mt-5 border-t border-os-border pt-3 font-mono text-[0.6rem] text-os-dim">
+    <div className="mt-5 border-t border-os-border pt-3 font-mono text-[0.66rem] text-os-dim">
         <p>
           <span className="text-os-green">{">"} _</span> replies usually within 24h
           &#8212; {profile.website}
@@ -218,7 +218,7 @@ const MessageContent: React.FC<{ active: MailItem }> = ({ active }) => {
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
 const INPUT_CLS =
-  "w-full border border-solid border-os-border bg-os-surface2/60 px-2.5 py-2 text-base text-os-text placeholder:text-os-dim/70 focus:border-os-accent sm:text-[0.72rem]";
+  "w-full border border-solid border-os-border bg-os-surface2/60 px-2.5 py-2 text-base text-os-text placeholder:text-os-dim/70 focus:border-os-accent sm:text-[0.78rem]";
 
 const ComposeForm: React.FC = () => {
   const { play } = useOsSound();
@@ -263,11 +263,11 @@ const ComposeForm: React.FC = () => {
 
   return (
     <div>
-      <p className="text-[0.6rem] text-os-dim">To: {EMAIL}</p>
+      <p className="text-[0.66rem] text-os-dim">To: {EMAIL}</p>
       <h2 className="mt-0.5 text-sm font-bold text-os-text">
         Send me a message
       </h2>
-      <p className="mt-1 text-[0.62rem] leading-relaxed text-os-dim">
+      <p className="mt-1 text-[0.74rem] leading-relaxed text-os-dim">
         Landed here from the terminal of the internet &#8212; drop a hello, a job
         offer, or a bug report. Replies land in my inbox.
       </p>
@@ -275,7 +275,7 @@ const ComposeForm: React.FC = () => {
       <form onSubmit={submit} className="mt-4 flex flex-col gap-2.5">
         <input type="text" name="_honey" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
         <label className="flex flex-col gap-1">
-          <span className="text-[0.58rem] uppercase tracking-widest text-os-dim">
+          <span className="text-[0.64rem] uppercase tracking-widest text-os-dim">
             your name <span className="text-os-red">*</span>
           </span>
           <input
@@ -291,7 +291,7 @@ const ComposeForm: React.FC = () => {
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-[0.58rem] uppercase tracking-widest text-os-dim">
+          <span className="text-[0.64rem] uppercase tracking-widest text-os-dim">
             your email <span className="text-os-red">*</span>
           </span>
           <input
@@ -307,7 +307,7 @@ const ComposeForm: React.FC = () => {
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-[0.58rem] uppercase tracking-widest text-os-dim">
+          <span className="text-[0.64rem] uppercase tracking-widest text-os-dim">
             message <span className="text-os-red">*</span>
           </span>
           <textarea
@@ -322,13 +322,13 @@ const ComposeForm: React.FC = () => {
         </label>
 
         {status === "sent" && (
-          <div className="border border-os-green bg-os-green/10 px-3 py-2 text-[0.68rem] text-os-green">
+          <div className="border border-os-green bg-os-green/10 px-3 py-2 text-[0.74rem] text-os-green">
             &#10003; message sent &#8212; thanks! I'll get back to you.
           </div>
         )}
 
         {status === "error" && (
-          <div className="border border-os-red bg-os-red/10 px-3 py-2 text-[0.68rem] text-os-red">
+          <div className="border border-os-red bg-os-red/10 px-3 py-2 text-[0.74rem] text-os-red">
             &#9888; relay didn't pick up. Use the mail client link below instead.
           </div>
         )}
@@ -338,7 +338,7 @@ const ComposeForm: React.FC = () => {
             type="submit"
             disabled={status === "sending"}
             onClick={() => status === "idle" && play("click")}
-            className="border border-os-accent bg-os-accent/10 px-3 py-2 text-[0.65rem] text-os-accent transition-colors hover:bg-os-accent hover:text-black disabled:cursor-wait disabled:opacity-60"
+            className="border border-os-accent bg-os-accent/10 px-3 py-2 text-[0.76rem] text-os-accent transition-colors hover:bg-os-accent hover:text-black disabled:cursor-wait disabled:opacity-60"
           >
             {status === "sending"
               ? "sending..."
@@ -348,7 +348,7 @@ const ComposeForm: React.FC = () => {
           </button>
           <a
             href={`mailto:${EMAIL}?subject=${encodeURIComponent("[3manuel.dev] hi")}`}
-            className="border border-os-border bg-os-surface2/60 px-3 py-2 text-[0.65rem] text-os-dim transition-colors hover:text-os-accent"
+            className="border border-os-border bg-os-surface2/60 px-3 py-2 text-[0.76rem] text-os-dim transition-colors hover:text-os-accent"
           >
             open mail client
           </a>

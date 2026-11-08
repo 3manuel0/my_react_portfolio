@@ -390,7 +390,7 @@ const GameApp: React.FC = () => {
       />
 
       {!supported && (
-        <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-[0.72rem] text-os-dim">
+        <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-[0.78rem] text-os-dim">
           This browser doesn&rsquo;t support OffscreenCanvas, so the game can&rsquo;t run here.
         </div>
       )}
@@ -399,7 +399,7 @@ const GameApp: React.FC = () => {
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2">
           <div className="flex items-center gap-2 text-os-dim">
             <span className="inline-block h-3 w-3 animate-spin border border-os-accent border-t-transparent" aria-hidden="true" />
-            <span className="text-[0.68rem]">
+            <span className="text-[0.74rem]">
               {status === "error" ? "failed to load game" : "loading game.wasm..."}
             </span>
           </div>

@@ -4,7 +4,7 @@ import { experience } from "../../data/portfolio";
 const ExperienceApp: React.FC = () => {
   return (
     <div className="p-4 sm:p-5">
-      <div className="mb-4 border border-os-border bg-os-surface2/60 p-3 font-mono text-[0.68rem]">
+      <div className="mb-4 border border-os-border bg-os-surface2/60 p-3 font-mono text-[0.74rem]">
         <p className="text-os-dim">$ cat experience.log</p>
         <p className="text-os-accent">3manuel@localhost:~$ </p>
       </div>
@@ -23,12 +23,12 @@ const ExperienceApp: React.FC = () => {
                   className="border border-os-border bg-os-surface2/40 p-3"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-1">
-                    <p className="text-[0.72rem] font-bold text-os-green">
+                    <p className="text-[0.78rem] font-bold text-os-green">
                       {entry.role}
                     </p>
-                    <p className="text-[0.6rem] text-os-dim">{entry.company}</p>
+                    <p className="text-[0.66rem] text-os-dim">{entry.company}</p>
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[0.58rem] text-os-dim">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[0.64rem] text-os-dim">
                     <span>{entry.period}</span>
                     {entry.location && (
                       <>
@@ -37,7 +37,7 @@ const ExperienceApp: React.FC = () => {
                       </>
                     )}
                   </div>
-                  <p className="mt-1.5 text-[0.68rem] leading-relaxed text-os-text">
+                  <p className="mt-1.5 text-[0.74rem] leading-relaxed text-os-text">
                     {entry.description}
                   </p>
                 </div>
@@ -47,7 +47,7 @@ const ExperienceApp: React.FC = () => {
         ))}
 
         {/* live log tail */}
-        <div className="border border-os-border bg-os-surface2/30 p-3 font-mono text-[0.62rem] leading-relaxed text-os-dim">
+        <div className="border border-os-border bg-os-surface2/30 p-3 font-mono text-[0.74rem] leading-relaxed text-os-dim">
           <p>
             <span className="text-os-green">[active]</span> now: available for
             freelance &amp; internships &#8212; see Contact app.

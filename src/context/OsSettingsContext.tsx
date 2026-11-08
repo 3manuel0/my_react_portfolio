@@ -13,6 +13,7 @@ import {
   WALLPAPER_IDS,
   type WallpaperId,
 } from "../components/Desktop/Wallpaper";
+import { getLocal, setLocal } from "../lib/storage";
 
 const INVERT_KEY = "3manuelos.invert";
 const WALLPAPER_KEY = "3manuelos.wallpaper";
@@ -34,25 +35,25 @@ export const ACCENTS = [
 export type AccentId = (typeof ACCENTS)[number]["id"];
 
 function readBool(key: string, def: boolean): boolean {
-  const raw = globalThis.localStorage?.getItem(key);
+  const raw = getLocal(key);
   if (raw === "1") return true;
   if (raw === "0") return false;
   return def;
 }
 
 function persistBool(key: string, value: boolean): void {
-  globalThis.localStorage?.setItem(key, value ? "1" : "0");
+  setLocal(key, value ? "1" : "0");
 }
 
 function readWallpaper(): WallpaperId {
-  const stored = globalThis.localStorage?.getItem(WALLPAPER_KEY);
+  const stored = getLocal(WALLPAPER_KEY);
   return (WALLPAPER_IDS as string[]).includes(stored ?? "")
     ? (stored as WallpaperId)
     : "tron";
 }
 
 function readAccent(): AccentId {
-  const stored = globalThis.localStorage?.getItem(ACCENT_KEY);
+  const stored = getLocal(ACCENT_KEY);
   return (ACCENTS as readonly { id: string }[]).some((a) => a.id === stored)
     ? (stored as AccentId)
     : "cyan";
@@ -111,13 +112,13 @@ export function OsSettingsProvider({ children }: { children: ReactNode }) {
     persistBool(INVERT_KEY, invert);
   }, [invert]);
   useEffect(() => {
-    globalThis.localStorage?.setItem(WALLPAPER_KEY, wallpaper);
+    setLocal(WALLPAPER_KEY, wallpaper);
   }, [wallpaper]);
   useEffect(() => {
     persistBool(SCANLINES_KEY, scanlines);
   }, [scanlines]);
   useEffect(() => {
-    globalThis.localStorage?.setItem(ACCENT_KEY, accent);
+    setLocal(ACCENT_KEY, accent);
   }, [accent]);
 
   const value = useMemo(

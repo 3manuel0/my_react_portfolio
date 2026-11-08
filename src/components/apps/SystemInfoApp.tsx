@@ -66,21 +66,21 @@ const SystemInfoApp: React.FC = () => {
 
   return (
     <div className="p-4 sm:p-5">
-      <div className="mb-3 border border-os-border bg-os-surface2/60 px-3 py-2 font-mono text-[0.62rem]">
+      <div className="mb-3 border border-os-border bg-os-surface2/60 px-3 py-2 font-mono text-[0.74rem]">
         <p className="text-os-dim">$ neofetch</p>
       </div>
 
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
         {/* ASCII */}
         <pre
-          className="shrink-0 select-none whitespace-pre text-[0.8rem] leading-[1.25] text-os-green sm:text-[0.9rem]"
+          className="shrink-0 select-none whitespace-pre text-[0.84rem] leading-[1.25] text-os-green sm:text-[0.9rem]"
           aria-hidden="true"
         >
           {OS_ART.join("\n")}
         </pre>
 
         {/* Info */}
-        <div className="min-w-0 flex-1 font-mono text-[0.68rem] leading-[1.6]">
+        <div className="min-w-0 flex-1 font-mono text-[0.74rem] leading-[1.6]">
           <p className="whitespace-nowrap">
             <span className="font-bold text-os-accent">{profile.alias}@localhost</span>
             <span className="text-os-dim">-------------------</span>
@@ -98,7 +98,7 @@ const SystemInfoApp: React.FC = () => {
       </div>
 
       {/* Fictional OS notice */}
-      <div className="mt-4 border border-os-border bg-os-surface2/30 p-3 text-[0.6rem] leading-relaxed text-os-dim">
+      <div className="mt-4 border border-os-border bg-os-surface2/30 p-3 text-[0.66rem] leading-relaxed text-os-dim">
         <p>
           <span className="text-os-yellow">note:</span> this is the fictional
           portfolio desktop running in your browser — not your machine. The RAM

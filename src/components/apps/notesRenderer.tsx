@@ -67,7 +67,7 @@ function parseBlocks(content: string): ReactNode[] {
       out.push(
         <pre
           key={key()}
-          className="my-2 overflow-x-auto border border-os-border bg-os-bg p-3 font-mono text-[0.62rem] leading-relaxed text-os-green"
+          className="my-2 overflow-x-auto border border-os-border bg-os-bg p-3 font-mono text-[0.74rem] leading-relaxed text-os-green"
         >
           {fence.join("\n")}
         </pre>,
@@ -96,7 +96,7 @@ function parseBlocks(content: string): ReactNode[] {
       out.push(
         <blockquote
           key={key()}
-          className="my-2 border-l-2 border-os-accent bg-os-surface2/60 px-3 py-2 text-[0.68rem] italic text-os-dim"
+          className="my-2 border-l-2 border-os-accent bg-os-surface2/60 px-3 py-2 text-[0.74rem] italic text-os-dim"
         >
           {renderInline(line.slice(2), key())}
         </blockquote>,
@@ -111,7 +111,7 @@ function parseBlocks(content: string): ReactNode[] {
         i++;
       }
       out.push(
-        <ul key={key()} className="my-2 list-disc space-y-1 pl-5 text-[0.68rem] text-os-text">
+        <ul key={key()} className="my-2 list-disc space-y-1 pl-5 text-[0.74rem] text-os-text">
           {items.map((it, j) => (
             <li key={`${key()}-${j}`}>{renderInline(it, key())}</li>
           ))}
@@ -133,7 +133,7 @@ function parseBlocks(content: string): ReactNode[] {
       i++;
     }
     out.push(
-      <p key={key()} className="my-2 text-[0.68rem] leading-relaxed text-os-text">
+      <p key={key()} className="my-2 text-[0.74rem] leading-relaxed text-os-text">
         {renderInline(para.join("\n"), key())}
       </p>,
     );

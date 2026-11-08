@@ -14,9 +14,6 @@ import flagTrivia from "../assets/professional-projects/flagtriviagame.webp";
 import balanceChecker from "../assets/professional-projects/BalanceChecker_for_Bank_Clients.webp";
 import timeWarp from "../assets/professional-projects/TimeWarpMemory.webp";
 
-export const gitContentBase =
-  "https://raw.githubusercontent.com/3manuel0/3manuel0/refs/heads/assets/";
-
 export const profile = {
   name: "Said BENNAJI AKA 3manuel",
   alias: "3manuel",
@@ -95,6 +92,14 @@ export const skills = {
 export interface ProjectType {
   name: string;
   description: string;
+  /** One-line outcome/impact shown on the project card. */
+  highlight?: string;
+  /** When the project was built, if known. */
+  period?: string;
+  /** Role/context label for professional work. */
+  role?: string;
+  /** Show this project in the curated first row. */
+  featured?: boolean;
   languages?: string[] | null;
   githubSrcCode?: string | null;
   demo?: string | null;
@@ -108,6 +113,8 @@ export const personalProjects = [
     name: "C3SV (Data Parser)",
     description:
       "A high-performance CSV parser in C built from scratch, handling complex edge cases (quoted fields, escapes) with a minimal memory footprint. Automatic type inference maps columns to native C types (int64, float64) and string-view patterns optimize large-scale datasets, with JSON serialization for backend use.",
+    highlight: "Zero-copy CSV parsing with automatic type inference.",
+    featured: true,
     languages: ["C"],
     githubSrcCode: "https://github.com/3manuel0/C3SV",
     screenshot: c3sv,
@@ -117,6 +124,8 @@ export const personalProjects = [
     name: "Lib3man (Utility Library)",
     description:
       "Low-level C utility library featuring a custom Arena-based allocator that eliminates memory leaks and optimizes allocation performance, plus a String View / String Buffer system for dynamic strings. Includes a suite of cache-optimized data structures, replacing standard library overhead with manual, high-performance memory management.",
+    highlight: "Arena allocator + cache-friendly containers, built from scratch.",
+    featured: true,
     languages: ["C"],
     githubSrcCode: "https://github.com/3manuel0/Lib3man",
     screenshot: lib3man,
@@ -126,6 +135,7 @@ export const personalProjects = [
     name: "3bs_Downloader",
     description:
       "A Python CLI tool for reconstructing BigBlueButton sessions. It automates the extraction and synchronization of split streams (Audio, Slides, Chat) into a single MP4, using XML parsing to sync SVG slides and advanced FFmpeg commands for storage-optimized encoding, with duration clipping that automatically caps at the session's actual length.",
+    highlight: "Reconstructs split BBB streams into a single MP4.",
     languages: ["Python", "FFmpeg", "PIL"],
     githubSrcCode: "https://github.com/3manuel0/3bs_Downloader",
     screenshot: bs3,
@@ -135,6 +145,7 @@ export const personalProjects = [
     name: "Cloud Infrastructure & SecOps",
     description:
       "Managed a Linux VPS environment for bot hosting and game servers. Implemented a Cloudflare reverse proxy for DDoS protection and handled remote sysadmin tasks via SSH.",
+    highlight: "Linux VPS hosting with Cloudflare DDoS protection.",
     languages: ["Debian", "Linux"],
     screenshot: vpsPersonal,
     type: "personal",
@@ -143,6 +154,8 @@ export const personalProjects = [
     name: "2d Platformer Game",
     description:
       "Custom 2D game engine in C/Raylib featuring physics, collision detection, and hardware-accelerated rendering. A \"Gamelib\" JavaScript bridge and cross-compilation pipeline unify Web and Desktop builds by porting high-performance Raylib logic to the browser via WebAssembly.",
+    highlight: "C/Raylib engine compiled to WebAssembly.",
+    featured: true,
     languages: ["C", "Raylib", "WebAssembly"],
     githubSrcCode: "https://github.com/3manuel0/2dPlatformerGame",
     demo: "https://3manuel0.github.io/2dPlatformerGame/",
@@ -153,6 +166,7 @@ export const personalProjects = [
     name: "Gameboy Emulator (Work In Progress)",
     description:
       "Systems programming project focused on CPU instruction sets and memory mapping to recreate the original GameBoy hardware architecture in C.",
+    highlight: "CPU instruction set and memory mapping in C.",
     languages: ["C", "Raylib"],
     githubSrcCode: "https://github.com/3manuel0/gb_emu",
     screenshot: gameboy,
@@ -162,6 +176,7 @@ export const personalProjects = [
     name: "FToP (File to PNG)",
     description:
       "Tool that encodes raw file bytes into PNG pixels to explore binary representation and image processing via WebAssembly.",
+    highlight: "Encodes arbitrary files into PNG pixels.",
     languages: ["C", "WebAssembly", "Javascript"],
     githubSrcCode: "https://github.com/3manuel0/FToP",
     demo: "https://3manuel0.github.io/FToP/",
@@ -172,6 +187,7 @@ export const personalProjects = [
     name: "Sophia (Discord Bot)",
     description:
       "High-performance C++ Discord bot built with the D++ library, featuring a custom engine for image-to-ASCII conversion and a guessing mini-game. Deployed on a Linux VPS with automated data persistence and uptime monitoring, serving as a testbed for infrastructure experiments.",
+    highlight: "C++ Discord bot with an image-to-ASCII engine.",
     languages: ["C++"],
     githubSrcCode: "https://github.com/3manuel0/Sophia_Cpp",
     screenshot: sophia,
@@ -181,6 +197,7 @@ export const personalProjects = [
     name: "Chinese Flashcards",
     description:
       "Cross-platform desktop application for language learning built with Rust and the Slint UI framework.",
+    highlight: "Rust + Slint desktop language-learning app.",
     languages: ["Rust", "Slint"],
     githubSrcCode: "https://github.com/3manuel0/chinese_flashcards",
     screenshot: chineseFlashCards,
@@ -190,6 +207,7 @@ export const personalProjects = [
     name: "Audio Player",
     description:
       "Native Android audio player focusing on clean UI and local file management.",
+    highlight: "Kotlin Android player for local audio.",
     languages: ["Kotlin", "Androidstudio"],
     githubSrcCode: "https://github.com/3manuel0/3maPlayer",
     screenshot: musicPlayer,
@@ -203,6 +221,9 @@ export const professionalProjects = [
     context: "Internship @ MTDS",
     description:
       "Designed and developed a responsive web application that allows clients to configure and order VPS (Virtual Private Server) instances based on custom parameters.",
+    highlight: "Responsive VPS ordering flow with a secure admin panel.",
+    period: "2025",
+    role: "Internship project",
     languages: ["Php", "Javascript", "Html", "Css", "Mysql"],
     screenshot: vpsProfessional,
     type: "professional",
@@ -212,6 +233,9 @@ export const professionalProjects = [
     context: "Freelance",
     description:
       "Developed a website for a client that allows users to play and solve chess puzzles, with real-time validation of legal chess moves.",
+    highlight: "Real-time validation of legal chess moves.",
+    period: "Freelance",
+    role: "Freelance project",
     languages: ["Javascript", "Html", "Css"],
     screenshot: chessPuzzle,
     type: "professional",
@@ -221,6 +245,9 @@ export const professionalProjects = [
     context: "Freelance",
     description:
       "Created a flag trivia game for a client, where users are challenged to identify country flags from around the world. The game features multiple-choice questions, score tracking, and instant feedback to enhance learning and engagement.",
+    highlight: "Timed quiz with scoring and instant feedback.",
+    period: "Freelance",
+    role: "Freelance project",
     languages: ["Python", "Pygame"],
     screenshot: flagTrivia,
     type: "professional",
@@ -230,6 +257,9 @@ export const professionalProjects = [
     context: "Internship @ Managtech",
     description:
       "Developed a Flask web app to compare names from uploaded PDF/XLS files against a general bank list. Used pytesseract for OCR-based text extraction and implemented error handling to improve matching accuracy.",
+    highlight: "OCR + fuzzy matching against a master bank list.",
+    period: "2024",
+    role: "Internship project",
     languages: ["Python", "Flask", "Html", "Css", "Mysql"],
     screenshot: balanceChecker,
     type: "professional",
@@ -239,6 +269,9 @@ export const professionalProjects = [
     context: "Freelance",
     description:
       "Helped a client build a Number Guessing Level for the Time Warp Memory Game, handling game logic, UI, and smooth integration to enhance memory-focused gameplay.",
+    highlight: "Number-guessing level with game logic and UI.",
+    period: "Freelance",
+    role: "Freelance project",
     languages: ["Python", "Pygame"],
     screenshot: timeWarp,
     type: "professional",

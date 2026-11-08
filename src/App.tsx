@@ -18,6 +18,7 @@ import {
   useOsSettings,
 } from "./context/OsSettingsContext";
 import { hasInitialAppHash } from "./data/hash";
+import { getSession, setSession } from "./lib/storage";
 
 const BOOT_SEEN_KEY = "3manuelos.boot.seen";
 
@@ -25,19 +26,11 @@ const BOOT_SEEN_KEY = "3manuelos.boot.seen";
 let hasAutoOpenedAbout = false;
 
 function readBootSeen(): boolean {
-  try {
-    return globalThis.sessionStorage?.getItem(BOOT_SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return getSession(BOOT_SEEN_KEY) === "1";
 }
 
 function markBootSeen(): void {
-  try {
-    globalThis.sessionStorage?.setItem(BOOT_SEEN_KEY, "1");
-  } catch {
-    /* ignore */
-  }
+  setSession(BOOT_SEEN_KEY, "1");
 }
 
 function DesktopEnvironment({ booting }: { booting: boolean }) {

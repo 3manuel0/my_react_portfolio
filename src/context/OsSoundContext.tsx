@@ -10,19 +10,20 @@ import {
   type ReactNode,
 } from "react";
 import { sfx, type SfxName } from "../audio/sfx";
+import { getLocal, setLocal } from "../lib/storage";
 
 const STORAGE_KEY = "3manuelos.volume";
 const SFX_KEY = "3manuelos.sfx";
 const DEFAULT_VOLUME = 0.75;
 
 function readSfxEnabled(): boolean {
-  const raw = globalThis.localStorage?.getItem(SFX_KEY);
+  const raw = getLocal(SFX_KEY);
   if (raw === "0") return false;
   return true;
 }
 
 function readVolume(): number {
-  const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
+  const raw = getLocal(STORAGE_KEY);
   if (raw === null) return DEFAULT_VOLUME;
   const n = parseFloat(raw);
   return Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : DEFAULT_VOLUME;
@@ -60,7 +61,7 @@ export function OsSoundProvider({ children }: { children: ReactNode }) {
   const setVolume = useCallback((v: number) => {
     const clamped = Math.min(1, Math.max(0, v));
     setVolumeState(clamped);
-    globalThis.localStorage?.setItem(STORAGE_KEY, String(clamped));
+    setLocal(STORAGE_KEY, String(clamped));
   }, []);
 
   const toggleMute = useCallback(() => setMuted((m) => !m), []);
@@ -68,7 +69,7 @@ export function OsSoundProvider({ children }: { children: ReactNode }) {
   const toggleSfx = useCallback(() => {
     setSfxEnabled((prev) => {
       const next = !prev;
-      globalThis.localStorage?.setItem(SFX_KEY, next ? "1" : "0");
+      setLocal(SFX_KEY, next ? "1" : "0");
       return next;
     });
   }, []);
