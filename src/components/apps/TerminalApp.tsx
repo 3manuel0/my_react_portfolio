@@ -804,9 +804,9 @@ const TerminalApp: React.FC = () => {
             <span className="text-os-green">3manuel</span>
             <span className="text-os-dim">@localhost</span>
             <span className="text-os-blue">{shortCwd(cwd)}</span>
-            <span className="text-os-dim">$ </span>
+            <span className="text-os-dim">$</span>
           </label>
-          <span className="relative flex min-w-0 flex-1 items-center">
+          <span className="relative ml-[0.6em] flex min-w-0 flex-1 items-center">
             <span
               className="pointer-events-none select-none whitespace-pre-wrap break-all"
               aria-hidden="true"
