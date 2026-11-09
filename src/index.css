@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: arcade-bold;
-  src: url("./assets/fonts/Acme-9-Regular-Bold.woff2") format("woff2");
+  src: url("./assets/fonts/Acme-9-Regular-Bold.ttf") format("truetype");
   font-display: swap;
 }
 

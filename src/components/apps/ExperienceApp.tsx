@@ -12,7 +12,7 @@ const ExperienceApp: React.FC = () => {
       <div className="space-y-6">
         {experience.map((group) => (
           <div key={group.year}>
-            <h2 className="mb-2 flex items-center gap-2 font-arcade text-sm text-os-blue">
+            <h2 className="mb-2 flex items-center gap-2 font-mono text-sm font-bold text-os-blue">
               <span aria-hidden="true">&#9654;</span> {group.year}
               <span className="flex-1 border-t border-os-border" aria-hidden="true" />
             </h2>

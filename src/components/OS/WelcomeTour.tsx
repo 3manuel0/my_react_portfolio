@@ -203,7 +203,7 @@ const WelcomeTour: React.FC<WelcomeTourProps> = ({ onOpenApp }) => {
         style={{ left, top }}
       >
         <div className="mb-2 flex items-center justify-between gap-2">
-          <p className="font-arcade text-[0.8rem] text-os-accent">{step.title}</p>
+          <p className="font-mono text-[0.8rem] font-bold text-os-accent">{step.title}</p>
           <span className="shrink-0 font-mono text-[0.55rem] text-os-dim">
             {index + 1}/{STEPS.length}
           </span>

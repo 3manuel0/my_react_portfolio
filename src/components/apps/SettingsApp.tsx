@@ -11,7 +11,7 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({
   children,
 }) => (
   <section className="border-b border-os-border px-4 py-3.5 last:border-b-0">
-    <h2 className="mb-3 font-arcade text-[0.95rem] text-os-accent">{title}</h2>
+    <h2 className="mb-3 font-mono text-[0.78rem] font-bold uppercase tracking-widest text-os-accent">{title}</h2>
     <div className="flex flex-col gap-3">{children}</div>
   </section>
 );
