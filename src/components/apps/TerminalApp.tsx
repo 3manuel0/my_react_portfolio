@@ -746,7 +746,10 @@ const TerminalApp: React.FC = () => {
   }, [isActive, runSubmit, navHistory, complete]);
 
   const onKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Tab") {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      runSubmit();
+    } else if (e.key === "Tab") {
       e.preventDefault();
       complete();
     } else if (e.key === "ArrowUp") {
@@ -761,7 +764,13 @@ const TerminalApp: React.FC = () => {
   return (
     <div
       className="flex h-full min-h-0 cursor-text flex-col bg-os-bg font-mono"
-      onClick={() => inputRef.current?.focus()}
+      onClick={() => {
+        const el = inputRef.current;
+        if (!el) return;
+        el.focus();
+        el.setSelectionRange(valueRef.current.length, valueRef.current.length);
+        setCursor(valueRef.current.length);
+      }}
       role="log"
       aria-label="Terminal output"
     >
@@ -798,6 +807,16 @@ const TerminalApp: React.FC = () => {
             <span className="text-os-dim">$ </span>
           </label>
           <span className="relative flex min-w-0 flex-1 items-center">
+            <span
+              className="pointer-events-none select-none whitespace-pre-wrap break-all"
+              aria-hidden="true"
+            >
+              <span className="text-os-text">{input.slice(0, cursor)}</span>
+              <span className="terminal-block-cursor" aria-hidden="true" />
+              {input.length > cursor && (
+                <span className="text-os-text">{input.slice(cursor)}</span>
+              )}
+            </span>
             <input
               ref={inputRef}
               type="text"
@@ -809,20 +828,20 @@ const TerminalApp: React.FC = () => {
               onSelect={(e) =>
                 setCursor(e.currentTarget.selectionStart ?? e.currentTarget.value.length)
               }
+              onFocus={(e) => {
+                const len = e.currentTarget.value.length;
+                e.currentTarget.setSelectionRange(len, len);
+                setCursor(len);
+              }}
               onKeyDown={onKeyDownInput}
               aria-label="Terminal command input"
               autoComplete="off"
               autoCapitalize="off"
+              autoCorrect="off"
               spellCheck={false}
-              className="absolute inset-0 h-full w-full bg-transparent text-base text-transparent caret-transparent outline-none sm:text-[0.74rem]"
+              enterKeyHint="go"
+              className="terminal-hidden-input"
             />
-            <span className="pointer-events-none select-none whitespace-pre-wrap break-all">
-              <span className="text-os-text">{input.slice(0, cursor)}</span>
-              <span className="terminal-block-cursor" aria-hidden="true" />
-              {input.length > cursor && (
-                <span className="text-os-text">{input.slice(cursor)}</span>
-              )}
-            </span>
           </span>
         </form>
         <div ref={endRef} />

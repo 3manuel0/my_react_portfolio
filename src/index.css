@@ -258,6 +258,31 @@ img.pixelated {
   animation: terminal-blink 1.05s step-end infinite;
 }
 
+/* Invisible input used only to capture keystrokes/IME. The visible command
+   line is rendered separately, so the browser never paints an input caret,
+   selection, or focus ring over the terminal. */
+.terminal-hidden-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+  outline: none;
+  color: transparent;
+  background: transparent;
+  caret-color: transparent;
+}
+.terminal-hidden-input:focus,
+.terminal-hidden-input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 /* Phone (Android) transitions */
 @keyframes phone-app-in {
   from {
@@ -356,5 +381,9 @@ img.pixelated {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .terminal-block-cursor {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }
