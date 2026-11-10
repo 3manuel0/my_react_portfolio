@@ -21,7 +21,7 @@ jobs:
           node-version: 22
 
       - name: Refresh bundled snapshot
-        run: node scripts/update-github-snapshot.mjs
+        run: npm run snapshot:github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,6 +33,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/github-repos.json src/data/github-top-langs.json
+          git add src/data/github-repos.json src/data/github-top-langs.json public/top-languages.svg
           git commit -m "chore: refresh GitHub snapshot"
           git push

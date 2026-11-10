@@ -1,45 +1,54 @@
 {
-  "generated_at": "2026-11-08T21:23:23.272Z",
+  "generated_at": "2026-11-10T10:42:34.498Z",
+  "total_bytes": 1921083,
   "languages": [
     {
       "name": "C",
-      "count": 14,
-      "percent": 38.9
-    },
-    {
-      "name": "Python",
-      "count": 4,
-      "percent": 11.1
-    },
-    {
-      "name": "JavaScript",
-      "count": 4,
-      "percent": 11.1
-    },
-    {
-      "name": "C++",
-      "count": 3,
-      "percent": 8.3
+      "bytes": 703198,
+      "percent": 36.6,
+      "repos": 15
     },
     {
       "name": "Kotlin",
-      "count": 2,
-      "percent": 5.6
-    },
-    {
-      "name": "HTML",
-      "count": 2,
-      "percent": 5.6
+      "bytes": 424135,
+      "percent": 22.1,
+      "repos": 2
     },
     {
       "name": "TypeScript",
-      "count": 1,
-      "percent": 2.8
+      "bytes": 310170,
+      "percent": 16.1,
+      "repos": 2
     },
     {
       "name": "PHP",
-      "count": 1,
-      "percent": 2.8
+      "bytes": 140191,
+      "percent": 7.3,
+      "repos": 2
+    },
+    {
+      "name": "JavaScript",
+      "bytes": 77832,
+      "percent": 4.1,
+      "repos": 10
+    },
+    {
+      "name": "Blade",
+      "bytes": 72477,
+      "percent": 3.8,
+      "repos": 1
+    },
+    {
+      "name": "Python",
+      "bytes": 55606,
+      "percent": 2.9,
+      "repos": 4
+    },
+    {
+      "name": "CSS",
+      "bytes": 33859,
+      "percent": 1.8,
+      "repos": 4
     }
   ]
 }

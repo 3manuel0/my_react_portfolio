@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { profile } from "../../data/portfolio";
 import { AppIcon } from "../AppIcons";
-import fallbackTopLangs from "../../data/github-top-langs.json";
+import topLangsSnapshot from "../../data/github-top-langs.json";
 import fallbackReposData from "../../data/github-repos.json";
 import { getLocal, setLocal } from "../../lib/storage";
 
@@ -30,6 +30,13 @@ interface GitHubRepo {
   forks_count: number;
   updated_at: string;
   fork: boolean;
+}
+
+interface TopLanguage {
+  name: string;
+  percent: number;
+  bytes?: number;
+  repos?: number;
 }
 
 const LANG_COLORS: Record<string, string> = {
@@ -146,7 +153,22 @@ const GitHubApp: React.FC = () => {
     };
   }, []);
 
-  const topLanguages = useMemo(() => {
+  const topLanguages = useMemo<TopLanguage[]>(() => {
+    // Prefer the bundled snapshot: it is computed from the actual bytes of
+    // code in each repo, not just the repo's primary language.
+    if (
+      Array.isArray(topLangsSnapshot.languages) &&
+      topLangsSnapshot.languages.length > 0
+    ) {
+      return topLangsSnapshot.languages.map((l) => ({
+        name: l.name,
+        percent: typeof l.percent === "number" ? l.percent : 0,
+        bytes: typeof l.bytes === "number" ? l.bytes : undefined,
+        repos: typeof l.repos === "number" ? l.repos : undefined,
+      }));
+    }
+
+    // Fallback for a missing snapshot: primary-language repo counts.
     if (repos) {
       const counts = new Map<string, number>();
       let total = 0;
@@ -162,18 +184,10 @@ const GitHubApp: React.FC = () => {
       if (entries.length > 0) {
         return entries.map(([name, count]) => ({
           name,
-          count,
           percent: (count / Math.max(total, 1)) * 100,
+          repos: count,
         }));
       }
-    }
-    // Fallback to bundled snapshot if no API data and no cache
-    if (Array.isArray(fallbackTopLangs.languages)) {
-      return fallbackTopLangs.languages.map((l) => ({
-        name: l.name,
-        count: l.count,
-        percent: typeof l.percent === "number" ? l.percent : 0,
-      }));
     }
     return [];
   }, [repos]);
@@ -300,8 +314,11 @@ const GitHubApp: React.FC = () => {
         )}
 
         <div className="mb-3 w-full border border-os-border bg-os-surface2/40 p-3">
-          <p className="mb-2 text-[0.66rem] uppercase tracking-widest text-os-dim">
-            Top Languages
+          <p className="mb-2 flex items-center justify-between text-[0.66rem] uppercase tracking-widest text-os-dim">
+            <span>Most Used Languages</span>
+            <span className="text-[0.55rem] normal-case tracking-normal text-os-dim/70">
+              by bytes
+            </span>
           </p>
           {topLanguages.length === 0 ? (
             <p className="py-4 text-center text-[0.74rem] text-os-dim">
@@ -310,7 +327,15 @@ const GitHubApp: React.FC = () => {
           ) : (
             <div className="space-y-2">
               {topLanguages.map((lang) => (
-                <div key={lang.name} className="flex items-center gap-2">
+                <div
+                  key={lang.name}
+                  className="flex items-center gap-2"
+                  title={
+                    lang.bytes
+                      ? `${lang.name}: ${lang.bytes.toLocaleString()} bytes across ${lang.repos ?? 0} repos`
+                      : lang.name
+                  }
+                >
                   <span
                     className="h-2 w-2 shrink-0 rounded-sm"
                     style={{ backgroundColor: LANG_COLORS[lang.name] ?? "#bb9af7" }}
@@ -323,7 +348,7 @@ const GitHubApp: React.FC = () => {
                     <div
                       className="h-full"
                       style={{
-                        width: `${lang.percent}%`,
+                        width: `${Math.min(100, lang.percent)}%`,
                         backgroundColor: LANG_COLORS[lang.name] ?? "#bb9af7",
                         opacity: 0.8,
                       }}

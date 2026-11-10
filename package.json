@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "snapshot:github": "node scripts/update-github-snapshot.mjs",
+    "snapshot:github": "node scripts/update-github-snapshot.mjs && node scripts/generate-top-languages-svg.mjs",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
