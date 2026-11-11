@@ -4,17 +4,17 @@
   <rect width="100%" height="100%" fill="#090D13" rx="5"/>
   <rect x="0" y="0" width="100%" height="1" fill="#1F2430"/>
   <text x="16" y="32" fill="#FFC300" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="12" font-weight="bold">Most Used Languages</text>
-  <text x="584" y="32" fill="#6B7A99" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">updated 2026-11-10 &#183; by bytes</text>
+  <text x="584" y="32" fill="#6B7A99" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">updated 2026-11-11 &#183; by bytes</text>
   <g>
     <title>C: 703,198 bytes across 15 repos</title>
     <circle cx="24" cy="58" r="5" fill="#555555"/>
     <text x="38" y="61" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">C</text>
     <rect x="150" y="50" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
-    <rect x="150" y="50" width="139.1" height="16" rx="3" fill="#555555" opacity="0.9"/>
-    <text x="584" y="61" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">37%</text>
+    <rect x="150" y="50" width="136.4" height="16" rx="3" fill="#555555" opacity="0.9"/>
+    <text x="584" y="61" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">36%</text>
   </g>
   <g>
-    <title>Kotlin: 424,135 bytes across 2 repos</title>
+    <title>Kotlin: 432,914 bytes across 2 repos</title>
     <circle cx="24" cy="82" r="5" fill="#a97bff"/>
     <text x="38" y="85" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">Kotlin</text>
     <rect x="150" y="74" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
@@ -22,27 +22,27 @@
     <text x="584" y="85" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">22%</text>
   </g>
   <g>
-    <title>TypeScript: 310,170 bytes across 2 repos</title>
+    <title>TypeScript: 322,348 bytes across 2 repos</title>
     <circle cx="24" cy="106" r="5" fill="#3178c6"/>
     <text x="38" y="109" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">TypeScript</text>
     <rect x="150" y="98" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
-    <rect x="150" y="98" width="61.2" height="16" rx="3" fill="#3178c6" opacity="0.9"/>
-    <text x="584" y="109" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">16%</text>
+    <rect x="150" y="98" width="62.7" height="16" rx="3" fill="#3178c6" opacity="0.9"/>
+    <text x="584" y="109" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">17%</text>
   </g>
   <g>
     <title>PHP: 140,191 bytes across 2 repos</title>
     <circle cx="24" cy="130" r="5" fill="#4F5D95"/>
     <text x="38" y="133" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">PHP</text>
     <rect x="150" y="122" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
-    <rect x="150" y="122" width="27.7" height="16" rx="3" fill="#4F5D95" opacity="0.9"/>
+    <rect x="150" y="122" width="27.4" height="16" rx="3" fill="#4F5D95" opacity="0.9"/>
     <text x="584" y="133" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">7%</text>
   </g>
   <g>
-    <title>JavaScript: 77,832 bytes across 10 repos</title>
+    <title>JavaScript: 85,286 bytes across 10 repos</title>
     <circle cx="24" cy="154" r="5" fill="#f1e05a"/>
     <text x="38" y="157" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">JavaScript</text>
     <rect x="150" y="146" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
-    <rect x="150" y="146" width="15.6" height="16" rx="3" fill="#f1e05a" opacity="0.9"/>
+    <rect x="150" y="146" width="16.7" height="16" rx="3" fill="#f1e05a" opacity="0.9"/>
     <text x="584" y="157" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">4%</text>
   </g>
   <g>
@@ -50,7 +50,7 @@
     <circle cx="24" cy="178" r="5" fill="#bb9af7"/>
     <text x="38" y="181" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">Blade</text>
     <rect x="150" y="170" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
-    <rect x="150" y="170" width="14.4" height="16" rx="3" fill="#bb9af7" opacity="0.9"/>
+    <rect x="150" y="170" width="14.1" height="16" rx="3" fill="#bb9af7" opacity="0.9"/>
     <text x="584" y="181" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">4%</text>
   </g>
   <g>
@@ -58,11 +58,11 @@
     <circle cx="24" cy="202" r="5" fill="#3572a5"/>
     <text x="38" y="205" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">Python</text>
     <rect x="150" y="194" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
-    <rect x="150" y="194" width="11.0" height="16" rx="3" fill="#3572a5" opacity="0.9"/>
+    <rect x="150" y="194" width="10.6" height="16" rx="3" fill="#3572a5" opacity="0.9"/>
     <text x="584" y="205" fill="#8B92A8" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">3%</text>
   </g>
   <g>
-    <title>CSS: 33,859 bytes across 4 repos</title>
+    <title>CSS: 34,568 bytes across 4 repos</title>
     <circle cx="24" cy="226" r="5" fill="#563d7c"/>
     <text x="38" y="229" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">CSS</text>
     <rect x="150" y="218" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>

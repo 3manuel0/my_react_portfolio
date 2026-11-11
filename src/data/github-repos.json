@@ -1,14 +1,14 @@
 [
   {
-    "id": 809480706,
-    "name": "3manuel0",
-    "full_name": "3manuel0/3manuel0",
-    "html_url": "https://github.com/3manuel0/3manuel0",
-    "description": null,
-    "language": null,
-    "stargazers_count": 2,
+    "id": 1338794290,
+    "name": "Tr3ack",
+    "full_name": "3manuel0/Tr3ack",
+    "html_url": "https://github.com/3manuel0/Tr3ack",
+    "description": "A workout tracker Android app for logging strength-training sessions",
+    "language": "Kotlin",
+    "stargazers_count": 0,
     "forks_count": 0,
-    "updated_at": "2026-11-08T21:10:50Z",
+    "updated_at": "2026-11-10T22:06:16Z",
     "fork": false
   },
   {
@@ -20,19 +20,19 @@
     "language": "TypeScript",
     "stargazers_count": 1,
     "forks_count": 0,
-    "updated_at": "2026-11-08T20:24:08Z",
+    "updated_at": "2026-11-10T10:48:34Z",
     "fork": false
   },
   {
-    "id": 1338794290,
-    "name": "Tr3ack",
-    "full_name": "3manuel0/Tr3ack",
-    "html_url": "https://github.com/3manuel0/Tr3ack",
-    "description": "A workout tracker Android app for logging strength-training sessions",
-    "language": "Kotlin",
-    "stargazers_count": 0,
+    "id": 809480706,
+    "name": "3manuel0",
+    "full_name": "3manuel0/3manuel0",
+    "html_url": "https://github.com/3manuel0/3manuel0",
+    "description": null,
+    "language": null,
+    "stargazers_count": 2,
     "forks_count": 0,
-    "updated_at": "2026-11-06T23:56:09Z",
+    "updated_at": "2026-11-08T21:10:50Z",
     "fork": false
   },
   {
