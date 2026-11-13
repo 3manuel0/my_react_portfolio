@@ -4,7 +4,7 @@
   <rect width="100%" height="100%" fill="#090D13" rx="5"/>
   <rect x="0" y="0" width="100%" height="1" fill="#1F2430"/>
   <text x="16" y="32" fill="#FFC300" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="12" font-weight="bold">Most Used Languages</text>
-  <text x="584" y="32" fill="#6B7A99" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">updated 2026-11-12 &#183; by bytes</text>
+  <text x="584" y="32" fill="#6B7A99" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">updated 2026-11-13 &#183; by bytes</text>
   <g>
     <title>C: 703,198 bytes across 15 repos</title>
     <circle cx="24" cy="58" r="5" fill="#555555"/>
