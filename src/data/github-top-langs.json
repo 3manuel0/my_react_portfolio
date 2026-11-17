@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-11-16T11:17:50.520Z",
-  "total_bytes": 1970276,
+  "generated_at": "2026-11-17T11:52:05.254Z",
+  "total_bytes": 1970237,
   "languages": [
     {
       "name": "C",
-      "bytes": 703770,
+      "bytes": 703731,
       "percent": 35.7,
       "repos": 15
     },

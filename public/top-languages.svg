@@ -4,9 +4,9 @@
   <rect width="100%" height="100%" fill="#090D13" rx="5"/>
   <rect x="0" y="0" width="100%" height="1" fill="#1F2430"/>
   <text x="16" y="32" fill="#FFC300" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="12" font-weight="bold">Most Used Languages</text>
-  <text x="584" y="32" fill="#6B7A99" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">updated 2026-11-16 &#183; by bytes</text>
+  <text x="584" y="32" fill="#6B7A99" font-family="Roboto Mono, monospace" font-size="9" text-anchor="end">updated 2026-11-17 &#183; by bytes</text>
   <g>
-    <title>C: 703,770 bytes across 15 repos</title>
+    <title>C: 703,731 bytes across 15 repos</title>
     <circle cx="24" cy="58" r="5" fill="#555555"/>
     <text x="38" y="61" fill="#CDD6F4" font-family="Roboto Mono, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial" font-size="10">C</text>
     <rect x="150" y="50" width="380" height="16" rx="3" fill="#0B1016" stroke="#1F2430"/>
