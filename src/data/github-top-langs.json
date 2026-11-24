@@ -1,23 +1,23 @@
 {
-  "generated_at": "2026-11-23T12:40:51.719Z",
-  "total_bytes": 2028845,
+  "generated_at": "2026-11-24T13:43:42.788Z",
+  "total_bytes": 2043655,
   "languages": [
     {
       "name": "C",
       "bytes": 703731,
-      "percent": 34.7,
+      "percent": 34.4,
       "repos": 15
     },
     {
       "name": "Kotlin",
-      "bytes": 503704,
-      "percent": 24.8,
+      "bytes": 518514,
+      "percent": 25.4,
       "repos": 2
     },
     {
       "name": "TypeScript",
       "bytes": 322348,
-      "percent": 15.9,
+      "percent": 15.8,
       "repos": 2
     },
     {
@@ -35,7 +35,7 @@
     {
       "name": "Blade",
       "bytes": 72477,
-      "percent": 3.6,
+      "percent": 3.5,
       "repos": 1
     },
     {
